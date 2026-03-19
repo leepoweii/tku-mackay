@@ -1,0 +1,295 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+:root {
+  --bg: #FFFFFF;
+  --text: #1A1A1A;
+  --accent: #B5411F;
+  --accent2: #9A5A1E;
+  --green: #3D6E3C;
+  --blue: #2D6080;
+  --card: #FFFFFF;
+  --card-border: #C09A6E;
+  --light: #F0E0CC;
+  --template-bg: #FFF5E8;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+/* Slide base */
+.slide {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 36px 24px 80px;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.slide.center {
+  align-items: center;
+  text-align: center;
+}
+
+/* Section divider slide */
+.section-divider {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: white;
+  align-items: center;
+  text-align: center;
+}
+
+.section-divider h1,
+.section-divider h2,
+.section-divider h3,
+.section-divider p {
+  color: white;
+}
+
+/* Typography */
+h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: #555;
+  margin-top: 12px;
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Template boxes (for copying prompts) */
+.template-box {
+  background: var(--template-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 12px 0;
+  position: relative;
+}
+
+.template-box pre {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 1rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* Buttons */
+button {
+  font-family: 'Noto Sans TC', sans-serif;
+  min-width: 48px;
+  min-height: 48px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 10px;
+}
+
+.btn-primary:hover {
+  background: var(--accent2);
+  transform: translateY(-1px);
+}
+
+.btn-copy {
+  background: var(--accent);
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-copy:hover {
+  background: var(--accent2);
+}
+
+.btn-copy.copied {
+  background: var(--green);
+}
+
+/* Lists */
+ul, ol {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  padding-left: 24px;
+  margin: 0 0 16px;
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Layout helpers */
+.columns-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.columns-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.max-content {
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Highlight/accent text */
+.highlight {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.tag {
+  display: inline-block;
+  background: var(--light);
+  color: var(--accent2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 2px;
+}
+
+/* Step numbers */
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+/* Spacers */
+.spacer-sm { height: 12px; }
+.spacer-md { height: 24px; }
+.spacer-lg { height: 40px; }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  .slide {
+    padding: 24px 16px 80px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.7rem;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+  }
+
+  .columns-2,
+  .columns-3 {
+    grid-template-columns: 1fr;
+  }
+
+  p, ul, ol {
+    font-size: 1rem;
+  }
+}
