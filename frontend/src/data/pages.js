@@ -1,0 +1,25 @@
+// Page registry — order determines navigation sequence
+// component field matches filename in src/pages/ (without .vue)
+export const pages = [
+  { id: 'title', component: 'P01Title', section: '開場' },
+  { id: 'login', component: 'P02Login', section: '開場' },
+  { id: 'outline', component: 'P03Outline', section: '開場' },
+  { id: 'recap', component: 'P04Recap', section: '回顧' },
+  { id: 'concept', component: 'P05Concept', section: '新概念' },
+  { id: 'demo', component: 'P06Demo', section: '示範' },
+  { id: 'secrets', component: 'P07Secrets', section: '教學' },
+  { id: 'formula', component: 'P08Formula', section: '教學' },
+  { id: 'styles', component: 'P09Styles', section: '教學' },
+  { id: 'practice1', component: 'P10Practice1', section: '文字生圖' },
+  { id: 'practice2', component: 'P11Practice2', section: '文字生圖' },
+  { id: 'practice3', component: 'P12Practice3', section: '文字生圖' },
+  { id: 'break', component: 'P13Break', section: '休息' },
+  { id: 'photo1', component: 'P14Advanced1', section: '照片改圖' },
+  { id: 'photo2', component: 'P15Advanced2', section: '照片改圖' },
+  { id: 'advanced1', component: 'P16Advanced3', section: '進階應用' },
+  { id: 'advanced2', component: 'P17Advanced4', section: '進階應用' },
+  { id: 'showcase', component: 'P18StyleShowcase', section: '風格大全' },
+  { id: 'share', component: 'P19Share', section: '收尾' },
+  { id: 'homework', component: 'P20Homework', section: '收尾' },
+  { id: 'end', component: 'P21End', section: '收尾' },
+]
