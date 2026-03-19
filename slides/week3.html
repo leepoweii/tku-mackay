@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>松年大學 AI 課程 — 第三堂</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 14px; }
+
+    :root {
+      --bg: #FFFFFF;
+      --text: #1A1A1A;
+      --accent: #B5411F;
+      --accent2: #9A5A1E;
+      --green: #3D6E3C;
+      --blue: #2D6080;
+      --card: #FFFFFF;
+      --card-border: #C09A6E;
+      --light: #F0E0CC;
+      --template-bg: #FFF5E8;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* ===== SLIDE SYSTEM ===== */
+    .slide {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      padding: 36px 56px;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .slide.active { display: flex; }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1 {
+      font-size: 4.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    h2 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+    p, li {
+      font-size: 1.9rem;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+    ul { list-style: none; padding-left: 0; }
+    ul li::before {
+      content: '\2022';
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 12px;
+    }
+    ul li { margin-bottom: 10px; }
+
+    .subtitle {
+      font-size: 2.2rem;
+      color: var(--accent2);
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .big-text {
+      font-size: 2.5rem;
+      line-height: 1.9;
+    }
+    .small-text {
+      font-size: 1.4rem;
+      color: #555;
+    }
+
+    /* ===== LAYOUT ===== */
+    .center {
+      text-align: center;
+      align-items: center;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 20px;
+    }
+
+    /* ===== QUOTE BOX ===== */
+    .quote {
+      background: var(--light);
+      border-left: 8px solid var(--accent);
+      padding: 30px 40px;
+      border-radius: 0 16px 16px 0;
+      margin: 20px 0;
+      font-size: 2rem;
+      line-height: 2;
+    }
+
+    /* ===== COMPARISON ===== */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .compare-bad, .compare-good {
+      padding: 30px;
+      border-radius: 16px;
+      font-size: 1.6rem;
+      line-height: 1.8;
+    }
+    .compare-bad {
+      background: #FDE8E8;
+      border: 3px solid #D32F2F;
+    }
+    .compare-bad h3 { color: #B71C1C; }
+    .compare-good {
+      background: #E8F5E9;
+      border: 3px solid var(--green);
+    }
+    .compare-good h3 { color: var(--green); }
+
+    /* ===== TEMPLATE CARD ===== */
+    .template-card {
+      background: var(--template-bg);
+      border: 3px dashed var(--accent2);
+      border-radius: 16px;
+      padding: 30px 36px;
+      margin: 16px 0;
+      font-size: 1.6rem;
+      line-height: 2;
+      position: relative;
+      white-space: pre-wrap;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .template-card .fill {
+      background: #FFECB3;
+      padding: 2px 12px;
+      border-radius: 6px;
+      border: 2px solid #C68A00;
+      font-weight: 700;
+      color: #6D4C00;
+      white-space: normal;
+    }
+    .fill[contenteditable] { cursor: text; }
+    .fill[contenteditable]:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #A14A2E; transform: scale(1.05); }
+    .copy-btn.copied { background: var(--green); }
+
+    /* ===== ELEMENT CARDS ===== */
+    .element-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .element-card {
+      background: var(--card);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+    }
+    .element-card .icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    .element-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .element-card p {
+      font-size: 1.5rem;
+      color: #444;
+    }
+
+    /* ===== PRACTICE HEADER ===== */
+    .practice-header {
+      background: var(--accent);
+      color: white;
+      display: inline-block;
+      padding: 10px 28px;
+      border-radius: 30px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .practice-header.adv {
+      background: var(--blue);
+    }
+
+    /* ===== STEP LIST ===== */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 16px 20px 16px 70px;
+      position: relative;
+      margin-bottom: 12px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-right: 0;
+    }
+    .steps li::after { content: none; }
+
+    /* ===== TIMER ===== */
+    .timer-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 100;
+      display: none;
+    }
+    .timer-container.visible { display: flex; align-items: center; gap: 12px; }
+    .timer-display {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: white;
+      padding: 10px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      min-width: 120px;
+      text-align: center;
+    }
+    .timer-display.warning { color: #E74C3C; animation: pulse 1s infinite; }
+    .timer-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      z-index: 100;
+    }
+    .nav button {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .nav button:hover { background: var(--light); }
+    .nav .page-num {
+      font-size: 1.1rem;
+      color: #999;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .section-divider {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: white;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+    .section-divider h1 {
+      color: white;
+      font-size: 4.5rem;
+    }
+    .section-divider .subtitle {
+      color: rgba(255,255,255,0.95);
+      font-size: 2.2rem;
+    }
+
+    .highlight { color: var(--accent); font-weight: 700; }
+    .tag {
+      display: inline-block;
+      background: var(--light);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 1.3rem;
+      color: var(--accent2);
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    /* ===== FLOW DIAGRAM ===== */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      background: var(--card);
+      border: 3px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 28px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      min-width: 160px;
+    }
+    .flow-arrow {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* ===== IDEAS GRID ===== */
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .idea-card {
+      background: var(--card);
+      border: 3px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    .idea-card .idea-icon { font-size: 2.4rem; margin-bottom: 8px; }
+
+    /* ===== PROMPT EXAMPLE ===== */
+    .prompt-example {
+      background: #1a1a2e;
+      border-radius: 16px;
+      padding: 28px 32px;
+      color: #e0e0e0;
+      font-size: 1.5rem;
+      line-height: 2;
+      margin: 16px 0;
+      position: relative;
+    }
+    .prompt-example .label {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.85rem;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--green);
+      color: white;
+      padding: 14px 30px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      z-index: 200;
+      transition: transform 0.3s ease;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===== GEMINI BUTTON ===== */
+    .gemini-btn {
+      display: inline-block;
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Noto Sans TC', sans-serif;
+      margin-top: 12px;
+    }
+    .gemini-btn:hover { background: #2D5A2D; transform: scale(1.03); }
+
+    /* ===== PHOTO EDIT INSTRUCTIONS ===== */
+    .photo-steps {
+      background: #E8F5E9;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 12px 0;
+      font-size: 1.3rem;
+      line-height: 2;
+    }
+
+    /* ===== STYLE GALLERY - CLICKABLE CARDS ===== */
+    .style-card {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .style-card:hover { transform: scale(1.05); border-color: var(--accent); }
+    .style-card.selected { border-color: var(--accent); background: var(--light); }
+
+    /* ===== GUIDED MODE INPUTS ===== */
+    .guided-input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 1.4rem;
+      border: 2px solid var(--card-border);
+      border-radius: 10px;
+      font-family: 'Noto Sans TC', sans-serif;
+      margin: 4px 0 12px;
+    }
+    .guided-input:focus { border-color: var(--accent); outline: none; }
+    .guided-select {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 1.4rem;
+      border: 2px solid var(--card-border);
+      border-radius: 10px;
+      font-family: 'Noto Sans TC', sans-serif;
+      margin: 4px 0 12px;
+      background: white;
+    }
+    .guided-preview {
+      background: #f5f5f5;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 1.4rem;
+      line-height: 1.8;
+      margin: 8px 0;
+      min-height: 60px;
+    }
+
+    /* ===== EXAMPLE BUTTONS ===== */
+    .example-btn {
+      display: inline-block;
+      background: var(--light);
+      border: 2px solid var(--card-border);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin: 4px;
+      font-family: 'Noto Sans TC', sans-serif;
+      transition: all 0.2s;
+    }
+    .example-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* ===== SCROLLABLE SLIDES ===== */
+    .slide.scrollable {
+      overflow-y: auto;
+      justify-content: flex-start;
+      padding-top: 30px;
+      padding-bottom: 100px;
+    }
+
+    /* ===== PRINT / PDF EXPORT ===== */
+    @media print {
+      body { background: white; }
+      .slide {
+        display: flex !important;
+        width: 100%;
+        height: 100vh;
+        page-break-after: always;
+        page-break-inside: avoid;
+        box-sizing: border-box;
+      }
+      .slide:last-of-type { page-break-after: auto; }
+      .nav-hint, .slide-number, .timer-container, .toast { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== SLIDE 1: TITLE ===== -->
+<div class="slide center" data-slide="1">
+  <h3 style="font-size:1.8rem; color:#555; margin-bottom:10px;">松年大學 AI 課程</h3>
+  <h1 style="font-size:4.8rem;">用 AI 畫出你的想像世界</h1>
+  <p class="subtitle">不用畫畫，也能用 AI 創作美麗圖片</p>
+  <p style="font-size:1.6rem; color:#555; margin-top:40px;">第三堂課 ｜ 2026.03.20</p>
+</div>
+
+<!-- ===== SLIDE 2: LOGIN GEMINI ===== -->
+<div class="slide center" data-slide="2">
+  <h2>先登入 Gemini</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:16px;">請用你的 Gmail 帳號登入 <span class="highlight">gemini.google.com</span></p>
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank" style="font-size:1.8rem; padding:18px 40px;">🚀 打開 Gemini</a>
+  <p style="margin-top:24px; font-size:1.7rem; color:#555;">沒有 Gmail 的朋友，可以用以下 ChatGPT 備用帳號：</p>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; max-width:800px; margin:16px auto 0;">
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#01</div>
+      <div style="font-size:1.3rem; font-weight:700; word-break:break-all;">songpowei123+01<br>@gmail.com</div>
+    </div>
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#02</div>
+      <div style="font-size:1.3rem; font-weight:700; word-break:break-all;">songpowei123+02<br>@gmail.com</div>
+    </div>
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#03</div>
+      <div style="font-size:1.3rem; font-weight:700; word-break:break-all;">songpowei123+03<br>@gmail.com</div>
+    </div>
+  </div>
+  <p style="margin-top:12px; font-size:1.7rem;">密碼：<span class="highlight">songnien123456</span></p>
+</div>
+
+<!-- ===== SLIDE 3: OUTLINE ===== -->
+<div class="slide" data-slide="3">
+  <h2>今天的流程</h2>
+  <ol class="steps" style="margin-top:16px; max-width:760px;">
+    <li><strong>上週回顧</strong><br><span style="color:#555;">Prompt Template 食譜四元素</span></li>
+    <li><strong>AI 畫圖示範</strong><br><span style="color:#555;">老師現場示範，打一句話就生成圖片</span></li>
+    <li><strong>三個秘密 + 萬用公式</strong><br><span style="color:#555;">主題、風格、場景</span></li>
+    <li><strong>文字生圖練習</strong><br><span style="color:#555;">三種模式動手練習</span></li>
+    <li><strong>照片改圖</strong><br><span style="color:#555;">上傳你的照片，用 AI 變換風格</span></li>
+    <li><strong>風格大全 + 分享</strong><br><span style="color:#555;">展示你的作品！</span></li>
+  </ol>
+</div>
+
+<!-- ===== SLIDE 4: LAST WEEK REVIEW ===== -->
+<div class="slide" data-slide="4">
+  <h2>上週回顧：Prompt Template = 食譜 🍳</h2>
+  <p style="font-size:1.7rem; color:#555; margin-bottom:16px;">好的食譜有四個元素，好的 AI 指令也一樣！</p>
+  <div class="element-grid">
+    <div class="element-card" style="border-color:var(--accent);">
+      <div class="icon">👤</div>
+      <h3>角色</h3>
+      <p>你希望 AI<br>扮演什麼身份？<br><span style="font-size:1.3rem; color:#777;">「你是一位…」</span></p>
+    </div>
+    <div class="element-card" style="border-color:var(--blue);">
+      <div class="icon">📋</div>
+      <h3>任務</h3>
+      <p>你要 AI<br>做什麼事？<br><span style="font-size:1.3rem; color:#777;">「請幫我…」</span></p>
+    </div>
+    <div class="element-card" style="border-color:var(--green);">
+      <div class="icon">📐</div>
+      <h3>格式</h3>
+      <p>結果要用<br>什麼方式呈現？<br><span style="font-size:1.3rem; color:#777;">「用條列式…」</span></p>
+    </div>
+    <div class="element-card" style="border-color:#6B4C9A;">
+      <div class="icon">🚧</div>
+      <h3>限制</h3>
+      <p>有什麼規則<br>要遵守？<br><span style="font-size:1.3rem; color:#777;">「不超過…」</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: NEW CONCEPT - 食譜→點菜 ===== -->
+<div class="slide section-divider" data-slide="5" style="background: linear-gradient(135deg, #E8913A 0%, #D4894E 100%);">
+  <h1>上週學了寫食譜</h1>
+  <p class="subtitle" style="font-size:2.4rem;">這週用食譜來<strong style="color:white; font-size:3rem;">點菜</strong>！</p>
+  <div style="background:rgba(255,255,255,0.2); border-radius:20px; padding:30px 48px; margin-top:20px; max-width:700px;">
+    <p style="color:white; font-size:2rem; line-height:2; text-align:center;">
+      食譜 ＝ 告訴 AI 你想要什麼<br>
+      點菜 ＝ AI 幫你<strong>畫出來</strong>！
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: TEACHER DEMO ===== -->
+<div class="slide" data-slide="6">
+  <h2>老師示範時間 🖥️</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:20px;">請大家看投影幕，老師現場示範三件事：</p>
+  <ol class="steps" style="max-width:760px;">
+    <li><strong>打字 → AI 畫圖</strong><br><span style="color:#555;">輸入一句描述，等幾秒圖片就出來</span></li>
+    <li><strong>刻意失敗的例子</strong><br><span style="color:#555;">描述太模糊 vs. 描述清楚，看看差別</span></li>
+    <li><strong>上傳照片 → AI 改風格</strong><br><span style="color:#555;">把你的照片變成動畫風格</span></li>
+  </ol>
+  <div class="quote" style="margin-top:20px; font-size:1.7rem;">
+    記住：描述越清楚，圖片越好看！
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: THREE SECRETS ===== -->
+<div class="slide" data-slide="7">
+  <h2>AI 畫圖的三個秘密</h2>
+  <div style="display:flex; gap:20px; margin-top:24px;">
+    <div style="flex:1; background:#FFF0E6; border-left:6px solid var(--accent); border-radius:0 16px 16px 0; padding:28px;">
+      <div style="font-size:3rem; margin-bottom:12px;">🎯</div>
+      <h3 style="color:var(--accent); font-size:2rem;">主題</h3>
+      <p style="font-size:1.7rem; color:#444; margin-top:8px;">畫什麼東西？</p>
+      <p style="font-size:1.4rem; color:#777; margin-top:8px;">小貓、恐龍、城堡…</p>
+    </div>
+    <div style="flex:1; background:#E6F4FF; border-left:6px solid var(--blue); border-radius:0 16px 16px 0; padding:28px;">
+      <div style="font-size:3rem; margin-bottom:12px;">🎨</div>
+      <h3 style="color:var(--blue); font-size:2rem;">風格</h3>
+      <p style="font-size:1.7rem; color:#444; margin-top:8px;">長什麼樣子？</p>
+      <p style="font-size:1.4rem; color:#777; margin-top:8px;">水彩畫、卡通、油畫…</p>
+    </div>
+    <div style="flex:1; background:#E6FFE6; border-left:6px solid var(--green); border-radius:0 16px 16px 0; padding:28px;">
+      <div style="font-size:3rem; margin-bottom:12px;">🌍</div>
+      <h3 style="color:var(--green); font-size:2rem;">場景</h3>
+      <p style="font-size:1.7rem; color:#444; margin-top:8px;">在哪裡？</p>
+      <p style="font-size:1.4rem; color:#777; margin-top:8px;">海邊、公園、咖啡廳…</p>
+    </div>
+  </div>
+  <div class="quote" style="margin-top:24px; text-align:center; font-size:1.8rem;">
+    例如：<span class="highlight">一隻柴犬，在海邊，看夕陽，水彩畫風格</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: PROMPT FORMULA ===== -->
+<div class="slide center" data-slide="8">
+  <h2>畫圖的萬用公式</h2>
+  <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:30px; flex-wrap:wrap;">
+    <div style="background:#FFF0E6; border:3px solid var(--accent); border-radius:16px; padding:20px 28px; text-align:center;">
+      <div style="font-size:1.3rem; color:var(--accent); font-weight:700;">主題</div>
+      <div style="font-size:2rem; font-weight:700; margin-top:8px;">一隻柴犬</div>
+    </div>
+    <div style="font-size:2.5rem; color:var(--accent);">+</div>
+    <div style="background:#E6FFE6; border:3px solid var(--green); border-radius:16px; padding:20px 28px; text-align:center;">
+      <div style="font-size:1.3rem; color:var(--green); font-weight:700;">場景</div>
+      <div style="font-size:2rem; font-weight:700; margin-top:8px;">在海邊</div>
+    </div>
+    <div style="font-size:2.5rem; color:var(--accent);">+</div>
+    <div style="background:#F3EEFF; border:3px solid #6B4C9A; border-radius:16px; padding:20px 28px; text-align:center;">
+      <div style="font-size:1.3rem; color:#6B4C9A; font-weight:700;">動作</div>
+      <div style="font-size:2rem; font-weight:700; margin-top:8px;">看夕陽</div>
+    </div>
+    <div style="font-size:2.5rem; color:var(--accent);">+</div>
+    <div style="background:#E6F4FF; border:3px solid var(--blue); border-radius:16px; padding:20px 28px; text-align:center;">
+      <div style="font-size:1.3rem; color:var(--blue); font-weight:700;">風格</div>
+      <div style="font-size:2rem; font-weight:700; margin-top:8px;">水彩畫風格</div>
+    </div>
+  </div>
+  <p style="margin-top:30px; font-size:1.8rem;">
+    描述越清楚，圖片越好看！<br>
+    <span style="color:#555; font-size:1.5rem;">不用每次都寫滿——先從簡單的開始</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE 9: STYLE VOCABULARY ===== -->
+<div class="slide" data-slide="9">
+  <h2>常用的風格詞彙 🎨</h2>
+  <p style="font-size:1.5rem; color:#555; margin-bottom:12px;">點擊卡片可以複製！加到你的描述裡試試</p>
+  <div class="ideas-grid" style="grid-template-columns:repeat(4,1fr); gap:12px;">
+    <div class="idea-card style-card" data-keyword="卡通風格" onclick="copyStyle(this)">
+      <div class="idea-icon">🎪</div>卡通風格<br><span style="font-size:1.1rem; color:#777;">可愛、活潑</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="水彩畫" onclick="copyStyle(this)">
+      <div class="idea-icon">🎨</div>水彩畫<br><span style="font-size:1.1rem; color:#777;">柔和、浪漫</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="油畫" onclick="copyStyle(this)">
+      <div class="idea-icon">🖌️</div>油畫<br><span style="font-size:1.1rem; color:#777;">厚重、經典</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="鉛筆素描" onclick="copyStyle(this)">
+      <div class="idea-icon">✏️</div>鉛筆素描<br><span style="font-size:1.1rem; color:#777;">簡潔、文藝</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="照片寫實" onclick="copyStyle(this)">
+      <div class="idea-icon">📷</div>照片寫實<br><span style="font-size:1.1rem; color:#777;">像真的一樣</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="日系動漫風格" onclick="copyStyle(this)">
+      <div class="idea-icon">🇯🇵</div>日系動漫<br><span style="font-size:1.1rem; color:#777;">漫畫、精緻</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="宮崎駿動畫風格" onclick="copyStyle(this)">
+      <div class="idea-icon">🏔️</div>宮崎駿<br><span style="font-size:1.1rem; color:#777;">自然、溫暖</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="迪士尼動畫風格" onclick="copyStyle(this)">
+      <div class="idea-icon">🏰</div>迪士尼<br><span style="font-size:1.1rem; color:#777;">夢幻、立體</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="皮克斯3D動畫風格" onclick="copyStyle(this)">
+      <div class="idea-icon">🤖</div>皮克斯<br><span style="font-size:1.1rem; color:#777;">3D、可愛</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="浮世繪風格" onclick="copyStyle(this)">
+      <div class="idea-icon">🌊</div>浮世繪<br><span style="font-size:1.1rem; color:#777;">日本傳統</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="蒸氣龐克風格" onclick="copyStyle(this)">
+      <div class="idea-icon">⚙️</div>蒸氣龐克<br><span style="font-size:1.1rem; color:#777;">復古、機械</span>
+    </div>
+    <div class="idea-card style-card" data-keyword="極簡線條插畫" onclick="copyStyle(this)">
+      <div class="idea-icon">〰️</div>極簡線條<br><span style="font-size:1.1rem; color:#777;">簡單、清爽</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 10: SECTION - PRACTICE TEXT-TO-IMAGE ===== -->
+<div class="slide section-divider" data-slide="10">
+  <h1>開始練習！文字生圖</h1>
+  <p class="subtitle">每個人都要成功生成圖片 🎉</p>
+</div>
+
+<!-- ===== SLIDE 11: PRACTICE 1 - TEMPLATE ===== -->
+<div class="slide scrollable" data-slide="11" data-timer="480">
+  <div class="practice-header">練習 1 ／ 3 — 套用模板</div>
+  <h2 style="margin-bottom:8px;">📋 複製模板，換掉黃色部分</h2>
+  <p style="font-size:1.5rem; color:#555; margin-bottom:12px;">點 <span class="highlight">黃色文字</span> 可以直接修改！改完再複製</p>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>請幫我畫一張圖片：
+
+<span class="fill" contenteditable="true">一隻可愛的柴犬在公園玩耍</span>
+
+風格：<span class="fill" contenteditable="true">卡通風格，色彩鮮豔</span></div>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>請幫我畫一張圖片：
+
+<span class="fill" contenteditable="true">金門古厝在夕陽下的美麗風景</span>
+
+風格：<span class="fill" contenteditable="true">水彩畫，柔和溫暖</span></div>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>請幫我畫一張圖片：
+
+<span class="fill" contenteditable="true">（自由填寫你想畫的東西）</span>
+
+風格：<span class="fill" contenteditable="true">（填入你喜歡的風格）</span></div>
+
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini 貼上去畫圖</a>
+</div>
+
+<!-- ===== SLIDE 12: PRACTICE 2 - GUIDED MODE ===== -->
+<div class="slide scrollable" data-slide="12" data-timer="480">
+  <div class="practice-header">練習 2 ／ 3 — 引導模式</div>
+  <h2 style="margin-bottom:8px;">🧩 填填看，自動組合成指令</h2>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:900px;">
+    <div>
+      <label style="font-size:1.4rem; font-weight:700; color:var(--accent2);">🎯 主題（畫什麼？）</label>
+      <input id="guided-subject" class="guided-input" type="text" placeholder="例如：一隻老虎" oninput="updateGuidedPreview()">
+
+      <label style="font-size:1.4rem; font-weight:700; color:var(--accent2);">🌍 場景（在哪裡？）</label>
+      <input id="guided-scene" class="guided-input" type="text" placeholder="例如：在竹林裡休息" oninput="updateGuidedPreview()">
+
+      <label style="font-size:1.4rem; font-weight:700; color:var(--accent2);">🎨 風格（什麼感覺？）</label>
+      <select id="guided-style" class="guided-select" onchange="updateGuidedPreview()">
+        <option value="">— 選擇風格 —</option>
+        <option value="卡通風格">卡通風格</option>
+        <option value="水彩畫">水彩畫</option>
+        <option value="油畫">油畫</option>
+        <option value="照片寫實">照片寫實</option>
+        <option value="宮崎駿動畫風格">宮崎駿動畫風格</option>
+        <option value="皮克斯3D動畫風格">皮克斯3D動畫風格</option>
+        <option value="迪士尼動畫風格">迪士尼動畫風格</option>
+        <option value="日系動漫風格">日系動漫風格</option>
+        <option value="鉛筆素描">鉛筆素描</option>
+        <option value="浮世繪風格">浮世繪風格</option>
+      </select>
+    </div>
+
+    <div>
+      <label style="font-size:1.4rem; font-weight:700; color:var(--accent2);">✨ 組合後的指令預覽</label>
+      <div id="guided-preview" class="guided-preview">（填寫左側三個欄位後，指令會自動出現在這裡）</div>
+      <button class="copy-btn" style="position:static; margin-top:8px;" onclick="copyGuidedPrompt()">📋 複製指令</button>
+    </div>
+  </div>
+
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini 貼上去畫圖</a>
+</div>
+
+<!-- ===== SLIDE 13: PRACTICE 3 - FREE MODE ===== -->
+<div class="slide scrollable" data-slide="13" data-timer="480">
+  <div class="practice-header">練習 3 ／ 3 — 自由創作</div>
+  <h2 style="margin-bottom:8px;">✍️ 自己寫描述，大膽想像！</h2>
+  <p style="font-size:1.5rem; color:#555; margin-bottom:8px;">按下面的例子可以填入，也可以自己寫</p>
+
+  <div style="margin-bottom:10px;">
+    <button class="example-btn" onclick="fillExample('外星人在金門喝高粱酒，卡通風格')">外星人在金門喝高粱酒</button>
+    <button class="example-btn" onclick="fillExample('貓咪當大廚煮麵，水彩畫')">貓咪當大廚煮麵</button>
+    <button class="example-btn" onclick="fillExample('一隻穿太空裝的柴犬在月球吃珍珠奶茶')">柴犬在月球喝珍珠奶茶</button>
+    <button class="example-btn" onclick="fillExample('金門古厝夕陽，照片寫實')">金門古厝夕陽</button>
+    <button class="example-btn" onclick="fillExample('一隻魚騎腳踏車，卡通風格')">魚騎腳踏車</button>
+  </div>
+
+  <textarea id="free-textarea" style="width:100%; height:120px; padding:16px; font-size:1.5rem; border:2px solid var(--card-border); border-radius:12px; font-family:'Noto Sans TC',sans-serif; resize:none; line-height:1.8;" placeholder="在這裡寫你的描述…"></textarea>
+
+  <div style="margin-top:8px; display:flex; gap:12px; align-items:center;">
+    <button class="copy-btn" style="position:static;" onclick="copyFreeText()">📋 複製</button>
+    <span style="font-size:1.4rem; color:#777;">→ 複製後貼到 Gemini！</span>
+  </div>
+
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini 貼上去畫圖</a>
+</div>
+
+<!-- ===== SLIDE 14: BREAK ===== -->
+<div class="slide section-divider" data-slide="14" style="background: linear-gradient(135deg, #5B8C5A 0%, #7AB87A 100%);">
+  <h1>☕ 中場休息</h1>
+  <p class="subtitle">5 分鐘，喝口水、上個廁所</p>
+</div>
+
+<!-- ===== SLIDE 15: SECTION - PHOTO EDITING ===== -->
+<div class="slide section-divider" data-slide="15" style="background: linear-gradient(135deg, #6B4C9A 0%, #9B7FC7 100%);">
+  <h1>📸 照片改圖</h1>
+  <p class="subtitle">用 AI 改造你的照片！</p>
+  <p style="color:rgba(255,255,255,0.9); font-size:1.8rem; margin-top:12px;">上傳你的照片，選一個風格，AI 幫你變！</p>
+</div>
+
+<!-- ===== SLIDE 16: PHOTO EDIT 1 ===== -->
+<div class="slide scrollable" data-slide="16" data-timer="480">
+  <div class="practice-header adv">照片改圖 1</div>
+  <h2 style="margin-bottom:8px;">🎨 風格轉換模板</h2>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyPhotoTemplate(this)">📋 複製</button>照片變畫風 🎨
+
+請把這張照片變成<span class="fill" contenteditable="true">宮崎駿動畫</span>風格，保留原本的構圖和主體</div>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyPhotoTemplate(this)">📋 複製</button>把自己變卡通 🧑‍🎨
+
+請把這張照片裡的人物變成<span class="fill" contenteditable="true">皮克斯動畫</span>風格的卡通角色，背景改成<span class="fill" contenteditable="true">夢幻的星空</span></div>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyPhotoTemplate(this)">📋 複製</button>換場景 🌅
+
+請把這張照片的背景改成<span class="fill" contenteditable="true">巴黎鐵塔前的夕陽</span>，保留主體不變</div>
+
+  <div class="photo-steps">
+    📸 操作步驟：1. 複製上面的文字 &nbsp; 2. 打開 Gemini &nbsp; 3. 貼上文字 &nbsp; 4. 按 📎 上傳你的照片 &nbsp; 5. 送出！
+  </div>
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini，貼文字再傳照片</a>
+</div>
+
+<!-- ===== SLIDE 17: PHOTO EDIT 2 ===== -->
+<div class="slide scrollable" data-slide="17" data-timer="480">
+  <div class="practice-header adv">照片改圖 2</div>
+  <h2 style="margin-bottom:8px;">✨ 進階照片改造</h2>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyPhotoTemplate(this)">📋 複製</button>照片加料 ✨
+
+請在這張照片中加入<span class="fill" contenteditable="true">一隻可愛的柴犬坐在旁邊</span>，融合自然</div>
+
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyPhotoTemplate(this)">📋 複製</button>照片變大頭貼 👤
+
+請把這張照片變成<span class="fill" contenteditable="true">可愛Q版</span>風格的大頭貼，圓形構圖，適合當 LINE 大頭貼</div>
+
+  <div class="photo-steps">
+    📸 操作步驟：1. 複製上面的文字 &nbsp; 2. 打開 Gemini &nbsp; 3. 貼上文字 &nbsp; 4. 按 📎 上傳你的照片 &nbsp; 5. 送出！
+  </div>
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini，貼文字再傳照片</a>
+</div>
+
+<!-- ===== SLIDE 18: SECTION - ADVANCED ===== -->
+<div class="slide section-divider" data-slide="18" style="background: linear-gradient(135deg, #B5411F 0%, #E8913A 100%);">
+  <h1>進階應用 🚀</h1>
+  <p class="subtitle">把 AI 畫圖用在生活裡</p>
+</div>
+
+<!-- ===== SLIDE 19: ADVANCED 1 - BIRTHDAY CARD ===== -->
+<div class="slide scrollable" data-slide="19" data-timer="480">
+  <div class="practice-header adv">進階 1</div>
+  <h2 style="margin-bottom:8px;">🎂 做生日卡片</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>請幫我畫一張生日卡片的圖片：
+
+主題：<span class="fill" contenteditable="true">溫馨的生日祝福</span>
+元素：<span class="fill" contenteditable="true">氣球、蛋糕、彩帶</span>
+風格：<span class="fill" contenteditable="true">可愛、溫暖的插畫風格</span>
+色調：<span class="fill" contenteditable="true">粉色和金色為主</span>
+
+請在圖片中加上文字：<span class="fill" contenteditable="true">生日快樂</span></div>
+  <p style="margin-top:8px; font-size:1.6rem;">
+    💡 做好可以傳到 LINE 群，祝福朋友生日！
+  </p>
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini 畫生日卡片</a>
+</div>
+
+<!-- ===== SLIDE 20: ADVANCED 2 - LINE STICKER ===== -->
+<div class="slide scrollable" data-slide="20" data-timer="480">
+  <div class="practice-header adv">進階 2</div>
+  <h2 style="margin-bottom:8px;">💬 做 LINE 貼圖</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>請幫我畫一張 LINE 貼圖風格的圖片：
+
+角色：<span class="fill" contenteditable="true">一隻可愛的橘色貓咪</span>
+動作：<span class="fill" contenteditable="true">開心地揮手說早安</span>
+文字：<span class="fill" contenteditable="true">早安</span>
+風格：貼圖風格，簡單可愛，白色背景</div>
+  <p style="margin-top:8px; font-size:1.6rem;">
+    💡 試試換成：<span class="highlight">「謝謝」「辛苦了」「晚安」</span>
+  </p>
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini 做貼圖</a>
+</div>
+
+<!-- ===== SLIDE 21: SECTION - STYLE SHOWCASE ===== -->
+<div class="slide section-divider" data-slide="21" style="background: linear-gradient(135deg, #2D6080 0%, #4A9BC7 100%);">
+  <h1>🎭 卡通風格大全</h1>
+  <p class="subtitle">上傳你的照片，選一個風格試試！</p>
+</div>
+
+<!-- ===== SLIDE 22: CARTOON STYLE SHOWCASE ===== -->
+<div class="slide scrollable" data-slide="22">
+  <h2 style="margin-bottom:8px;">選一個風格，把你的照片變成卡通！</h2>
+  <p style="font-size:1.4rem; color:#555; margin-bottom:12px;">點擊卡片複製指令，貼到 Gemini 再上傳照片</p>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:1000px;">
+    <div class="idea-card style-card" onclick="copyStylePrompt(this)" data-prompt="請把這張照片變成宮崎駿動畫風格，保留主體，背景變成自然風景，畫面溫暖柔和">
+      <div class="idea-icon">🏔️</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent);">宮崎駿</div>
+      <div style="font-size:1.2rem; color:#555; margin-top:4px;">自然、溫暖、奇幻</div>
+    </div>
+    <div class="idea-card style-card" onclick="copyStylePrompt(this)" data-prompt="請把這張照片變成迪士尼動畫公主/王子風格，五官精緻、眼睛大而有神、色彩鮮豔夢幻">
+      <div class="idea-icon">🏰</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent);">迪士尼</div>
+      <div style="font-size:1.2rem; color:#555; margin-top:4px;">夢幻、精緻、立體</div>
+    </div>
+    <div class="idea-card style-card" onclick="copyStylePrompt(this)" data-prompt="請把這張照片變成皮克斯3D動畫風格，Q版可愛，圓潤立體，表情生動活潑">
+      <div class="idea-icon">🤖</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent);">皮克斯</div>
+      <div style="font-size:1.2rem; color:#555; margin-top:4px;">3D、Q版、可愛</div>
+    </div>
+    <div class="idea-card style-card" onclick="copyStylePrompt(this)" data-prompt="請把這張照片變成新海誠動畫風格，光線美麗、背景細緻如畫、充滿詩意和憂鬱感">
+      <div class="idea-icon">🌟</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent);">新海誠</div>
+      <div style="font-size:1.2rem; color:#555; margin-top:4px;">光影、詩意、細膩</div>
+    </div>
+    <div class="idea-card style-card" onclick="copyStylePrompt(this)" data-prompt="請把這張照片變成美式漫畫Marvel超級英雄風格，線條粗獷有力、色彩飽和鮮豔、充滿動感">
+      <div class="idea-icon">💥</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent);">Marvel 漫畫</div>
+      <div style="font-size:1.2rem; color:#555; margin-top:4px;">粗獷、動感、英雄</div>
+    </div>
+    <div class="idea-card style-card" onclick="copyStylePrompt(this)" data-prompt="請把這張照片變成韓國Webtoon網路漫畫風格，五官精緻清秀、扁平化插畫、顏色清新柔和">
+      <div class="idea-icon">🇰🇷</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent);">韓國 Webtoon</div>
+      <div style="font-size:1.2rem; color:#555; margin-top:4px;">清新、扁平、精緻</div>
+    </div>
+  </div>
+  <a class="gemini-btn" href="https://gemini.google.com/app" target="_blank" style="margin-top:16px;">🚀 打開 Gemini，貼上指令再傳照片</a>
+</div>
+
+<!-- ===== SLIDE 23: SECTION - SHARE ===== -->
+<div class="slide section-divider" data-slide="23" style="background: linear-gradient(135deg, var(--accent) 0%, #D4894E 50%, #5B8C5A 100%);">
+  <h1>分享時間 🌟</h1>
+  <p class="subtitle">展示你的 AI 創作！</p>
+</div>
+
+<!-- ===== SLIDE 24: SHARE ===== -->
+<div class="slide" data-slide="24">
+  <h2>來分享你的作品！</h2>
+  <div class="quote" style="font-size:1.9rem;">
+    請 3–5 位同學分享：<br><br>
+    1. 你做了什麼圖片？<br>
+    2. 你是怎麼描述的？<br>
+    3. 結果有沒有讓你驚喜？
+  </div>
+  <p class="big-text" style="margin-top:24px; text-align:center;">
+    AI 創作<span class="highlight">沒有標準答案</span>——每個人的想像都很珍貴！
+  </p>
+  <p style="text-align:center; font-size:1.6rem; color:#555; margin-top:12px;">
+    💾 記得右鍵 → 儲存圖片，下載你的作品！
+  </p>
+</div>
+
+<!-- ===== SLIDE 25: SUMMARY ===== -->
+<div class="slide" data-slide="25">
+  <h2>今天學到的 🎯</h2>
+  <div class="element-grid" style="margin-top:16px;">
+    <div class="element-card">
+      <div class="icon">✍️</div>
+      <h3>文字變圖片</h3>
+      <p>打一句話<br>AI 就能幫你畫圖</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">🔑</div>
+      <h3>三個秘密</h3>
+      <p>主題 + 風格 + 場景<br>描述越清楚越好</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">📸</div>
+      <h3>照片也能改</h3>
+      <p>上傳照片<br>AI 幫你變換風格</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">🌟</div>
+      <h3>人人都能創作</h3>
+      <p>不用畫畫技巧<br>會打字就可以</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 26: HOMEWORK ===== -->
+<div class="slide" data-slide="26">
+  <h2>回家作業 🏠</h2>
+  <div style="max-width:760px; margin-top:16px;">
+    <ul class="big-text">
+      <li>用 AI 畫一張<span class="highlight">送給家人的圖片</span></li>
+      <li>試試看不同的<span class="highlight">風格詞彙</span>（水彩、卡通、油畫…）</li>
+      <li>把你的<span class="highlight">照片上傳</span>，試試宮崎駿或皮克斯風格</li>
+      <li>把最滿意的作品傳到 <span class="highlight">LINE 群</span>分享！</li>
+    </ul>
+  </div>
+  <div style="background:#E8F5E9; border:2px solid var(--green); border-radius:16px; padding:20px 28px; margin-top:20px; display:inline-block;">
+    <p style="font-size:1.7rem; color:var(--green); font-weight:700;">🌟 特別作業</p>
+    <p style="font-size:1.6rem; margin-top:8px;">打開 Gemini，把今天最喜歡的描述貼進去試試！</p>
+  </div>
+  <div style="margin-top:20px; padding:20px 28px; background:var(--light); border-radius:16px; display:inline-block;">
+    <p style="font-size:1.8rem;">📣 下堂課預告</p>
+    <p style="font-size:1.8rem; font-weight:700; color:var(--accent); margin-top:8px;">
+      用 AI 寫你的生命故事 🎙️
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 27: END ===== -->
+<div class="slide section-divider center" data-slide="27">
+  <h1>謝謝大家 🙌</h1>
+  <p class="subtitle">有問題隨時在 LINE 群問！</p>
+  <p style="font-size:1.6rem; margin-top:40px; opacity:0.7;">松年大學 AI 課程 ｜ 第三堂</p>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<div class="nav">
+  <button onclick="prevSlide()">◀</button>
+  <span class="page-num" id="pageNum">1 / 27</span>
+  <button onclick="nextSlide()">▶</button>
+</div>
+
+<!-- ===== TIMER ===== -->
+<div class="timer-container" id="timerContainer">
+  <button class="timer-btn" id="timerBtn">▶</button>
+  <div class="timer-display" id="timerDisplay">8:00</div>
+</div>
+
+<script>
+  // ===== SLIDE NAVIGATION =====
+  var current = 1;
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+
+  function showSlide(n) {
+    current = Math.max(1, Math.min(n, total));
+    slides.forEach(function(s) { s.classList.remove('active'); });
+    document.querySelector('[data-slide="' + current + '"]').classList.add('active');
+    document.getElementById('pageNum').textContent = current + ' / ' + total;
+
+    var slide = document.querySelector('[data-slide="' + current + '"]');
+    var timerSec = slide.getAttribute('data-timer');
+    var tc = document.getElementById('timerContainer');
+    if (timerSec) {
+      tc.classList.add('visible');
+      resetTimer(parseInt(timerSec));
+      setTimeout(function() { startTimer(); }, 100);
+    } else {
+      tc.classList.remove('visible');
+      stopTimer();
+    }
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    if (e.key === 't' || e.key === 'T') { toggleTimer(); }
+  });
+
+  // Touch support
+  var touchStartX = 0;
+  document.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e) {
+    var diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+
+  showSlide(1);
+
+  // ===== TIMER =====
+  var timerInterval = null;
+  var timerSeconds = 0;
+  var timerRunning = false;
+
+  function resetTimer(sec) {
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    timerRunning = false;
+    timerSeconds = sec;
+    updateTimerDisplay();
+    document.getElementById('timerBtn').textContent = '▶';
+    document.getElementById('timerDisplay').classList.remove('warning');
+  }
+
+  function toggleTimer() {
+    if (timerRunning) { stopTimer(); } else { startTimer(); }
+  }
+
+  function startTimer() {
+    if (timerInterval !== null) { clearInterval(timerInterval); }
+    timerRunning = true;
+    document.getElementById('timerBtn').textContent = '⏸';
+    timerInterval = setInterval(function() {
+      timerSeconds = timerSeconds - 1;
+      updateTimerDisplay();
+      if (timerSeconds <= 60) {
+        document.getElementById('timerDisplay').classList.add('warning');
+      }
+      if (timerSeconds <= 0) {
+        stopTimer();
+        document.getElementById('timerDisplay').textContent = '⏰ 時間到！';
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    timerRunning = false;
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    document.getElementById('timerBtn').textContent = '▶';
+  }
+
+  function updateTimerDisplay() {
+    var min = Math.floor(timerSeconds / 60);
+    var sec = timerSeconds % 60;
+    document.getElementById('timerDisplay').textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  document.getElementById('timerBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleTimer();
+  });
+
+  // ===== COPY TEMPLATE (original - text-to-image templates) =====
+  function copyTemplate(btn) {
+    var card = btn.parentElement;
+    var clone = card.cloneNode(true);
+    clone.querySelector('.copy-btn') && clone.querySelector('.copy-btn').remove();
+    clone.querySelectorAll('.gemini-btn').forEach(function(el) { el.remove(); });
+    clone.querySelectorAll('.photo-steps').forEach(function(el) { el.remove(); });
+    clone.querySelectorAll('.fill').forEach(function(f) {
+      f.replaceWith(f.textContent);
+    });
+    var text = clone.textContent.trim();
+
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = '✅ 已複製！';
+      btn.classList.add('copied');
+      showToast('已複製到剪貼簿！可以貼到 Gemini 了');
+      setTimeout(function() {
+        btn.textContent = '📋 複製';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✅ 已複製！';
+      btn.classList.add('copied');
+      showToast('已複製到剪貼簿！');
+      setTimeout(function() {
+        btn.textContent = '📋 複製';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  // ===== COPY PHOTO TEMPLATE =====
+  function copyPhotoTemplate(btn) {
+    var card = btn.closest('.template-card');
+    var clone = card.cloneNode(true);
+    clone.querySelectorAll('.copy-btn, .gemini-btn, .photo-steps').forEach(function(el) { el.remove(); });
+    clone.querySelectorAll('.fill').forEach(function(f) {
+      f.replaceWith(f.textContent);
+    });
+    var text = clone.textContent.trim().replace(/\s+/g, ' ');
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = '✅ 已複製！';
+      btn.classList.add('copied');
+      showToast('已複製！可以貼到 Gemini 了');
+      setTimeout(function() {
+        btn.textContent = '📋 複製';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  // ===== COPY STYLE KEYWORD =====
+  function copyStyle(el) {
+    var keyword = el.getAttribute('data-keyword');
+    navigator.clipboard.writeText(keyword).then(function() {
+      showToast('已複製「' + keyword + '」！');
+      document.querySelectorAll('.style-card').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+    });
+  }
+
+  // ===== COPY STYLE PROMPT (for cartoon showcase) =====
+  function copyStylePrompt(el) {
+    var prompt = el.getAttribute('data-prompt');
+    navigator.clipboard.writeText(prompt).then(function() {
+      showToast('已複製指令！去 Gemini 貼上再傳照片');
+      document.querySelectorAll('.style-card').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+    });
+  }
+
+  // ===== GUIDED MODE =====
+  function updateGuidedPreview() {
+    var subject = document.getElementById('guided-subject').value || '';
+    var scene = document.getElementById('guided-scene').value || '';
+    var styleEl = document.getElementById('guided-style');
+    var style = styleEl ? styleEl.value : '';
+    var parts = [];
+    if (subject.trim()) parts.push(subject.trim());
+    if (scene.trim()) parts.push(scene.trim());
+    if (style.trim()) parts.push(style.trim());
+    var preview = parts.join('，');
+    document.getElementById('guided-preview').textContent = preview || '（填寫左側三個欄位後，指令會自動出現在這裡）';
+  }
+
+  function copyGuidedPrompt() {
+    var text = document.getElementById('guided-preview').textContent;
+    if (!text || text.indexOf('填寫') !== -1) { showToast('請先填寫描述'); return; }
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('已複製！可以貼到 Gemini 了');
+    });
+  }
+
+  // ===== FREE MODE =====
+  function fillExample(text) {
+    document.getElementById('free-textarea').value = text;
+  }
+
+  function copyFreeText() {
+    var text = document.getElementById('free-textarea').value;
+    if (!text.trim()) { showToast('請先寫一些描述'); return; }
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('已複製！可以貼到 Gemini 了');
+    });
+  }
+
+  // ===== TOAST =====
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2000);
+  }
+</script>
+
+</body>
+</html>
