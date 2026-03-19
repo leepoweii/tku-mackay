@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>松年大學 AI 課程 — 第二堂</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 14px; }
+
+    :root {
+      --bg: #FFFFFF;
+      --text: #1A1A1A;
+      --accent: #B5411F;
+      --accent2: #9A5A1E;
+      --green: #3D6E3C;
+      --blue: #2D6080;
+      --card: #FFFFFF;
+      --card-border: #C09A6E;
+      --light: #F0E0CC;
+      --template-bg: #FFF5E8;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* ===== SLIDE SYSTEM ===== */
+    .slide {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      padding: 36px 56px;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .slide.active { display: flex; }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1 {
+      font-size: 4.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    h2 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+    p, li {
+      font-size: 1.9rem;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+    ul { list-style: none; padding-left: 0; }
+    ul li::before {
+      content: '•';
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 12px;
+    }
+    ul li { margin-bottom: 10px; }
+
+    .subtitle {
+      font-size: 2.2rem;
+      color: var(--accent2);
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .big-text {
+      font-size: 2.5rem;
+      line-height: 1.9;
+    }
+    .small-text {
+      font-size: 1.4rem;
+      color: #555;
+    }
+
+    /* ===== LAYOUT ===== */
+    .center {
+      text-align: center;
+      align-items: center;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 20px;
+    }
+
+    /* ===== QUOTE BOX ===== */
+    .quote {
+      background: var(--light);
+      border-left: 8px solid var(--accent);
+      padding: 30px 40px;
+      border-radius: 0 16px 16px 0;
+      margin: 20px 0;
+      font-size: 2rem;
+      line-height: 2;
+    }
+
+    /* ===== COMPARISON ===== */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .compare-bad, .compare-good {
+      padding: 30px;
+      border-radius: 16px;
+      font-size: 1.6rem;
+      line-height: 1.8;
+    }
+    .compare-bad {
+      background: #FDE8E8;
+      border: 3px solid #D32F2F;
+    }
+    .compare-bad h3 { color: #B71C1C; }
+    .compare-good {
+      background: #E8F5E9;
+      border: 3px solid var(--green);
+    }
+    .compare-good h3 { color: var(--green); }
+
+    /* ===== TEMPLATE CARD ===== */
+    .template-card {
+      background: var(--template-bg);
+      border: 3px dashed var(--accent2);
+      border-radius: 16px;
+      padding: 30px 36px;
+      margin: 16px 0;
+      font-size: 1.6rem;
+      line-height: 2;
+      position: relative;
+      white-space: pre-wrap;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .template-card .fill {
+      background: #FFECB3;
+      padding: 2px 12px;
+      border-radius: 6px;
+      border: 2px solid #C68A00;
+      font-weight: 700;
+      color: #6D4C00;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #A14A2E; transform: scale(1.05); }
+    .copy-btn.copied { background: var(--green); }
+
+    /* ===== ELEMENT CARDS ===== */
+    .element-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .element-card {
+      background: var(--card);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+    }
+    .element-card .icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    .element-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .element-card p {
+      font-size: 1.5rem;
+      color: #444;
+    }
+
+    /* ===== PRACTICE HEADER ===== */
+    .practice-header {
+      background: var(--accent);
+      color: white;
+      display: inline-block;
+      padding: 10px 28px;
+      border-radius: 30px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .practice-header.adv {
+      background: var(--blue);
+    }
+
+    /* ===== STEP LIST ===== */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 16px 20px 16px 70px;
+      position: relative;
+      margin-bottom: 12px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-right: 0;
+    }
+    .steps li::after { content: none; }
+
+    /* ===== TIMER ===== */
+    .timer-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 100;
+      display: none;
+    }
+    .timer-container.visible { display: flex; align-items: center; gap: 12px; }
+    .timer-display {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: white;
+      padding: 10px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      min-width: 120px;
+      text-align: center;
+    }
+    .timer-display.warning { color: #E74C3C; animation: pulse 1s infinite; }
+    .timer-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      z-index: 100;
+    }
+    .nav button {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .nav button:hover { background: var(--light); }
+    .nav .page-num {
+      font-size: 1.1rem;
+      color: #999;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .section-divider {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: white;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+    .section-divider h1 {
+      color: white;
+      font-size: 4.5rem;
+    }
+    .section-divider .subtitle {
+      color: rgba(255,255,255,0.95);
+      font-size: 2.2rem;
+    }
+
+    .highlight { color: var(--accent); font-weight: 700; }
+    .tag {
+      display: inline-block;
+      background: var(--light);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 1.3rem;
+      color: var(--accent2);
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    /* ===== FLOW DIAGRAM ===== */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      background: var(--card);
+      border: 3px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 28px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      min-width: 160px;
+    }
+    .flow-arrow {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* ===== IDEAS GRID ===== */
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .idea-card {
+      background: var(--card);
+      border: 3px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    .idea-card .idea-icon { font-size: 2.4rem; margin-bottom: 8px; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--green);
+      color: white;
+      padding: 14px 30px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      z-index: 200;
+      transition: transform 0.3s ease;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===== PRINT / PDF EXPORT ===== */
+    @media print {
+      body { background: white; }
+      .slide {
+        display: flex !important;
+        width: 100%;
+        height: 100vh;
+        page-break-after: always;
+        page-break-inside: avoid;
+        box-sizing: border-box;
+      }
+      .slide:last-of-type { page-break-after: auto; }
+      .nav-hint, .slide-number, .timer-container, .toast { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== SLIDE 1: TITLE ===== -->
+<div class="slide center" data-slide="1">
+  <h3 style="font-size:1.8rem; color:#555; margin-bottom:10px;">松年大學 AI 課程</h3>
+  <h1 style="font-size:4.8rem;">Prompt 模板的魔法</h1>
+  <p class="subtitle">學會「問 AI 的食譜」，以後照著做就好</p>
+  <p style="font-size:1.6rem; color:#555; margin-top:40px;">第二堂課 ｜ 2026.03.14</p>
+</div>
+
+<!-- ===== SLIDE 2: LOGIN ===== -->
+<div class="slide center" data-slide="2">
+  <h2>先登入 ChatGPT</h2>
+  <p style="font-size:1.7rem; color:#555; margin-bottom:20px;">請到 <span class="highlight">chatgpt.com</span> ，用小卡上的帳號密碼登入</p>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; max-width:800px; margin:0 auto;">
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#01</div>
+      <div style="font-size:1.4rem; font-weight:700; word-break:break-all;">songpowei123+01<br>@gmail.com</div>
+    </div>
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#02</div>
+      <div style="font-size:1.4rem; font-weight:700; word-break:break-all;">songpowei123+02<br>@gmail.com</div>
+    </div>
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#03</div>
+      <div style="font-size:1.4rem; font-weight:700; word-break:break-all;">songpowei123+03<br>@gmail.com</div>
+    </div>
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#04</div>
+      <div style="font-size:1.4rem; font-weight:700; word-break:break-all;">songpowei123+04<br>@gmail.com</div>
+    </div>
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#05</div>
+      <div style="font-size:1.4rem; font-weight:700; word-break:break-all;">songpowei123+05<br>@gmail.com</div>
+    </div>
+    <div style="background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:14px; text-align:center;">
+      <div style="font-size:1.3rem; color:#555;">#06</div>
+      <div style="font-size:1.4rem; font-weight:700; word-break:break-all;">songpowei123<br>@gmail.com</div>
+    </div>
+  </div>
+  <p style="margin-top:20px; font-size:1.9rem;">密碼：<span class="highlight" style="font-size:1.8rem;">songnien123456</span></p>
+  <p style="margin-top:8px; font-size:1.9rem; color:#555;">已經有自己帳號的人，用自己的就好！</p>
+</div>
+
+<!-- ===== SLIDE 3: OUTLINE ===== -->
+<div class="slide" data-slide="3">
+  <h2>今天的流程</h2>
+  <ol class="steps" style="margin-top:16px; max-width:700px;">
+    <li><strong>回顧上週</strong><br><span style="color:#555;">複習三個提問要訣</span></li>
+    <li><strong>認識 Prompt 模板</strong><br><span style="color:#555;">什麼是模板？怎麼用？</span></li>
+    <li><strong>動手練習 5 個模板</strong><br><span style="color:#555;">日記 → 查證 → 買菜 → LINE 訊息 → 旅遊</span></li>
+    <li><strong>了解 AI 記憶的原理</strong><br><span style="color:#555;">AI 怎麼「記住」你的？</span></li>
+    <li><strong>進階挑戰：自己做模板</strong><br><span style="color:#555;">學會自己設計，不用等老師</span></li>
+  </ol>
+</div>
+
+<!-- ===== SLIDE 4: REVIEW ===== -->
+<div class="slide" data-slide="4">
+  <h2>上週我們學了什麼？</h2>
+  <div class="quote" style="margin-top:20px;">
+    跟 AI 說話的三個要訣：<br><br>
+    1️⃣ <span class="highlight">說清楚你是誰</span>（背景、狀況、喜好）<br>
+    2️⃣ <span class="highlight">說清楚你要什麼</span>（格式、長度、風格）<br>
+    3️⃣ <span class="highlight">說清楚相關細節</span>（時間、地點、對象）
+  </div>
+  <p class="big-text" style="margin-top:30px;">🗣️ 大家回家有跟 ChatGPT 聊天嗎？聊了什麼？</p>
+</div>
+
+<!-- ===== SLIDE 4: WHAT IS TEMPLATE ===== -->
+<div class="slide" data-slide="5">
+  <h2>什麼是 Prompt Template？</h2>
+  <div class="quote">
+    你們會做菜對不對？<br><br>
+    如果每次做紅燒肉，都要重新想一遍放什麼調味料、煮幾分鐘，很麻煩。<br>
+    所以我們會有<span class="highlight">食譜</span>——每次照著做就好。<br><br>
+    <strong style="font-size:1.8rem;">Prompt Template 就是「問 AI 的食譜」📖</strong><br><br>
+    寫好一次，以後每次要用，只要換掉裡面的「材料」就好。
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: FOUR ELEMENTS ===== -->
+<div class="slide" data-slide="6">
+  <h2>模板的四個元素</h2>
+  <div class="element-grid">
+    <div class="element-card">
+      <div class="icon">🎭</div>
+      <h3>角色</h3>
+      <p>你希望 AI 扮演什麼身份<br>營養師？旅遊顧問？寫作助手？</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">📋</div>
+      <h3>任務</h3>
+      <p>你要 AI 做什麼事<br>寫信？規劃行程？查資料？</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">📐</div>
+      <h3>格式</h3>
+      <p>你希望結果長什麼樣<br>條列？表格？對話？幾個字？</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">🚫</div>
+      <h3>限制</h3>
+      <p>什麼不要做、要注意什麼<br>不要太長？不要用英文？</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE: COMPLETE FORMULA ===== -->
+<div class="slide" data-slide="7">
+  <h2>提示詞完整公式</h2>
+  <div style="display:flex; gap:12px; margin-top:12px; align-items:stretch;">
+    <div style="flex:1; background:#FFF0E6; border-left:5px solid var(--accent); border-radius:0 12px 12px 0; padding:16px 18px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent);">① 角色</div>
+      <p style="font-size:1.9rem; color:#444; margin-top:4px;">你希望 AI 是誰</p>
+      <p style="font-size:1.05rem; margin-top:6px; color:#555;">「你是一位營養師」</p>
+    </div>
+    <div style="flex:1; background:#FFF8E6; border-left:5px solid #DAA520; border-radius:0 12px 12px 0; padding:16px 18px;">
+      <div style="font-size:1.6rem; font-weight:700; color:#B8860B;">② 背景</div>
+      <p style="font-size:1.9rem; color:#444; margin-top:4px;">你的狀況是什麼</p>
+      <p style="font-size:1.05rem; margin-top:6px; color:#555;">「我家有 3 個人，其中一位不能吃太鹹」</p>
+    </div>
+    <div style="flex:1; background:#E6F4FF; border-left:5px solid var(--blue); border-radius:0 12px 12px 0; padding:16px 18px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--blue);">③ 任務</div>
+      <p style="font-size:1.9rem; color:#444; margin-top:4px;">你要 AI 做什麼</p>
+      <p style="font-size:1.05rem; margin-top:6px; color:#555;">「幫我規劃一週的晚餐菜單」</p>
+    </div>
+  </div>
+  <div style="display:flex; gap:12px; margin-top:12px; align-items:stretch;">
+    <div style="flex:1; background:#E6FFE6; border-left:5px solid var(--green); border-radius:0 12px 12px 0; padding:16px 18px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--green);">④ 格式</div>
+      <p style="font-size:1.9rem; color:#444; margin-top:4px;">結果要長什麼樣</p>
+      <p style="font-size:1.05rem; margin-top:6px; color:#555;">「用表格列出，每天一列」</p>
+    </div>
+    <div style="flex:1; background:#F3EEFF; border-left:5px solid #6B4C9A; border-radius:0 12px 12px 0; padding:16px 18px;">
+      <div style="font-size:1.6rem; font-weight:700; color:#6B4C9A;">⑤ 範例</div>
+      <p style="font-size:1.9rem; color:#444; margin-top:4px;">給 AI 看一個參考</p>
+      <p style="font-size:1.05rem; margin-top:6px; color:#555;">「像這樣：週一｜番茄蛋花湯＋清炒高麗菜」</p>
+    </div>
+    <div style="flex:1; background:#FFE6E6; border-left:5px solid #C0392B; border-radius:0 12px 12px 0; padding:16px 18px;">
+      <div style="font-size:1.6rem; font-weight:700; color:#C0392B;">⑥ 限制</div>
+      <p style="font-size:1.9rem; color:#444; margin-top:4px;">什麼不要做</p>
+      <p style="font-size:1.05rem; margin-top:6px; color:#555;">「不要用罐頭食品，預算每餐 200 元內」</p>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:20px; font-size:1.8rem;">
+    不用每次都寫滿 6 項——<span class="highlight">寫越多，AI 回答越精準</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE: ANNOTATED PROMPT ===== -->
+<div class="slide" data-slide="8">
+  <h2>一個完整的 Prompt 長這樣</h2>
+  <div style="display:flex; gap:0; margin-top:12px; max-width:900px;">
+    <!-- Prompt text with colored backgrounds -->
+    <div style="flex:1; background:#1a1a2e; border-radius:16px 0 0 16px; padding:28px 32px; font-size:1.25rem; line-height:2.2; color:#e0e0e0; font-family:'Noto Sans TC',sans-serif;">
+      <span style="background:rgba(199,91,57,0.25); padding:4px 8px; border-radius:6px; border-left:3px solid var(--accent); display:inline;">你是一位家庭料理顧問，擅長設計營養均衡的菜單。</span><br><br>
+      <span style="background:rgba(218,165,32,0.2); padding:4px 8px; border-radius:6px; border-left:3px solid #DAA520; display:inline;">我家有 2 個大人和 1 個小孩（5 歲），住在淡水。小孩不吃辣，阿嬤不能吃太鹹。冰箱裡還有雞蛋、豆腐和高麗菜。</span><br><br>
+      <span style="background:rgba(74,124,155,0.25); padding:4px 8px; border-radius:6px; border-left:3px solid var(--blue); display:inline;">請幫我規劃今天的晚餐，推薦 3 道菜加 1 道湯。</span><br><br>
+      <span style="background:rgba(91,140,90,0.25); padding:4px 8px; border-radius:6px; border-left:3px solid var(--green); display:inline;">請用條列的方式呈現，每道菜列出材料和簡單做法。</span><br><br>
+      <span style="background:rgba(107,76,154,0.25); padding:4px 8px; border-radius:6px; border-left:3px solid #6B4C9A; display:inline;">像這樣：<br>🥘 番茄蛋花湯 — 番茄 2 顆、雞蛋 2 顆 — 煮滾後打蛋花</span><br><br>
+      <span style="background:rgba(192,57,43,0.2); padding:4px 8px; border-radius:6px; border-left:3px solid #C0392B; display:inline;">預算控制在 300 元以內，不要用罐頭食品。</span>
+    </div>
+    <!-- Labels -->
+    <div style="width:140px; background:#f8f4ef; border-radius:0 16px 16px 0; padding:28px 16px; display:flex; flex-direction:column; justify-content:space-between; font-size:1.05rem; font-weight:600;">
+      <div style="color:var(--accent);">① 角色</div>
+      <div style="color:#B8860B;">② 背景</div>
+      <div style="color:var(--blue);">③ 任務</div>
+      <div style="color:var(--green);">④ 格式</div>
+      <div style="color:#6B4C9A;">⑤ 範例</div>
+      <div style="color:#C0392B;">⑥ 限制</div>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:16px; font-size:1.7rem;">
+    同一段文字，每個部分都有不同的功能——<span class="highlight">顏色對應剛才的六個元素</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE: COMPARISON ===== -->
+<div class="slide" data-slide="9">
+  <h2>有模板 vs 沒模板</h2>
+  <div class="compare">
+    <div class="compare-bad">
+      <h3>❌ 直接問</h3>
+      <p style="font-size:1.9rem; margin:16px 0;">「幫我想晚餐吃什麼」</p>
+      <p>AI 的回答：隨便給你一堆菜名，<br>不知道你家幾個人、<br>預算多少、誰不吃什麼</p>
+    </div>
+    <div class="compare-good">
+      <h3>✅ 用模板問</h3>
+      <p style="font-size:1.9rem; margin:16px 0;">「你是家庭料理顧問…」</p>
+      <p>AI 的回答：根據你家的人數、<br>預算、限制，<br>給你完整的菜單和做法</p>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:24px; font-size:1.8rem;">
+    <span class="highlight">同樣的 AI，問法不同，結果天差地遠！</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE 6: DEMO ===== -->
+<div class="slide" data-slide="10">
+  <h2>台上示範：晚餐規劃模板</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>你是一位家庭料理顧問。
+我家有 2 個大人、1 個小孩（5 歲）。
+請根據以下條件推薦今天的晚餐：
+- 預算：300 元以內
+- 限制：小孩不吃辣
+- 希望有一道湯
+- 請列出菜單和簡單的做法</div>
+  <p style="margin-top:16px; font-size:1.7rem;">
+    👀 注意看：角色 + 任務 + 格式 + 限制，全部都有了！
+  </p>
+</div>
+
+<!-- ===== SLIDE 7: TODAY'S PLAN ===== -->
+<div class="slide center" data-slide="11">
+  <h2>今天的計畫</h2>
+  <p class="big-text" style="margin-bottom:30px;">接下來我們要練習 <span class="highlight">5 個模板 + 1 個進階挑戰</span></p>
+  <div class="flow">
+    <div class="flow-step">📝 日記</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🔍 查證</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🛒 買菜</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">💬 LINE</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">✈️ 旅遊</div>
+  </div>
+  <p style="margin-top:16px; font-size:1.7rem;">+ 🔧 <span class="highlight">進階挑戰：自己做模板</span></p>
+  <p style="margin-top:16px; font-size:1.7rem; color:#555;">
+    每個練習：老師示範 2 分鐘 → 大家動手 8 分鐘
+  </p>
+</div>
+
+<!-- ===== SLIDE 8: SECTION - PRACTICE ===== -->
+<div class="slide section-divider" data-slide="12">
+  <h1>開始練習！</h1>
+  <p class="subtitle">每個練習都有模板，按「複製」就能貼到 ChatGPT</p>
+</div>
+
+<!-- ===== SLIDE 9: PRACTICE 1 - DIARY ===== -->
+<div class="slide" data-slide="13" data-timer="480">
+  <div class="practice-header">練習 1 ／ 5</div>
+  <h2>📝 寫今天的日記</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>你是一位溫暖的日記助手。
+請根據我告訴你的事情，幫我寫一篇今天的日記。
+
+風格：<span class="fill">溫馨</span>（也可以改成：幽默／文學／簡單記錄）
+今天做了什麼：<span class="fill">早上去市場買菜，中午跟老朋友吃飯</span>
+心情：<span class="fill">開心，因為好久沒見到朋友了</span>
+天氣：<span class="fill">晴天，有點風</span>
+長度：大約 200 字
+
+請用第一人稱「我」來寫。</div>
+  <p style="margin-top:12px; font-size:1.7rem;">
+    💡 <span class="highlight">黃色的部分</span>是要自己填的，換成你自己的內容！
+  </p>
+</div>
+
+<!-- ===== SLIDE 10: PRACTICE 2 - FACT CHECK ===== -->
+<div class="slide" data-slide="14" data-timer="480">
+  <div class="practice-header">練習 2 ／ 5</div>
+  <h2>🔍 查證健康資訊</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>你是一位健康知識顧問，請幫我查證以下說法是否正確。
+
+說法：「<span class="fill">每天喝檸檬水可以治癌症</span>」
+
+請用以下格式回答：
+1. ✅ 正確 / ❌ 錯誤 / ⚠️ 部分正確
+2. 簡單解釋為什麼（用國小學生也聽得懂的話）
+3. 正確的做法是什麼
+4. 建議諮詢的對象（醫生？藥師？營養師？）
+
+注意：如果你不確定，請直接說「我不確定，建議問醫生」，不要亂猜。</div>
+  <p style="margin-top:12px; font-size:1.7rem;">
+    💡 想想你 LINE 群組裡最近收到什麼健康文章，拿來試試看！
+  </p>
+</div>
+
+<!-- ===== SLIDE 11: PRACTICE 3 - GROCERY ===== -->
+<div class="slide" data-slide="15" data-timer="480">
+  <div class="practice-header">練習 3 ／ 5</div>
+  <h2>🛒 買菜清單</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>你是一位菜市場達人，請幫我規劃今天的買菜清單。
+
+家裡人數：<span class="fill">2 個大人</span>
+預算：<span class="fill">500 元</span>
+要煮幾餐：<span class="fill">今天晚餐 + 明天午餐</span>
+家人的飲食限制：<span class="fill">阿嬤不能吃太鹹</span>
+冰箱裡已經有的東西：<span class="fill">雞蛋、醬油、白米</span>
+
+請用以下格式回答：
+1. 📋 買菜清單（列出品項和大概的量）
+2. 🍳 建議菜單（每餐 2-3 道菜）
+3. 💰 預估花費
+4. 💡 省錢小撇步</div>
+</div>
+
+<!-- ===== SLIDE 12: BREAK ===== -->
+<div class="slide section-divider" data-slide="16" style="background: linear-gradient(135deg, #5B8C5A 0%, #7AB87A 100%);">
+  <h1>☕ 中場休息</h1>
+  <p class="subtitle">5 分鐘，喝口水、上個廁所</p>
+</div>
+
+<!-- ===== SLIDE 13: MEMORY INTRO ===== -->
+<div class="slide section-divider" data-slide="17" style="background: linear-gradient(135deg, #6B4C9A 0%, #9B7FC7 100%);">
+  <h1>AI 怎麼「記住」你？🧠</h1>
+  <p class="subtitle">先來了解一個重要的原理</p>
+</div>
+
+<!-- ===== SLIDE 14: PREDICTION MACHINE ===== -->
+<div class="slide" data-slide="18">
+  <h2>AI 的本質：預測機器</h2>
+  <div class="quote">
+    還記得上週講的「文字接龍」嗎？<br><br>
+    AI 的工作就是：看到前面的字，<span class="highlight">猜下一個字是什麼</span>。<br><br>
+    「今天天氣真___」→ AI 猜「好」<br>
+    「我最喜歡吃的水果是___」→ AI 猜「蘋果」
+  </div>
+  <p class="big-text" style="margin-top:24px; text-align:center;">
+    所以，<span class="highlight">你給 AI 越多前面的字，它猜得越準</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE 15: CONTEXT = MEMORY ===== -->
+<div class="slide" data-slide="19">
+  <h2>「前面的字」就是關鍵</h2>
+  <div class="compare">
+    <div class="compare-bad">
+      <h3>😕 AI 只看到這些</h3>
+      <p style="font-size:1.8rem; margin:16px 0;">「推薦餐廳」</p>
+      <p>AI 不知道你在哪裡、<br>喜歡吃什麼、預算多少<br><br>→ 隨便猜</p>
+    </div>
+    <div class="compare-good">
+      <h3>😊 AI 看到很多線索</h3>
+      <p style="font-size:1.8rem; margin:16px 0;">「我住淡水，<br>喜歡清淡的，推薦餐廳」</p>
+      <p>AI 知道地點、口味偏好<br><br>→ 猜得很準</p>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:24px; font-size:1.9rem;">
+    這些「前面的字」，有個專業名稱叫做 <span class="highlight">Context（上下文）</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE 16: KEEP THIS IN MIND ===== -->
+<div class="slide center" data-slide="20">
+  <h2>先記住這個觀念 💡</h2>
+  <div class="quote" style="max-width:700px; margin:30px auto; text-align:center; font-size:1.8rem;">
+    AI 不是真的「聰明」<br><br>
+    它只是在猜下一個字<br><br>
+    你給它的<span class="highlight">提示詞（Prompt）</span><br>
+    就是在幫它猜得更準<br><br>
+    <span style="font-size:1.7rem; color:#555;">等課程最後，我再告訴你這跟「記憶」有什麼關係…</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 17: PRACTICE 4 - LINE MSG ===== -->
+<div class="slide" data-slide="21" data-timer="480">
+  <div class="practice-header">練習 4 ／ 5</div>
+  <h2>💬 寫 LINE 訊息給家人</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>你是一位溫暖的寫作助手，請幫我寫一段 LINE 訊息。
+
+要傳給誰：<span class="fill">女兒</span>
+想說什麼事：<span class="fill">這週末想請她回家吃飯，我要煮她小時候最愛吃的紅燒肉</span>
+語氣：<span class="fill">溫馨</span>（也可以改成：輕鬆幽默 / 正式）
+長度：簡短（適合 LINE 的長度，不要像在寫作文）
+
+注意：
+- 不要用太多表情符號（最多 2-3 個）
+- 用自然的口語，像真的在說話
+- 不要太正式，要像家人之間的對話</div>
+</div>
+
+<!-- ===== SLIDE 18: PRACTICE 5 - TRAVEL ===== -->
+<div class="slide" data-slide="22" data-timer="480">
+  <div class="practice-header">練習 5 ／ 5</div>
+  <h2>✈️ 旅遊景點推薦</h2>
+  <div class="template-card" style="font-size:1.6rem;">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>你是一位貼心的旅遊顧問。
+
+旅客資訊：
+- 人數：<span class="fill">2 人</span>
+- 行動能力：<span class="fill">膝蓋不好，不能爬太多階梯</span>
+
+旅遊需求：
+- 地區：<span class="fill">北台灣</span>
+- 天數：<span class="fill">一日遊</span>
+- 預算：<span class="fill">2000 元（含午餐）</span>
+- 特別想要的：<span class="fill">看海、吃海鮮</span>
+- 不想要的：<span class="fill">不要太多人的觀光區</span>
+
+請推薦行程，包含：
+1. 🗺️ 每個時段的景點安排
+2. 🍽️ 餐廳推薦
+3. 🚗 交通方式（盡量簡單）
+4. ⚠️ 注意事項</div>
+</div>
+
+<!-- ===== SLIDE 19: SECTION - ADVANCED ===== -->
+<div class="slide section-divider" data-slide="23" style="background: linear-gradient(135deg, #4A7C9B 0%, #6BAFD6 100%);">
+  <h1>進階挑戰 🚀</h1>
+  <p class="subtitle">自己做一個 Prompt Template！</p>
+</div>
+
+<!-- ===== SLIDE 20: WHY MAKE YOUR OWN ===== -->
+<div class="slide" data-slide="24">
+  <h2>為什麼要學自己做模板？</h2>
+  <div class="quote">
+    前面 5 個模板都是老師幫你準備好的。<br><br>
+    但以後你遇到新的需求，<br>
+    不可能每次都等老師幫你寫。<br><br>
+    <strong style="font-size:1.8rem;">所以要學：怎麼叫 AI 幫你做一個模板！</strong>
+  </div>
+  <p class="big-text" style="margin-top:20px; text-align:center;">
+    🎣 給你魚 → 學會<span class="highlight">釣魚</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE 21: HOW TO MAKE TEMPLATE ===== -->
+<div class="slide" data-slide="25">
+  <h2>三步驟：請 AI 幫你做模板</h2>
+  <ol class="steps" style="margin-top:16px;">
+    <li>
+      <strong>第一步：告訴 AI 你的需求</strong><br>
+      <span style="color:#555;">「我想要一個模板，用來______，請先問我幾個問題。」</span>
+    </li>
+    <li>
+      <strong>第二步：回答 AI 的問題</strong><br>
+      <span style="color:#555;">AI 會問你細節，像是：用在什麼場景？誰會看？要什麼格式？</span>
+    </li>
+    <li>
+      <strong>第三步：拿到模板，試用看看</strong><br>
+      <span style="color:#555;">不滿意就跟 AI 說哪裡要改，它會幫你修改。</span>
+    </li>
+  </ol>
+</div>
+
+<!-- ===== SLIDE 22: PRACTICE 6 - MAKE YOUR OWN ===== -->
+<div class="slide" data-slide="26" data-timer="600">
+  <div class="practice-header adv">進階練習</div>
+  <h2>🔧 自己設計一個 Prompt Template</h2>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>我想要一個 Prompt Template，用來<span class="fill">（你的需求）</span>。
+請先問我幾個問題，了解我的需求之後，再幫我設計模板。</div>
+  <h3 style="margin-top:20px;">不知道做什麼？試試這些：</h3>
+  <div class="ideas-grid">
+    <div class="idea-card"><div class="idea-icon">✍️</div>幫孫子<br>檢查作文</div>
+    <div class="idea-card"><div class="idea-icon">📢</div>寫社團<br>每週公告</div>
+    <div class="idea-card"><div class="idea-icon">💰</div>整理每月<br>花費記帳</div>
+    <div class="idea-card"><div class="idea-icon">💊</div>查藥品<br>副作用</div>
+    <div class="idea-card"><div class="idea-icon">🙏</div>寫感謝信<br>給朋友</div>
+    <div class="idea-card"><div class="idea-icon">🌱</div>查植物<br>種植方法</div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 23: SHARE SECTION ===== -->
+<div class="slide section-divider" data-slide="27" style="background: linear-gradient(135deg, var(--accent) 0%, #D4894E 50%, #5B8C5A 100%);">
+  <h1>分享時間 ✨</h1>
+  <p class="subtitle">你的模板，別人也能用！</p>
+</div>
+
+<!-- ===== SLIDE 24: SHARE DEMO ===== -->
+<div class="slide" data-slide="28">
+  <h2>現場示範：模板分享</h2>
+  <div class="flow" style="margin:30px 0;">
+    <div class="flow-step" style="border-color:var(--accent);">
+      👩‍🦳 同學 A<br><span style="font-size:1.4rem;">做好一個模板</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--blue);">
+      📤 分享<br><span style="font-size:1.4rem;">傳到 LINE 群</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--green);">
+      👨‍🦳 同學 B<br><span style="font-size:1.4rem;">複製來用</span>
+    </div>
+  </div>
+  <div class="quote">
+    好的模板就像好的食譜——<br>
+    <strong>你做好一次，全家人都能照著煮！</strong><br><br>
+    📱 把模板傳到 LINE 群，大家都能用。<br>
+    ✏️ 每個人可以根據自己的狀況修改「材料」。
+  </div>
+  <p style="margin-top:16px; font-size:1.7rem; text-align:center;">
+    🙋 有沒有同學願意分享你剛做好的模板？
+  </p>
+</div>
+
+<!-- ===== SLIDE 25: MEMORY REVEAL ===== -->
+<div class="slide section-divider" data-slide="29" style="background: linear-gradient(135deg, #6B4C9A 0%, #9B7FC7 100%);">
+  <h1>還記得剛才的問題嗎？🧠</h1>
+  <p class="subtitle">Prompt 跟「記憶」有什麼關係？</p>
+</div>
+
+<!-- ===== SLIDE 26: PROMPT = MEMORY ===== -->
+<div class="slide" data-slide="30">
+  <h2>揭曉：Prompt 就是記憶！</h2>
+  <div class="quote" style="font-size:1.9rem;">
+    你今天做的每一個 Prompt Template，其實就是在幫 AI 建立<span class="highlight">「記憶」</span>。<br><br>
+    <strong>AI 本身沒有記憶</strong>——每次對話它都是一張白紙。<br><br>
+    那為什麼有些 AI 看起來好像「記得你」？<br>
+    因為<span class="highlight">程式在你開口之前，先偷偷幫你塞了一堆 Prompt 進去</span>。
+  </div>
+</div>
+
+<!-- ===== SLIDE 27: HOW MEMORY WORKS ===== -->
+<div class="slide" data-slide="31">
+  <h2>AI「記憶」的真相</h2>
+  <div class="flow" style="margin:20px 0;">
+    <div class="flow-step" style="border-color:#6B4C9A;">
+      🧑 你說<br>「推薦餐廳」
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:#6B4C9A; background:#F3EEFF;">
+      🤖 程式偷偷加上<br><span style="font-size:1.4rem;">「這位用戶住淡水、<br>喜歡清淡的食物」</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--green);">
+      ✨ AI 看到的<br><span style="font-size:1.4rem;">完整的 Context<br>= 你的話 + 記憶</span>
+    </div>
+  </div>
+  <div class="compare" style="margin-top:20px;">
+    <div class="element-card" style="border-color:#6B4C9A;">
+      <div class="icon">📝</div>
+      <h3 style="color:#6B4C9A;">你寫的 Prompt</h3>
+      <p>你<strong>手動</strong>告訴 AI<br>你的背景和需求</p>
+    </div>
+    <div class="element-card" style="border-color:#6B4C9A;">
+      <div class="icon">🧠</div>
+      <h3 style="color:#6B4C9A;">AI 的「記憶」</h3>
+      <p><strong>程式自動</strong>幫你<br>在對話前塞入背景</p>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:20px; font-size:1.6rem;">
+    <span class="highlight">原理一模一樣，都是 Context（上下文）！</span>
+  </p>
+</div>
+
+<!-- ===== SLIDE 28: CHAT DEMO ===== -->
+<div class="slide" data-slide="32">
+  <h2>ChatGPT 的記憶，其實長這樣</h2>
+  <p style="font-size:1.6rem; color:#555; margin-bottom:12px;">下面是 AI「真正看到」的畫面——淡色的字就是 App 偷偷塞進去的記憶</p>
+
+  <div style="max-width:740px; margin:0 auto; background:#212121; border-radius:20px; padding:28px 32px; font-family:'Noto Sans TC',sans-serif; box-shadow:0 8px 40px rgba(0,0,0,0.25);">
+
+    <!-- System / memory block (dimmed) -->
+    <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px 24px; margin-bottom:20px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="background:#6B4C9A; color:white; font-size:0.75rem; padding:3px 10px; border-radius:20px; font-weight:600;">🧠 系統記憶</span>
+        <span style="color:rgba(255,255,255,0.3); font-size:0.85rem;">← 你看不到這段，App 自動加的</span>
+      </div>
+      <div style="color:rgba(255,255,255,0.25); font-size:1.05rem; line-height:1.9;">
+        使用者名稱：柏緯<br>
+        身份：AI 課程講師，在松年大學教課<br>
+        居住地：台北淡水<br>
+        飲食偏好：喜歡吃清淡的，不太吃辣<br>
+        興趣：咖啡、攝影、地方創生<br>
+        語言：繁體中文，偶爾用台語<br>
+        注意事項：回答請用繁體中文，語氣親切自然
+      </div>
+    </div>
+
+    <!-- Chat messages -->
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
+      <!-- User message (solid) -->
+      <div style="display:flex; justify-content:flex-end;">
+        <div style="background:#2F2F2F; color:#ECECEC; padding:14px 20px; border-radius:16px 16px 4px 16px; max-width:75%; font-size:1.15rem; line-height:1.7;">
+          推薦淡水附近好吃的餐廳
+        </div>
+      </div>
+
+      <!-- AI response (solid) -->
+      <div style="display:flex; justify-content:flex-start; gap:10px;">
+        <div style="width:32px; height:32px; background:linear-gradient(135deg,#19C37D,#10A37F); border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:2px;">
+          <span style="color:white; font-size:0.85rem; font-weight:700;">G</span>
+        </div>
+        <div style="color:#D1D5DB; padding:4px 0; max-width:80%; font-size:1.15rem; line-height:1.8;">
+          柏緯你好！幫你推薦幾間<strong style="color:#ECECEC;">淡水</strong>附近<strong style="color:#ECECEC;">清淡口味</strong>的餐廳：<br><br>
+          1. <strong style="color:#ECECEC;">之間 茶食器</strong> — 日式定食，口味清爽<br>
+          2. <strong style="color:#ECECEC;">渡船頭阿給</strong> — 經典小吃，不辣<br>
+          3. <strong style="color:#ECECEC;">紅毛城旁的小咖啡廳</strong> — 你喜歡咖啡的話可以順便坐坐 ☕
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center; margin-top:16px; font-size:1.8rem;">
+    👆 我只打了 8 個字，但 AI 回答得好像<span class="highlight">很了解我</span>——<br>
+    因為 App 已經先把我的資料「塞」給它了！
+  </p>
+</div>
+
+<!-- ===== SLIDE 29: SUMMARY ===== -->
+<div class="slide" data-slide="33">
+  <h2>今天學到的 🎯</h2>
+  <div class="element-grid" style="margin-top:16px;">
+    <div class="element-card">
+      <div class="icon">📖</div>
+      <h3>Prompt Template</h3>
+      <p>= 問 AI 的食譜<br>寫好一次，重複使用</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">🧩</div>
+      <h3>四個元素</h3>
+      <p>角色 + 任務<br>+ 格式 + 限制</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">🔧</div>
+      <h3>自己做模板</h3>
+      <p>叫 AI 問你問題<br>然後幫你生成</p>
+    </div>
+    <div class="element-card">
+      <div class="icon">🤝</div>
+      <h3>分享給別人</h3>
+      <p>好模板可以傳給<br>朋友和家人用</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 30: HOMEWORK ===== -->
+<div class="slide center" data-slide="34">
+  <h2>回家試試看 🏠</h2>
+  <div style="text-align:left; max-width:700px; margin:24px auto;">
+    <ul class="big-text">
+      <li>用今天學的模板，在生活中<span class="highlight">至少試一次</span></li>
+      <li>試著自己做一個<span class="highlight">新的模板</span></li>
+      <li>做好的模板傳到 <span class="highlight">LINE 群</span>分享</li>
+    </ul>
+  </div>
+  <div style="margin-top:40px; padding:24px; background:var(--light); border-radius:16px; display:inline-block;">
+    <p style="font-size:1.8rem;">📣 下堂課預告</p>
+    <p style="font-size:1.8rem; font-weight:700; color:var(--accent); margin-top:8px;">
+      開始用 AI 採訪自己的生命故事 🎙️
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 31: END ===== -->
+<div class="slide section-divider center" data-slide="35">
+  <h1>謝謝大家 🙌</h1>
+  <p class="subtitle">有問題隨時在 LINE 群問！</p>
+  <p style="font-size:1.6rem; margin-top:40px; opacity:0.7;">松年大學 AI 課程 ｜ 第二堂</p>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<div class="nav">
+  <button onclick="prevSlide()">◀</button>
+  <span class="page-num" id="pageNum">1 / 35</span>
+  <button onclick="nextSlide()">▶</button>
+</div>
+
+<!-- ===== TIMER ===== -->
+<div class="timer-container" id="timerContainer">
+  <button class="timer-btn" id="timerBtn">▶</button>
+  <div class="timer-display" id="timerDisplay">8:00</div>
+</div>
+
+<script>
+  // ===== SLIDE NAVIGATION =====
+  let current = 1;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function showSlide(n) {
+    current = Math.max(1, Math.min(n, total));
+    slides.forEach(s => s.classList.remove('active'));
+    document.querySelector(`[data-slide="${current}"]`).classList.add('active');
+    document.getElementById('pageNum').textContent = `${current} / ${total}`;
+
+    // Timer
+    const slide = document.querySelector(`[data-slide="${current}"]`);
+    const timerSec = slide.getAttribute('data-timer');
+    const tc = document.getElementById('timerContainer');
+    if (timerSec) {
+      tc.classList.add('visible');
+      resetTimer(parseInt(timerSec));
+      setTimeout(function() { startTimer(); }, 100);
+    } else {
+      tc.classList.remove('visible');
+      stopTimer();
+    }
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    if (e.key === 't' || e.key === 'T') { toggleTimer(); }
+  });
+
+  // Touch support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+
+  showSlide(1);
+
+  // ===== TIMER =====
+  var timerInterval = null;
+  var timerSeconds = 0;
+  var timerRunning = false;
+
+  function resetTimer(sec) {
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    timerRunning = false;
+    timerSeconds = sec;
+    updateTimerDisplay();
+    document.getElementById('timerBtn').textContent = '▶';
+    document.getElementById('timerDisplay').classList.remove('warning');
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      stopTimer();
+    } else {
+      startTimer();
+    }
+  }
+
+  function startTimer() {
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+    }
+    timerRunning = true;
+    document.getElementById('timerBtn').textContent = '⏸';
+    timerInterval = setInterval(function() {
+      timerSeconds = timerSeconds - 1;
+      updateTimerDisplay();
+      if (timerSeconds <= 60) {
+        document.getElementById('timerDisplay').classList.add('warning');
+      }
+      if (timerSeconds <= 0) {
+        stopTimer();
+        document.getElementById('timerDisplay').textContent = '⏰ 時間到！';
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    timerRunning = false;
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    document.getElementById('timerBtn').textContent = '▶';
+  }
+
+  function updateTimerDisplay() {
+    var min = Math.floor(timerSeconds / 60);
+    var sec = timerSeconds % 60;
+    document.getElementById('timerDisplay').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+  }
+
+  // Bind timer button
+  document.getElementById('timerBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleTimer();
+  });
+
+  // ===== COPY TEMPLATE =====
+  function copyTemplate(btn) {
+    const card = btn.parentElement;
+    // Get text content, replacing fill spans with brackets
+    const clone = card.cloneNode(true);
+    clone.querySelector('.copy-btn')?.remove();
+    // Replace fill spans with [text]
+    clone.querySelectorAll('.fill').forEach(f => {
+      f.replaceWith(`[${f.textContent}]`);
+    });
+    const text = clone.textContent.trim();
+
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✅ 已複製！';
+      btn.classList.add('copied');
+      showToast('已複製到剪貼簿！可以貼到 ChatGPT 了');
+      setTimeout(() => {
+        btn.textContent = '📋 複製';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✅ 已複製！';
+      btn.classList.add('copied');
+      showToast('已複製到剪貼簿！');
+      setTimeout(() => {
+        btn.textContent = '📋 複製';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+</script>
+
+</body>
+</html>

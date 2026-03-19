@@ -714,7 +714,7 @@
 <!-- ===== SLIDE 9: STYLE VOCABULARY ===== -->
 <div class="slide" data-slide="9">
   <h2>常用的風格詞彙 🎨</h2>
-  <p style="font-size:1.5rem; color:#555; margin-bottom:12px;">點擊卡片可以複製！加到你的描述裡試試</p>
+  <p style="font-size:1.5rem; color:#555; margin-bottom:12px;">點擊卡片 → 複製完整指令 → 貼到 Gemini → 改「」裡的描述 → 送出！</p>
   <div class="ideas-grid" style="grid-template-columns:repeat(4,1fr); gap:12px;">
     <div class="idea-card style-card" data-keyword="卡通風格" onclick="copyStyle(this)">
       <div class="idea-icon">🎪</div>卡通風格<br><span style="font-size:1.1rem; color:#777;">可愛、活潑</span>
@@ -1206,7 +1206,7 @@
     clone.querySelectorAll('.fill').forEach(function(f) {
       f.replaceWith(f.textContent);
     });
-    var text = clone.textContent.trim();
+    var text = clone.textContent.trim().replace(/\n+/g, '').replace(/\s{2,}/g, ' ');
 
     navigator.clipboard.writeText(text).then(function() {
       btn.textContent = '✅ 已複製！';
@@ -1253,11 +1253,12 @@
     });
   }
 
-  // ===== COPY STYLE KEYWORD =====
+  // ===== COPY STYLE AS COMPLETE PROMPT =====
   function copyStyle(el) {
     var keyword = el.getAttribute('data-keyword');
-    navigator.clipboard.writeText(keyword).then(function() {
-      showToast('已複製「' + keyword + '」！');
+    var prompt = '請幫我用' + keyword + '畫一張圖片，內容是：「請在這裡描述你想畫的東西」';
+    navigator.clipboard.writeText(prompt).then(function() {
+      showToast('已複製完整指令！貼到 Gemini 後改「」裡的文字');
       document.querySelectorAll('.style-card').forEach(function(c) { c.classList.remove('selected'); });
       el.classList.add('selected');
     });
@@ -1282,9 +1283,12 @@
     var parts = [];
     if (subject.trim()) parts.push(subject.trim());
     if (scene.trim()) parts.push(scene.trim());
-    if (style.trim()) parts.push(style.trim());
-    var preview = parts.join('，');
-    document.getElementById('guided-preview').textContent = preview || '（填寫左側三個欄位後，指令會自動出現在這裡）';
+    var prompt = '';
+    if (parts.length > 0) {
+      prompt = '請幫我畫一張圖片：' + parts.join('，');
+      if (style.trim()) prompt += '。風格：' + style.trim();
+    }
+    document.getElementById('guided-preview').textContent = prompt || '（填寫上面三個欄位後，完整指令會自動出現在這裡）';
   }
 
   function copyGuidedPrompt() {
