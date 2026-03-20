@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>松年大學 AI 課程</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #FAFAF8;
+      --text: #1A1A1A;
+      --accent: #B5411F;
+      --accent2: #9A5A1E;
+      --green: #3D6E3C;
+      --blue: #2D6080;
+      --card-border: #C09A6E;
+      --light: #F0E0CC;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .header .icon {
+      font-size: 4rem;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .header .subtitle {
+      font-size: 1.2rem;
+      color: #777;
+      font-weight: 400;
+    }
+    .header .info {
+      margin-top: 16px;
+      font-size: 1rem;
+      color: #999;
+    }
+
+    /* Course cards */
+    .week-card {
+      display: block;
+      background: white;
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .week-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border-color: var(--accent);
+    }
+    .week-card .week-number {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .week-card .week-number.current {
+      background: var(--green);
+    }
+    .week-card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .week-card .week-desc {
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.6;
+    }
+    .week-card .week-date {
+      font-size: 0.9rem;
+      color: #999;
+      margin-top: 8px;
+    }
+    .week-card .arrow {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--card-border);
+      transition: color 0.2s;
+    }
+    .week-card:hover .arrow {
+      color: var(--accent);
+    }
+
+    /* Divider */
+    .section-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 32px 0 12px;
+      padding-left: 4px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #e0d5c8;
+      font-size: 0.9rem;
+      color: #999;
+      line-height: 1.8;
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Quick links */
+    .quick-links {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .quick-link {
+      display: inline-block;
+      background: white;
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .quick-link:hover {
+      background: var(--light);
+      border-color: var(--accent);
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .container { padding: 24px 16px 60px; }
+      .header h1 { font-size: 1.8rem; }
+      .header .icon { font-size: 3rem; }
+      .week-card { padding: 20px; }
+      .week-card h2 { font-size: 1.3rem; }
+      .week-card .arrow { right: 16px; }
+      .quick-link { padding: 10px 16px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="icon">🎓</div>
+    <h1>松年大學 AI 課程</h1>
+    <p class="subtitle">人工智慧（AI）生活應用</p>
+    <p class="info">馬偕松年大學 ｜ 114 下學期 ｜ 每週五 09:30–11:20</p>
+  </div>
+
+  <div class="quick-links">
+    <a class="quick-link" href="https://gemini.google.com/app" target="_blank">🚀 打開 Gemini</a>
+    <a class="quick-link" href="https://chatgpt.com" target="_blank">💬 打開 ChatGPT</a>
+  </div>
+
+  <div class="section-label">📚 課程講義</div>
+
+  <a class="week-card" href="slides/week1.html">
+    <span class="week-number">第一堂</span>
+    <h2>認識 AI — 你的聰明新助手</h2>
+    <p class="week-desc">AI 是什麼？AI 幻覺體驗、怎麼跟 AI 說話、這學期要做什麼</p>
+    <p class="week-date">2026.03.06</p>
+    <span class="arrow">→</span>
+  </a>
+
+  <a class="week-card" href="slides/week2.html">
+    <span class="week-number">第二堂</span>
+    <h2>Prompt Template — AI 的食譜</h2>
+    <p class="week-desc">什麼是提示詞模板、六個生活練習、自己設計模板</p>
+    <p class="week-date">2026.03.14</p>
+    <span class="arrow">→</span>
+  </a>
+
+  <a class="week-card" href="slides/week3.html">
+    <span class="week-number current">第三堂 ✨ 本週</span>
+    <h2>用 AI 畫出你的想像世界</h2>
+    <p class="week-desc">文字生圖、照片改圖、卡通風格大全、Gemini 即時畫圖</p>
+    <p class="week-date">2026.03.20</p>
+    <span class="arrow">→</span>
+  </a>
+
+  <div class="footer">
+    <p>老師：李柏緯 ｜ 有問題請在 LINE 群組發問</p>
+    <p>課程網站：<a href="https://tku-mackay.vercel.app">tku-mackay.vercel.app</a></p>
+  </div>
+
+</div>
+
+</body>
+</html>
