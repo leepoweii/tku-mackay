@@ -1193,8 +1193,38 @@
   </div>
 </div>
 
-<!-- ===== SLIDE 27: END ===== -->
-<div class="slide section-divider center" data-slide="26">
+<!-- ===== SLIDE 26: NANO BANANA - LIVE GENERATION ===== -->
+<div class="slide scrollable center" data-slide="26">
+  <h2>🍌 AI 即時畫圖</h2>
+  <p style="font-size:1.5rem; color:#555; margin-bottom:16px;">直接在這裡打字，AI 幫你畫！不用離開這個頁面</p>
+
+  <div style="max-width:700px; width:100%; margin:0 auto;">
+    <textarea id="nano-prompt" class="guided-input" rows="3" placeholder="例如：一隻穿西裝的柴犬在咖啡廳喝拿鐵，水彩畫風格" style="width:100%; resize:vertical; font-size:1.4rem;"></textarea>
+
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin:8px 0;">
+      <button class="example-btn" onclick="document.getElementById('nano-prompt').value='一隻可愛的貓咪坐在窗台上曬太陽，油畫風格'">🐱 貓咪曬太陽</button>
+      <button class="example-btn" onclick="document.getElementById('nano-prompt').value='淡水老街的夕陽，水彩畫風格，柔和浪漫'">🌅 淡水夕陽</button>
+      <button class="example-btn" onclick="document.getElementById('nano-prompt').value='一隻穿太空裝的柴犬在月球上吃珍珠奶茶，卡通風格'">🐕 太空柴犬</button>
+      <button class="example-btn" onclick="document.getElementById('nano-prompt').value='把我變成宮崎駿動畫風格的角色'">🏔️ 宮崎駿風</button>
+    </div>
+
+    <button id="nano-generate" onclick="generateNanoBanana()" style="width:100%; padding:16px; font-size:1.6rem; font-weight:700; background:var(--accent); color:white; border:none; border-radius:12px; cursor:pointer; font-family:'Noto Sans TC',sans-serif; transition:all 0.2s;">
+      🎨 生成圖片
+    </button>
+
+    <div id="nano-status" style="text-align:center; margin-top:12px; font-size:1.4rem; color:#555; display:none;"></div>
+
+    <div id="nano-result" style="margin-top:16px; text-align:center; display:none;">
+      <img id="nano-image" style="max-width:100%; max-height:50vh; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.15);" />
+      <div style="margin-top:12px;">
+        <a id="nano-download" download="ai-artwork.png" style="display:inline-block; background:var(--green); color:white; padding:12px 24px; border-radius:10px; font-size:1.3rem; font-weight:700; text-decoration:none; cursor:pointer;">💾 下載圖片</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 28: END ===== -->
+<div class="slide section-divider center" data-slide="27">
   <h1>謝謝大家 🙌</h1>
   <p class="subtitle">有問題隨時在 LINE 群問！</p>
   <p style="font-size:1.6rem; margin-top:40px; opacity:0.7;">松年大學 AI 課程 ｜ 第三堂</p>
@@ -1363,6 +1393,89 @@
     t.textContent = msg;
     t.classList.add('show');
     setTimeout(function() { t.classList.remove('show'); }, 2000);
+  }
+
+  // ===== NANO BANANA — GEMINI IMAGE GENERATION =====
+  var GEMINI_API_KEY = 'AIzaSyDdgBu1s8ROdVyGeFoVdLV1dxZe8MIkEXI';
+  var GEMINI_MODEL = 'gemini-2.5-flash-image';
+  var nanoGenerating = false;
+
+  async function generateNanoBanana() {
+    if (nanoGenerating) return;
+    var prompt = document.getElementById('nano-prompt').value.trim();
+    if (!prompt) { showToast('請先輸入描述！'); return; }
+
+    nanoGenerating = true;
+    var btn = document.getElementById('nano-generate');
+    var status = document.getElementById('nano-status');
+    var result = document.getElementById('nano-result');
+
+    btn.textContent = '⏳ AI 正在畫圖中…';
+    btn.style.background = '#999';
+    btn.style.cursor = 'not-allowed';
+    status.style.display = 'block';
+    status.textContent = '🎨 AI 正在幫你畫圖，請稍等 10-20 秒…';
+    result.style.display = 'none';
+
+    try {
+      var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY;
+      var res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+        })
+      });
+
+      if (!res.ok) {
+        var errData = await res.json().catch(function() { return {}; });
+        if (res.status === 429) {
+          throw new Error('太多人同時在畫圖，請等 10 秒再試一次！');
+        }
+        throw new Error(errData.error?.message || '生成失敗，請換個描述試試');
+      }
+
+      var data = await res.json();
+      var candidates = data.candidates;
+      if (!candidates || !candidates[0] || !candidates[0].content || !candidates[0].content.parts) {
+        throw new Error('AI 這次沒畫出來，換個描述試試看！');
+      }
+
+      var imageFound = false;
+      for (var i = 0; i < candidates[0].content.parts.length; i++) {
+        var part = candidates[0].content.parts[i];
+        if (part.inlineData) {
+          var imgSrc = 'data:' + part.inlineData.mimeType + ';base64,' + part.inlineData.data;
+          document.getElementById('nano-image').src = imgSrc;
+          document.getElementById('nano-download').href = imgSrc;
+          result.style.display = 'block';
+          status.textContent = '✅ 完成！';
+          imageFound = true;
+          break;
+        }
+      }
+
+      if (!imageFound) {
+        // Check if there's a text response explaining why
+        var textMsg = '';
+        for (var j = 0; j < candidates[0].content.parts.length; j++) {
+          if (candidates[0].content.parts[j].text) {
+            textMsg = candidates[0].content.parts[j].text;
+          }
+        }
+        throw new Error(textMsg || 'AI 這次只回了文字，沒畫圖。換個描述試試！');
+      }
+
+    } catch (err) {
+      status.textContent = '❌ ' + err.message;
+      result.style.display = 'none';
+    }
+
+    btn.textContent = '🎨 生成圖片';
+    btn.style.background = 'var(--accent)';
+    btn.style.cursor = 'pointer';
+    nanoGenerating = false;
   }
 </script>
 
