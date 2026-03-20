@@ -29,6 +29,11 @@
       color: var(--text);
       overflow: hidden;
       height: 100vh;
+      overscroll-behavior: none;
+    }
+    /* Allow scrollable slides to scroll within their container */
+    body:has(.slide.scrollable.active) {
+      overflow: hidden;
     }
 
     /* ===== SLIDE SYSTEM ===== */
@@ -533,6 +538,102 @@
       justify-content: flex-start;
       padding-top: 30px;
       padding-bottom: 100px;
+    }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      html { font-size: 12px; }
+      .slide { padding: 20px 16px; }
+      .slide.scrollable { padding: 16px 14px 100px; }
+      h1 { font-size: 2.4rem; }
+      h2 { font-size: 2rem; }
+      h3 { font-size: 1.5rem; }
+      p, li { font-size: 1.4rem; }
+      .subtitle { font-size: 1.6rem; }
+      .big-text { font-size: 1.8rem; }
+      .section-divider h1 { font-size: 2.8rem; }
+      .section-divider .subtitle { font-size: 1.6rem; }
+
+      /* Grids → single or 2 columns */
+      .two-col,
+      .compare { grid-template-columns: 1fr; gap: 16px; }
+      .element-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .ideas-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+      .element-card { padding: 16px; }
+      .element-card .icon { font-size: 2.2rem; }
+      .element-card h3 { font-size: 1.4rem; }
+      .element-card p { font-size: 1.2rem; }
+      .idea-card { padding: 12px; font-size: 1.2rem; }
+      .idea-card .idea-icon { font-size: 1.8rem; }
+
+      /* Template cards */
+      .template-card { padding: 16px 14px; font-size: 1.3rem; line-height: 1.8; }
+      .copy-btn { padding: 8px 14px; font-size: 1.1rem; top: 8px; right: 8px; }
+      .fill { padding: 1px 8px; font-size: 1.2rem; }
+
+      /* Gemini button */
+      .gemini-btn { font-size: 1.2rem; padding: 12px 20px; }
+
+      /* Photo steps */
+      .photo-steps { font-size: 1.1rem; padding: 12px 14px; }
+
+      /* Guided mode */
+      .guided-input, .guided-select { font-size: 1.2rem; padding: 10px 12px; }
+      .guided-preview { font-size: 1.2rem; padding: 12px; }
+
+      /* Example buttons */
+      .example-btn { font-size: 1.1rem; padding: 6px 12px; }
+
+      /* Steps list */
+      .steps li { padding: 12px 14px 12px 56px; font-size: 1.3rem; }
+      .steps li::before { width: 32px; height: 32px; font-size: 1.3rem; left: 12px; }
+
+      /* Navigation */
+      .nav { padding: 10px 20px; gap: 14px; bottom: 16px; }
+      .nav button { font-size: 1.5rem; }
+
+      /* Timer */
+      .timer-container { bottom: 16px; right: 16px; }
+      .timer-display { font-size: 1.8rem; padding: 8px 16px; }
+
+      /* Quote */
+      .quote { padding: 16px 20px; font-size: 1.4rem; }
+
+      /* Prompt example */
+      .prompt-example { padding: 20px 16px; font-size: 1.2rem; }
+
+      /* Flow diagram */
+      .flow { gap: 8px; }
+      .flow-step { padding: 12px 16px; font-size: 1.2rem; min-width: 100px; }
+      .flow-arrow { font-size: 1.4rem; }
+
+      /* Inline grids with style attribute overrides */
+      [style*="grid-template-columns: 1fr 1fr 1fr"],
+      [style*="grid-template-columns:1fr 1fr 1fr"] {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      [style*="grid-template-columns: repeat(3"],
+      [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      [style*="grid-template-columns: repeat(4"],
+      [style*="grid-template-columns:repeat(4"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+
+      /* QR codes smaller */
+      img[alt*="QR Code"] { width: 140px !important; height: 140px !important; }
+
+      /* Flex layouts wrap */
+      [style*="display:flex"][style*="gap:40px"] { gap: 20px !important; }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 400px) {
+      html { font-size: 11px; }
+      .slide { padding: 14px 12px; }
+      .element-grid { grid-template-columns: 1fr; }
+      .ideas-grid { grid-template-columns: 1fr !important; }
     }
 
     /* ===== PRINT / PDF EXPORT ===== */
