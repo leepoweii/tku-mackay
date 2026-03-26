@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>松年大學 AI 課程 — 第四堂</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 14px; }
+
+    :root {
+      --bg: #FFFFFF;
+      --text: #1A1A1A;
+      --accent: #B5411F;
+      --accent2: #9A5A1E;
+      --green: #3D6E3C;
+      --blue: #2D6080;
+      --card: #FFFFFF;
+      --card-border: #C09A6E;
+      --light: #F0E0CC;
+      --template-bg: #FFF5E8;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      overscroll-behavior: none;
+    }
+    body:has(.slide.scrollable.active) {
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      padding: 36px 56px;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .slide.active { display: flex; }
+
+    h1 {
+      font-size: 4.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    h2 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+    p, li {
+      font-size: 1.9rem;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+    ul { list-style: none; padding-left: 0; }
+    ul li::before {
+      content: '\2022';
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 12px;
+    }
+    ul li { margin-bottom: 10px; }
+
+    .subtitle {
+      font-size: 2.2rem;
+      color: var(--accent2);
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .big-text { font-size: 2.5rem; line-height: 1.9; }
+    .small-text { font-size: 1.4rem; color: #555; }
+
+    .center { text-align: center; align-items: center; }
+
+    .quote {
+      background: var(--light);
+      border-left: 8px solid var(--accent);
+      padding: 30px 40px;
+      border-radius: 0 16px 16px 0;
+      margin: 20px 0;
+      font-size: 2rem;
+      line-height: 2;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .compare-bad, .compare-good {
+      padding: 30px;
+      border-radius: 16px;
+      font-size: 1.6rem;
+      line-height: 1.8;
+    }
+    .compare-bad { background: #E8F0FF; border: 3px solid var(--blue); }
+    .compare-bad h3 { color: var(--blue); }
+    .compare-good { background: #E8F5E9; border: 3px solid var(--green); }
+    .compare-good h3 { color: var(--green); }
+
+    .template-card {
+      background: var(--template-bg);
+      border: 3px dashed var(--accent2);
+      border-radius: 16px;
+      padding: 20px 28px;
+      margin: 10px 0;
+      font-size: 1.5rem;
+      line-height: 1.8;
+      position: relative;
+      white-space: pre-wrap;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .copy-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #A14A2E; transform: scale(1.05); }
+    .copy-btn.copied { background: var(--green); }
+
+    .element-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .element-card {
+      background: var(--card);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+    }
+    .element-card .icon { font-size: 3rem; margin-bottom: 10px; }
+    .element-card h3 { font-size: 1.8rem; margin-bottom: 8px; color: var(--accent); }
+    .element-card p { font-size: 1.5rem; color: #444; }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 16px 20px 16px 70px;
+      position: relative;
+      margin-bottom: 12px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-right: 0;
+    }
+    .steps li::after { content: none; }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      background: var(--card);
+      border: 3px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 28px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      min-width: 160px;
+    }
+    .flow-arrow { font-size: 2rem; color: var(--accent); }
+
+    .section-divider {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: white;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+    .section-divider h1 { color: white; font-size: 4.5rem; }
+    .section-divider .subtitle { color: rgba(255,255,255,0.95); font-size: 2.2rem; }
+
+    .highlight { color: var(--accent); font-weight: 700; }
+
+    .prompt-display {
+      background: #1a1a2e;
+      border-radius: 16px;
+      padding: 28px 32px;
+      color: #e0e0e0;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      position: relative;
+      max-height: 68vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-family: 'Noto Sans TC', monospace;
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      z-index: 100;
+    }
+    .nav button {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .nav button:hover { background: var(--light); }
+    .nav .page-num { font-size: 1.1rem; color: #999; min-width: 60px; text-align: center; }
+
+    .toast {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--green);
+      color: white;
+      padding: 14px 30px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      z-index: 200;
+      transition: transform 0.3s ease;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .slide.scrollable {
+      overflow-y: auto;
+      justify-content: flex-start;
+      padding-top: 30px;
+      padding-bottom: 100px;
+    }
+
+    .vote-card {
+      background: white;
+      border: 3px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px 32px;
+      margin: 12px 0;
+    }
+    .vote-card h3 { font-size: 1.8rem; color: var(--accent); margin-bottom: 16px; }
+    .vote-option {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      margin: 8px 0;
+      background: #FAFAF8;
+      border: 2px solid #e0d5c8;
+      border-radius: 12px;
+      font-size: 1.6rem;
+    }
+    .vote-option .option-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 1.4rem;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      html { font-size: 12px; }
+      .slide { padding: 20px 16px; }
+      .slide.scrollable { padding: 16px 14px 100px; }
+      h1 { font-size: 2.4rem; }
+      h2 { font-size: 2rem; }
+      h3 { font-size: 1.5rem; }
+      p, li { font-size: 1.4rem; }
+      .subtitle { font-size: 1.6rem; }
+      .section-divider h1 { font-size: 2.8rem; }
+      .section-divider .subtitle { font-size: 1.6rem; }
+      .section-divider > div { padding: 20px 20px !important; max-width: 100% !important; }
+      .section-divider > div > p { font-size: 1.5rem !important; }
+      .compare { grid-template-columns: 1fr; gap: 16px; }
+      .element-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .element-card { padding: 16px; }
+      .element-card .icon { font-size: 2.2rem; }
+      .element-card h3 { font-size: 1.4rem; }
+      .element-card p { font-size: 1.2rem; }
+      .template-card { padding: 16px 14px; font-size: 1.3rem; }
+      .copy-btn { padding: 8px 14px; font-size: 1.1rem; }
+
+      /* Flow diagram: vertical on mobile */
+      .flow { flex-direction: column; gap: 4px; align-items: center; margin: 12px 0; }
+      .flow-step { padding: 8px 16px; font-size: 1.1rem; min-width: 70%; }
+      .flow-step > div:first-child { font-size: 1.6rem !important; margin-bottom: 4px !important; }
+      .flow-step span { font-size: 1rem !important; }
+      .flow-arrow { transform: rotate(90deg); font-size: 1rem; }
+
+      .steps li { padding: 12px 14px 12px 56px; font-size: 1.3rem; }
+      .steps li::before { width: 32px; height: 32px; font-size: 1.3rem; left: 12px; }
+      .nav { padding: 10px 20px; gap: 14px; bottom: 16px; }
+      .nav button { font-size: 1.5rem; }
+      .quote { padding: 16px 20px; font-size: 1.4rem; max-width: 100% !important; }
+      .prompt-display { padding: 16px 14px; font-size: 0.95rem; max-height: 60vh; }
+
+      /* QR codes */
+      img[alt*="QR Code"] { width: 140px !important; height: 140px !important; }
+
+      /* Inline flex/grid overrides */
+      [style*="display:flex"][style*="gap:40px"] { gap: 16px !important; }
+      [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+      [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+      /* GPT URL input */
+      .gpt-input-row { flex-direction: column !important; gap: 8px !important; }
+      .gpt-input-row input { width: 100% !important; max-width: 100% !important; }
+      .gpt-input-row button { width: 100% !important; margin-left: 0 !important; }
+
+      /* Vote cards (if any remain) */
+      .vote-option { padding: 10px 14px; font-size: 1.3rem; }
+      .vote-option .option-letter { width: 32px; height: 32px; font-size: 1.2rem; margin-right: 12px; }
+      .vote-card { padding: 16px 20px; }
+      .vote-card h3 { font-size: 1.5rem; }
+    }
+    @media (max-width: 400px) {
+      html { font-size: 11px; }
+      .slide { padding: 14px 12px; }
+      .element-grid { grid-template-columns: 1fr; }
+      .flow-step { min-width: 90%; padding: 8px 12px; font-size: 1.1rem; }
+      .section-divider h1 { font-size: 2.2rem; }
+      .prompt-display { font-size: 0.85rem; line-height: 1.7; }
+    }
+    @media print {
+      body { background: white; }
+      .slide {
+        display: flex !important;
+        width: 100%;
+        height: 100vh;
+        page-break-after: always;
+        page-break-inside: avoid;
+      }
+      .slide:last-of-type { page-break-after: auto; }
+      .nav, .toast { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== SLIDE 1: TITLE ===== -->
+<div class="slide center" data-slide="1">
+  <h3 style="font-size:1.8rem; color:#555; margin-bottom:10px;">松年大學 AI 課程</h3>
+  <h1 style="font-size:4.8rem;">AI 幫你說故事</h1>
+  <p class="subtitle">一起設計專屬的 AI 採訪員</p>
+  <p style="font-size:1.6rem; color:#555; margin-top:40px;">第四堂課 ｜ 2026.03.27</p>
+</div>
+
+<!-- ===== SLIDE 2: QR CODE ===== -->
+<div class="slide center" data-slide="2">
+  <h2>掃描加入</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:16px;">用手機掃 QR Code 打開課程頁面</p>
+  <div style="display:flex; gap:40px; align-items:center; justify-content:center; flex-wrap:wrap; margin:16px 0;">
+    <div style="text-align:center;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://chatgpt.com" alt="ChatGPT QR Code" style="width:180px; height:180px; border-radius:12px; border:3px solid var(--card-border);">
+      <p style="font-size:1.4rem; color:#555; margin-top:8px;">ChatGPT</p>
+    </div>
+    <div style="text-align:center;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://tku-mackay.vercel.app/slides/week4.html" alt="Course QR Code" style="width:180px; height:180px; border-radius:12px; border:3px solid var(--accent);">
+      <p style="font-size:1.4rem; color:var(--accent); font-weight:700; margin-top:8px;">本週講義</p>
+    </div>
+  </div>
+  <p style="font-size:1.5rem; color:#555;">請先確認已經登入 <span class="highlight">ChatGPT</span></p>
+</div>
+
+<!-- ===== SLIDE 3: OUTLINE ===== -->
+<div class="slide" data-slide="3">
+  <h2>今天的流程</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px 32px; margin-top:16px; max-width:960px;">
+    <div class="element-card" style="text-align:left; padding:20px 24px;">
+      <p style="font-size:1.3rem; color:var(--accent); font-weight:700;">❶</p>
+      <h3 style="margin-bottom:4px;">課程全貌</h3>
+      <p style="color:#555;">期末成果展介紹、今天要做什麼</p>
+    </div>
+    <div class="element-card" style="text-align:left; padding:20px 24px;">
+      <p style="font-size:1.3rem; color:var(--accent); font-weight:700;">❷</p>
+      <h3 style="margin-bottom:4px;">一起設計 AI 採訪員</h3>
+      <p style="color:#555;">全班投票，決定採訪員的個性</p>
+    </div>
+    <div class="element-card" style="text-align:left; padding:20px 24px;">
+      <p style="font-size:1.3rem; color:var(--accent); font-weight:700;">❸</p>
+      <h3 style="margin-bottom:4px;">個人採訪時間</h3>
+      <p style="color:#555;">每人跟 AI 採訪員聊天，說出你的故事</p>
+    </div>
+    <div class="element-card" style="text-align:left; padding:20px 24px;">
+      <p style="font-size:1.3rem; color:var(--accent); font-weight:700;">❹</p>
+      <h3 style="margin-bottom:4px;">Suno AI 示範 + 收尾</h3>
+      <p style="color:#555;">故事變成歌！預告下週</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: BIG PICTURE ===== -->
+<div class="slide center scrollable" data-slide="4">
+  <h2>我們這學期要完成的作品</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:16px;">每個人都會有一首屬於自己的<span class="highlight">「人生之歌」</span></p>
+  <div class="flow">
+    <div class="flow-step" style="border-color:var(--accent);">
+      <div style="font-size:2.4rem; margin-bottom:8px;">🎙️</div>
+      AI 採訪<br><span style="font-size:1.2rem; color:#777;">說出你的故事</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--blue);">
+      <div style="font-size:2.4rem; margin-bottom:8px;">📖</div>
+      背景故事<br><span style="font-size:1.2rem; color:#777;">AI 幫你整理成文章</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--accent2);">
+      <div style="font-size:2.4rem; margin-bottom:8px;">✍️</div>
+      歌詞創作<br><span style="font-size:1.2rem; color:#777;">從故事提煉歌詞</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--green);">
+      <div style="font-size:2.4rem; margin-bottom:8px;">🎵</div>
+      Suno 作曲<br><span style="font-size:1.2rem; color:#777;">歌詞變成歌</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:#6B4C9A;">
+      <div style="font-size:2.4rem; margin-bottom:8px;">🎨</div>
+      AI 封面<br><span style="font-size:1.2rem; color:#777;">配上一張美美的圖</span>
+    </div>
+  </div>
+  <div class="quote" style="margin-top:24px; font-size:1.7rem; max-width:700px;">
+    期末成果展 → 每人一首歌、一個故事、一張圖，組成你的「人生之歌」專頁
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: EXAMPLE ===== -->
+<div class="slide center" data-slide="5">
+  <h2>成果長這樣</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:20px;">老師做的範例 — 點擊或掃描看看</p>
+  <div style="display:flex; gap:40px; align-items:center; justify-content:center; flex-wrap:wrap;">
+    <a href="https://hosted.pwlee.xyz/" target="_blank" style="text-align:center; text-decoration:none;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://hosted.pwlee.xyz/" alt="Example QR Code" style="width:200px; height:200px; border-radius:12px; border:3px solid var(--accent);">
+      <p style="font-size:1.4rem; color:var(--accent); font-weight:700; margin-top:12px;">掃描看範例</p>
+    </a>
+    <div style="max-width:400px; text-align:left;">
+      <div class="vote-card" style="margin:0;">
+        <h3 style="font-size:1.6rem;">範例內容</h3>
+        <p style="font-size:1.4rem; color:#555; line-height:1.8;">
+          🎙️ 金門藝品社老闆的故事<br>
+          📖 三十年的經營回憶<br>
+          🎵 AI 生成的專屬歌曲<br>
+          🎨 AI 繪製的封面圖
+        </p>
+      </div>
+      <a href="https://hosted.pwlee.xyz/" target="_blank" style="display:inline-block; margin-top:12px; background:var(--accent); color:white; padding:12px 24px; border-radius:12px; font-size:1.4rem; font-weight:700; text-decoration:none; font-family:'Noto Sans TC',sans-serif;">🔗 打開範例頁面</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: TODAY'S FOCUS ===== -->
+<div class="slide section-divider" data-slide="6">
+  <h1>今天的重點</h1>
+  <p class="subtitle" style="font-size:2.8rem;">一起設計<strong style="color:white; font-size:3.5rem;">AI 採訪員</strong></p>
+  <div style="background:rgba(255,255,255,0.2); border-radius:20px; padding:30px 48px; margin-top:20px; max-width:700px;">
+    <p style="color:white; font-size:2rem; line-height:2; text-align:center;">
+      你們來決定採訪員的個性<br>
+      然後讓 AI 採訪你，說出你的故事
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: WHAT IS CUSTOM AI ===== -->
+<div class="slide scrollable" data-slide="7">
+  <h2>什麼是「客製化 AI」？</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:20px;">上週我們給 AI 一張食譜（Prompt），今天我們更進一步——</p>
+  <div class="compare">
+    <div class="compare-bad">
+      <h3 style="color:var(--blue);">之前的方式</h3>
+      <p style="font-size:1.7rem; margin-top:12px;">每次都要重新告訴 AI：<br>「你是一個溫暖的記者，<br>請用這種方式問我問題…」</p>
+      <p style="font-size:1.4rem; color:#666; margin-top:12px;">每次聊天都要重講一遍</p>
+    </div>
+    <div class="compare-good">
+      <h3>今天的方式</h3>
+      <p style="font-size:1.7rem; margin-top:12px;">我們先把設定「存」起來，<br>以後打開就直接用！<br>AI 永遠記得他是誰</p>
+      <p style="font-size:1.4rem; color:#666; margin-top:12px;">就像幫 AI 寫一份「說明書」</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: HOW WE DO IT ===== -->
+<div class="slide center scrollable" data-slide="8">
+  <h2>我們怎麼做？</h2>
+  <div class="flow" style="margin-top:32px;">
+    <div class="flow-step" style="border-color:var(--accent); min-width:200px;">
+      <div style="font-size:2.4rem; margin-bottom:8px;">🗳️</div>
+      全班投票<br><span style="font-size:1.2rem; color:#777;">決定採訪員的個性</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--blue); min-width:200px;">
+      <div style="font-size:2.4rem; margin-bottom:8px;">📝</div>
+      AI 產出設定<br><span style="font-size:1.2rem; color:#777;">自動生成「說明書」</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--green); min-width:200px;">
+      <div style="font-size:2.4rem; margin-bottom:8px;">🤖</div>
+      採訪員誕生<br><span style="font-size:1.2rem; color:#777;">貼上設定，開始採訪</span>
+    </div>
+  </div>
+  <div class="quote" style="margin-top:32px; font-size:1.8rem; max-width:700px;">
+    接下來老師會把一段「設計師指令」貼到 ChatGPT，<br>它會一題一題問大家，我們一起投票！
+  </div>
+</div>
+
+<!-- ===== SLIDE 9: DESIGNER PROMPT (COPYABLE) ===== -->
+<div class="slide scrollable" data-slide="9">
+  <h2>設計師 Prompt</h2>
+  <p style="font-size:1.5rem; color:#555; margin-bottom:12px;">老師把這段文字複製到 ChatGPT，就開始了！</p>
+  <div class="prompt-display" id="designer-prompt" style="font-size:1.1rem; line-height:1.8;">你是「採訪員設計師」，你的任務是帶領一群松年大學的長輩，透過投票一起設計一位 AI 採訪員的個性和風格。
+
+## 你的行為規則
+
+1. 全程使用繁體中文
+2. 語氣親切、活潑，像主持人帶活動
+3. 每次只問一題，等老師輸入投票結果後才繼續下一題
+4. 選項用 A / B / C（有時 D）呈現，簡單明瞭
+5. 每題投票完，用一句話確認選擇，再進下一題
+6. 你要記住所有投票結果
+
+## 流程
+
+### 第一階段：暖場教學（自動開始）
+
+一開始，你先跟大家打招呼，然後展示「什麼是好的採訪」。用 2 個對比範例：
+
+範例 1：
+❌ 不好的問法：「你小時候開心嗎？」（只能回答是或不是）
+✅ 好的問法：「說說看你小時候放學後都在做什麼？」（打開一整個故事）
+
+範例 2：
+❌ 不好的問法：「你喜歡你的工作嗎？」
+✅ 好的問法：「你還記得第一天上班的情景嗎？那天發生了什麼事？」
+
+然後說：「所以好的採訪員會用『說說看』、『還記得嗎』這種方式問問題，讓你自然地說出故事。我們今天要一起設計的採訪員，就會用這種方式跟你聊天！」
+
+接著說：「現在我們來投票，決定這位採訪員的個性！老師會幫大家輸入結果，總共 10 題，我們開始吧！」
+
+### 第二階段：10 題投票
+
+按照以下順序，一次一題：
+
+── 採訪員是誰？──
+
+第 1 題：我們的採訪員叫什麼名字？
+A) 阿松（我們松年大學的專屬採訪員！）
+B) 阿緯（跟柏緯老師同名，像老師的分身）
+C) 小故事（親切可愛）
+D) 我們自己取一個名字！
+
+第 2 題：他說話的方式？
+A) 像鄰居聊天 —— 溫暖親切，慢慢來
+B) 像記者採訪 —— 專業但友善，有條理
+C) 像晚輩請教長輩 —— 好奇、尊敬、想多聽
+
+第 3 題：他開場怎麼跟你打招呼？
+A) 先自我介紹，再慢慢聊起來
+B) 直接問一個輕鬆有趣的問題
+C) 先誇你一句，讓你開心再開始
+
+── 聊什麼方向？──
+
+第 4 題：從人生的哪個階段開始聊？
+A) 童年回憶 —— 小時候的家、學校、玩伴
+B) 年輕時候 —— 工作、戀愛、冒險
+C) 現在的生活 —— 最近在做什麼、新的發現
+D) 讓採訪員自己判斷，看聊到哪就從哪開始
+
+第 5 題：你最想被問到什麼話題？
+A) 身邊的人 —— 家人、朋友、生命中重要的人
+B) 工作與成就 —— 做過什麼、學到什麼
+C) 生活中的小確幸 —— 旅行、興趣、美食
+D) 都可以，讓採訪員自由發揮
+
+第 6 題：要不要問「感覺」的問題？（例如「那時候你什麼心情？」）
+A) 要！有感覺的故事才動人
+B) 少問，聊事情就好，不用太深入
+C) 看情況，自然就好
+
+第 7 題：採訪員可以追問嗎？（例如你說了一件事，他接著問「然後呢？」）
+A) 可以，越聊越深才有趣
+B) 偶爾就好，不要一直追問
+C) 不要追問，一題一題來就好
+
+── 故事怎麼呈現？──
+
+第 8 題：最後的故事用誰的口氣寫？
+A) 用「我」—— 像自己在說自己的故事
+B) 用「他/她」—— 像紀錄片旁白在介紹你
+C) 像一封信 —— 寫給重要的人的
+
+第 9 題：故事要多長？
+A) 短短的，一段話就好（大約 200 字）
+B) 中等長度，像一篇短文（大約 500 字）
+C) 完整一點，有頭有尾（大約 800 字）
+
+第 10 題：故事的結尾要什麼？
+A) 一句你的人生金句
+B) 一段想對重要的人說的話
+C) 自然結束就好，不用特別收
+
+### 第三階段：產出 System Prompt
+
+10 題都完成後，你要：
+
+1. 先用一段話總結全班的選擇（像公布結果，讓大家有參與感）：
+   「好！我們的採訪員設計完成了！ 他叫 ___，說話像 ___，會從 ___ 開始聊起…」
+
+2. 然後說：「現在老師要把這份設計交給 AI，讓他變成我們的專屬採訪員！」
+
+3. 最後輸出一個標記區塊，標題為【採訪員 System Prompt — 請複製】，內容要包含：
+
+一、投票結果設定：
+- 採訪員的名字、語氣風格、開場方式
+- 採訪起始階段、主題方向、情感深度、追問風格
+- 故事口吻、長度、結尾方式
+
+二、固定規則（不受投票影響，全部寫進去）：
+1. 全程使用繁體中文
+2. 一次只問一個問題，等對方回答後再問下一個
+3. 遞進式提問：從具體的記憶細節開始（地點、場景、人物），再慢慢走向感受和意義
+4. 善用感官觸發：適時問「那時候聞到什麼味道？」「聽到什麼聲音？」「看到什麼畫面？」
+5. 每個回答都先給正面回饋（「這個故事好精彩！」「聽起來很溫暖」），再接下一題
+6. 允許跑題：如果對方聊到其他話題，順著追問，跑題的地方往往最精彩
+7. 可用年代大事當錨點幫助回憶：「那大概是什麼年代的事？」
+8. 總共問 8-10 個問題後自動進入收尾
+9. 收尾時先感謝對方的分享，然後說「我現在幫你把剛才的故事整理成一篇文章，請等我一下」
+10. 整理完輸出故事，格式按照投票結果設定
+11. 絕對不要批評、糾正或質疑對方說的任何事
+12. 如果對方表示不想聊某個話題，立刻換方向，不要追問
+13. 如果對方只回答很短，用「可以多說一點嗎？」或「那時候還有發生什麼事嗎？」溫柔引導
+14. 如果對方說了很長一段，挑出最有畫面感的細節追問
+15. 你是採訪員，不是治療師。保持溫暖但不要過度分析</div>
+  <button class="copy-btn" onclick="copyPrompt('designer-prompt')" style="display:block; margin:12px auto 0; font-size:1.5rem; padding:14px 32px;">📋 複製設計師 Prompt</button>
+</div>
+
+<!-- ===== SLIDE 10: VOTING TIME ===== -->
+<div class="slide section-divider" data-slide="10" style="background: linear-gradient(135deg, #E8913A 0%, #D4894E 100%);">
+  <h1>🗳️ 投票開始！</h1>
+  <p class="subtitle" style="font-size:2.4rem;">請看投影幕上的 ChatGPT</p>
+  <div style="background:rgba(255,255,255,0.2); border-radius:20px; padding:30px 48px; margin-top:20px; max-width:700px;">
+    <p style="color:white; font-size:2rem; line-height:2; text-align:center;">
+      每一題請<strong style="font-size:2.5rem;">舉手</strong>投票！<br>
+      選最多人的那個選項
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 11: CREATING THE GPT ===== -->
+<div class="slide center scrollable" data-slide="11">
+  <h2>建立採訪員</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:24px;">老師現在把大家的設計「裝」進 AI 裡</p>
+  <ol class="steps" style="max-width:700px; text-align:left;">
+    <li><strong>複製 AI 產出的設定文字</strong><br><span style="color:#555;">ChatGPT 會生成一段「說明書」</span></li>
+    <li><strong>建立一個客製化 GPT</strong><br><span style="color:#555;">把設定貼進去，幫它取個名字</span></li>
+    <li><strong>分享連結給大家</strong><br><span style="color:#555;">掃 QR Code 就能開始使用</span></li>
+  </ol>
+  <div class="quote" style="margin-top:20px; font-size:1.7rem;">
+    請給老師 2-3 分鐘設定，馬上就好！
+  </div>
+</div>
+
+<!-- ===== SLIDE 12: START INTERVIEW ===== -->
+<div class="slide section-divider" data-slide="12" style="background: linear-gradient(135deg, var(--green) 0%, #2D6B5A 100%);">
+  <h1>🎙️ 開始採訪！</h1>
+  <p class="subtitle" style="font-size:2.4rem;">掃描 QR Code，跟你的專屬採訪員聊天</p>
+  <div style="background:rgba(255,255,255,0.2); border-radius:20px; padding:30px 48px; margin-top:20px; max-width:700px;">
+    <p style="color:white; font-size:1.8rem; line-height:2; text-align:center;">
+      AI 會一個問題一個問題問你<br>
+      你只要回答就好，說多說少都可以<br>
+      <strong style="font-size:2.2rem;">放輕鬆，就像跟朋友聊天</strong>
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 13: INTERVIEW QR ===== -->
+<div class="slide center" data-slide="13">
+  <h2>掃描開始聊天</h2>
+  <div id="gpt-qr-container" style="margin:24px 0;">
+    <div style="width:240px; height:240px; border:4px dashed var(--card-border); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+      <p style="font-size:1.4rem; color:#999; text-align:center; padding:20px;">GPT 連結的<br>QR Code<br>（老師現場更新）</p>
+    </div>
+  </div>
+  <p style="font-size:1.6rem; color:#555; margin-top:16px;">老師建好 GPT 後會更新這裡的 QR Code</p>
+  <div class="gpt-input-row" style="margin-top:12px; display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
+    <input type="text" id="gpt-url-input" placeholder="貼上 GPT 連結..." style="font-size:1.4rem; padding:12px 20px; border:2px solid var(--card-border); border-radius:12px; width:500px; max-width:90%; font-family:'Noto Sans TC',sans-serif;">
+    <button onclick="updateGptQR()" style="font-size:1.4rem; padding:12px 24px; background:var(--accent); color:white; border:none; border-radius:12px; cursor:pointer; font-family:'Noto Sans TC',sans-serif;">更新 QR</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 14: INTERVIEW TIPS ===== -->
+<div class="slide scrollable" data-slide="14">
+  <h2>採訪小提醒</h2>
+  <div class="element-grid" style="max-width:800px;">
+    <div class="element-card" style="text-align:left;">
+      <div class="icon" style="text-align:center;">💬</div>
+      <h3 style="text-align:center;">怎麼回答？</h3>
+      <p>想到什麼就說什麼，不用想太多。說多說少都可以，AI 會引導你。</p>
+    </div>
+    <div class="element-card" style="text-align:left;">
+      <div class="icon" style="text-align:center;">🙅</div>
+      <h3 style="text-align:center;">不想回答？</h3>
+      <p>直接說「這題跳過」或「換一個問題」，AI 不會勉強你。</p>
+    </div>
+    <div class="element-card" style="text-align:left;">
+      <div class="icon" style="text-align:center;">⏰</div>
+      <h3 style="text-align:center;">聊多久？</h3>
+      <p>AI 大約問 8-10 個問題，聊完會自動幫你整理成故事。</p>
+    </div>
+    <div class="element-card" style="text-align:left;">
+      <div class="icon" style="text-align:center;">📱</div>
+      <h3 style="text-align:center;">打字太慢？</h3>
+      <p>可以用語音輸入！按鍵盤上的麥克風按鈕就能用說的。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 15: SUNO DEMO ===== -->
+<div class="slide section-divider" data-slide="15" style="background: linear-gradient(135deg, #6B4C9A 0%, #4A3570 100%);">
+  <h1>🎵 故事變成歌！</h1>
+  <p class="subtitle" style="font-size:2.4rem;">Suno AI — 把文字變成音樂</p>
+  <div style="background:rgba(255,255,255,0.2); border-radius:20px; padding:30px 48px; margin-top:20px; max-width:700px;">
+    <p style="color:white; font-size:2rem; line-height:2; text-align:center;">
+      老師示範：把剛才的故事變成一首歌<br>
+      <strong>下週你們也會做！</strong>
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 16: HOMEWORK ===== -->
+<div class="slide scrollable" data-slide="16">
+  <h2>回家作業</h2>
+  <ol class="steps" style="max-width:760px;">
+    <li><strong>繼續跟 AI 採訪員聊天</strong><br><span style="color:#555;">回家可以再聊一次，說更多故事</span></li>
+    <li><strong>把最後的故事複製下來</strong><br><span style="color:#555;">AI 整理好的那篇文章，長按複製</span></li>
+    <li><strong>傳到 LINE 群組分享</strong><br><span style="color:#555;">讓大家看看你的故事！</span></li>
+  </ol>
+  <div class="quote" style="margin-top:20px; font-size:1.7rem;">
+    💡 小提醒：故事沒有標準答案，你的人生就是最精彩的故事！
+  </div>
+</div>
+
+<!-- ===== SLIDE 17: NEXT WEEK ===== -->
+<div class="slide center" data-slide="17">
+  <h2>下週預告</h2>
+  <div style="margin-top:32px;">
+    <p style="font-size:3rem; font-weight:900; color:var(--accent);">🎵 用 AI 寫你的歌</p>
+    <p style="font-size:1.8rem; color:#555; margin-top:16px;">把今天的故事 → Suno AI → 變成一首歌</p>
+    <div style="margin-top:32px; background:var(--light); border-radius:16px; padding:24px 32px; max-width:600px; display:inline-block;">
+      <p style="font-size:1.6rem;">
+        📖 你的故事 + 🎵 你的歌 + 🎨 你的圖<br>
+        ＝ 期末成果展的<span class="highlight">「人生之歌」</span>
+      </p>
+    </div>
+  </div>
+  <p style="font-size:1.6rem; color:#555; margin-top:40px;">謝謝大家，下週見！</p>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<div class="nav">
+  <button onclick="prevSlide()">◀</button>
+  <span class="page-num" id="pageNum">1 / 17</span>
+  <button onclick="nextSlide()">▶</button>
+</div>
+
+<script>
+  var currentSlide = 1;
+  var totalSlides = document.querySelectorAll('.slide').length;
+
+  function showSlide(n) {
+    if (n < 1 || n > totalSlides) return;
+    document.querySelectorAll('.slide').forEach(function(s) { s.classList.remove('active'); });
+    var target = document.querySelector('[data-slide="' + n + '"]');
+    if (target) {
+      target.classList.add('active');
+      currentSlide = n;
+      document.getElementById('pageNum').textContent = n + ' / ' + totalSlides;
+      if (target.classList.contains('scrollable')) {
+        target.scrollTop = 0;
+      }
+    }
+  }
+
+  function nextSlide() { showSlide(currentSlide + 1); }
+  function prevSlide() { showSlide(currentSlide - 1); }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+
+  var touchStartX = 0;
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  document.addEventListener('touchend', function(e) {
+    var diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) nextSlide(); else prevSlide();
+    }
+  });
+
+  showSlide(1);
+
+  function copyPrompt(id) {
+    var el = document.getElementById(id);
+    var text = el.textContent || el.innerText;
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('已複製 Prompt！可以貼到 ChatGPT 了');
+    });
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2000);
+  }
+
+  function updateGptQR() {
+    var url = document.getElementById('gpt-url-input').value.trim();
+    if (!url) { showToast('請先貼上 GPT 連結'); return; }
+    var container = document.getElementById('gpt-qr-container');
+    var img = document.createElement('img');
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(url);
+    img.alt = 'GPT QR Code';
+    img.style.cssText = 'width:240px; height:240px; border-radius:16px; border:4px solid var(--accent);';
+    var label = document.createElement('p');
+    label.style.cssText = 'font-size:1.4rem; color:var(--accent); font-weight:700; margin-top:12px;';
+    label.textContent = '掃描開始聊天！';
+    container.replaceChildren(img, label);
+    showToast('QR Code 已更新！');
+  }
+</script>
+
+</body>
+</html>
