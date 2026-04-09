@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>松年大學 AI 課程 — 第七堂</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 14px; }
+
+    :root {
+      --bg: #FFFFFF;
+      --text: #1A1A1A;
+      --accent: #B5411F;
+      --accent2: #9A5A1E;
+      --green: #3D6E3C;
+      --blue: #2D6080;
+      --purple: #6B4C9A;
+      --card: #FFFFFF;
+      --card-border: #C09A6E;
+      --light: #F0E0CC;
+      --template-bg: #FFF5E8;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* ===== SLIDE SYSTEM ===== */
+    .slide {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      padding: 36px 56px;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .slide.active { display: flex; }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1 { font-size: 4.2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; line-height: 1.3; }
+    h2 { font-size: 3.2rem; font-weight: 700; color: var(--text); margin-bottom: 16px; line-height: 1.3; }
+    h3 { font-size: 2rem; font-weight: 700; color: var(--accent2); margin-bottom: 12px; }
+    p, li { font-size: 1.9rem; line-height: 1.8; font-weight: 400; }
+    ul { list-style: none; padding-left: 0; }
+    ul li::before { content: '\2022'; color: var(--accent); font-weight: 700; margin-right: 12px; }
+    ul li { margin-bottom: 10px; }
+    .subtitle { font-size: 2.2rem; color: var(--accent2); font-weight: 700; margin-bottom: 30px; }
+    .big-text { font-size: 2.5rem; line-height: 1.9; }
+    .small-text { font-size: 1.4rem; color: #555; }
+    .highlight { color: var(--accent); font-weight: 700; }
+
+    /* ===== LAYOUT ===== */
+    .center { text-align: center; align-items: center; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
+
+    /* ===== SECTION DIVIDER ===== */
+    .section-divider {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: white; text-align: center; justify-content: center; align-items: center;
+    }
+    .section-divider h1 { color: white; font-size: 4.5rem; }
+    .section-divider .subtitle { color: rgba(255,255,255,0.95); font-size: 2.2rem; }
+
+    /* ===== QUOTE BOX ===== */
+    .quote {
+      background: var(--light);
+      border-left: 8px solid var(--accent);
+      padding: 30px 40px;
+      border-radius: 0 16px 16px 0;
+      margin: 20px 0;
+      font-size: 2rem;
+      line-height: 2;
+    }
+
+    /* ===== TEMPLATE CARD (copyable) ===== */
+    .template-card {
+      background: var(--template-bg);
+      border: 3px dashed var(--accent2);
+      border-radius: 16px;
+      padding: 30px 36px;
+      margin: 16px 0;
+      font-size: 1.55rem;
+      line-height: 2;
+      position: relative;
+      white-space: pre-wrap;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #A14A2E; transform: scale(1.05); }
+    .copy-btn.copied { background: var(--green); }
+
+    /* ===== STEP LIST ===== */
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li {
+      counter-increment: step;
+      padding: 16px 20px 16px 70px;
+      position: relative;
+      margin-bottom: 12px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      width: 40px; height: 40px;
+      background: var(--accent); color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 700; margin-right: 0;
+    }
+    .steps li::after { content: none; }
+
+    /* ===== FLOW ===== */
+    .flow { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 24px 0; flex-wrap: wrap; }
+    .flow-step {
+      background: var(--card); border: 3px solid var(--card-border);
+      border-radius: 16px; padding: 20px 28px;
+      text-align: center; font-size: 1.6rem; font-weight: 700; min-width: 160px;
+    }
+    .flow-arrow { font-size: 2rem; color: var(--accent); }
+
+    /* ===== CHAT BUBBLE ===== */
+    .chat { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+    .bubble-ai {
+      background: #F0E8FF; border-left: 6px solid var(--purple);
+      border-radius: 0 16px 16px 16px;
+      padding: 18px 24px; font-size: 1.7rem; line-height: 1.9;
+      max-width: 85%;
+    }
+    .bubble-user {
+      background: #E8F5E9; border-right: 6px solid var(--green);
+      border-radius: 16px 0 16px 16px;
+      padding: 18px 24px; font-size: 1.7rem; line-height: 1.9;
+      max-width: 75%; align-self: flex-end;
+    }
+    .bubble-label { font-size: 1.1rem; color: #888; margin-bottom: 4px; font-weight: 700; }
+
+    /* ===== CODE BLOCK ===== */
+    .code-block {
+      background: #1a1a2e; border-radius: 16px;
+      padding: 28px 32px; color: #e0e0e0;
+      font-size: 1.45rem; line-height: 1.9; margin: 12px 0;
+      position: relative; white-space: pre-wrap;
+      font-family: 'Noto Sans TC', monospace;
+    }
+    .code-block .tag { color: #FFB74D; font-weight: 700; }
+    .code-block .style-line { color: #80CBC4; }
+
+    /* ===== STYLE TAG GRID ===== */
+    .style-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;
+    }
+    .style-item {
+      background: #1a1a2e; border-radius: 12px;
+      padding: 20px 24px; color: #e0e0e0; font-size: 1.5rem; line-height: 1.8;
+    }
+    .style-item .style-label { color: #FFB74D; font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+
+    /* ===== TIMER ===== */
+    .timer-container {
+      position: fixed; bottom: 30px; right: 30px; z-index: 100; display: none;
+    }
+    .timer-container.visible { display: flex; align-items: center; gap: 12px; }
+    .timer-display {
+      font-size: 2.5rem; font-weight: 700; color: var(--accent);
+      background: white; padding: 10px 24px; border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 120px; text-align: center;
+    }
+    .timer-display.warning { color: #E74C3C; animation: pulse 1s infinite; }
+    .timer-btn {
+      width: 48px; height: 48px; border-radius: 50%; border: none;
+      background: var(--accent); color: white; font-size: 1.4rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 20px;
+      background: white; padding: 12px 28px; border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 100;
+    }
+    .nav button {
+      background: none; border: none; font-size: 1.8rem; cursor: pointer;
+      color: var(--accent); padding: 4px 12px; border-radius: 8px; transition: background 0.2s;
+    }
+    .nav button:hover { background: var(--light); }
+    .nav .page-num { font-size: 1.1rem; color: #999; min-width: 60px; text-align: center; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: var(--green); color: white; padding: 14px 30px; border-radius: 12px;
+      font-size: 1.2rem; font-weight: 500; z-index: 200; transition: transform 0.3s ease;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media print {
+      body { background: white; }
+      .slide { display: flex !important; width: 100%; height: 100vh; page-break-after: always; page-break-inside: avoid; box-sizing: border-box; }
+      .slide:last-of-type { page-break-after: auto; }
+      .nav, .timer-container, .toast { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== SLIDE 1: TITLE ===== -->
+<div class="slide center" data-slide="1">
+  <h3 style="font-size:1.8rem; color:#555; margin-bottom:10px;">松年大學 AI 課程</h3>
+  <h1 style="font-size:4.8rem;">用 AI 說出你的故事</h1>
+  <p class="subtitle">讓 AI 採訪你、把故事變成一首歌</p>
+  <p style="font-size:1.6rem; color:#555; margin-top:40px;">第七堂課 ｜ 2026.04.10</p>
+</div>
+
+<!-- ===== SLIDE 2: TODAY'S FLOW ===== -->
+<div class="slide" data-slide="2">
+  <h2>今天做三件事</h2>
+  <div class="flow" style="margin-top:40px;">
+    <div class="flow-step" style="border-color:var(--purple); background:#F5F0FF; min-width:200px; padding:28px;">
+      <div style="font-size:3rem; margin-bottom:12px;">🎙️</div>
+      <div style="font-size:1.8rem; color:var(--purple);">第一步</div>
+      <div style="font-size:1.5rem; margin-top:8px; color:#555;">AI 採訪我的故事</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--accent); background:#FFF5EC; min-width:200px; padding:28px;">
+      <div style="font-size:3rem; margin-bottom:12px;">✍️</div>
+      <div style="font-size:1.8rem; color:var(--accent);">第二步</div>
+      <div style="font-size:1.5rem; margin-top:8px; color:#555;">把故事變成歌詞</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--green); background:#F0F8F0; min-width:200px; padding:28px;">
+      <div style="font-size:3rem; margin-bottom:12px;">🎵</div>
+      <div style="font-size:1.8rem; color:var(--green);">第三步</div>
+      <div style="font-size:1.5rem; margin-top:8px; color:#555;">放進 Suno 生成歌曲</div>
+    </div>
+  </div>
+  <div class="quote" style="margin-top:32px; text-align:center; font-size:2rem;">
+    今天結束，你會有一首<span class="highlight">屬於自己的歌</span>！
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: SECTION - AI INTERVIEW ===== -->
+<div class="slide section-divider" data-slide="3" style="background: linear-gradient(135deg, #6B4C9A 0%, #9B6EBB 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">🎙️</div>
+  <h1 style="color:white;">第一步：AI 採訪</h1>
+  <p class="subtitle">讓 AI 用問題，幫你說出心裡的故事</p>
+</div>
+
+<!-- ===== SLIDE 4: OPEN TOOL ===== -->
+<div class="slide center" data-slide="4">
+  <h2>先打開今天的工具</h2>
+  <p style="font-size:2rem; color:#555; margin-bottom:32px;">用手機或電腦，打開這個網址：</p>
+  <div style="background:#1a1a2e; border-radius:20px; padding:32px 60px; display:inline-block; margin-bottom:32px;">
+    <p style="font-size:3.2rem; font-weight:900; color:#FFB74D; letter-spacing:2px;">chat.pwlee.xyz</p>
+  </div>
+  <img src="https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl=https://chat.pwlee.xyz&choe=UTF-8"
+       alt="QR Code" style="border-radius:12px; border:4px solid var(--card-border); margin-bottom:24px;">
+  <p style="font-size:1.7rem; color:#555;">掃 QR Code 也可以直接開！</p>
+</div>
+
+<!-- ===== SLIDE 5: SELECT MODEL ===== -->
+<div class="slide" data-slide="5">
+  <h2>進去以後，選「故事拾光者」</h2>
+  <ol class="steps" style="margin-top:24px; max-width:720px;">
+    <li>
+      <strong>打開 chat.pwlee.xyz</strong><br>
+      <span style="color:#555;">不用登入，直接進去</span>
+    </li>
+    <li>
+      <strong>點左上角的模型名稱</strong><br>
+      <span style="color:#555;">預設可能是「New Chat」或其他名稱</span>
+    </li>
+    <li>
+      <strong>在清單裡找到「故事拾光者」並點選</strong><br>
+      <span style="color:#555;">帶有 🎙️ 標示</span>
+    </li>
+    <li>
+      <strong>按「New Chat」開始新對話</strong><br>
+      <span style="color:#555;">AI 會自動說開場白，直接回答就好！</span>
+    </li>
+  </ol>
+</div>
+
+<!-- ===== SLIDE 6: WHAT IS IT ===== -->
+<div class="slide" data-slide="6">
+  <h2>故事拾光者是什麼？</h2>
+  <div style="display:flex; gap:32px; margin-top:24px; align-items:flex-start;">
+    <div style="flex:1;">
+      <div style="background:#F5F0FF; border-left:8px solid var(--purple); border-radius:0 16px 16px 0; padding:28px;">
+        <div style="font-size:3.5rem; margin-bottom:12px;">🤖</div>
+        <p style="font-size:1.8rem; line-height:2;">一個<strong style="color:var(--purple);">溫柔的 AI 採訪者</strong>，<br>
+        每次只問你一個問題，<br>
+        耐心等你回答，<br>
+        絕對不催你、不評判你。</p>
+      </div>
+    </div>
+    <div style="flex:1;">
+      <p style="font-size:1.7rem; font-weight:700; color:var(--accent2); margin-bottom:16px;">它會問你的問題，例如：</p>
+      <div class="chat" style="gap:12px;">
+        <div class="bubble-ai">
+          <div class="bubble-label">故事拾光者</div>
+          你這一生裡，有沒有一段特別難忘的時光？
+        </div>
+        <div class="bubble-ai">
+          <div class="bubble-label">故事拾光者</div>
+          那時候你心裡是什麼感覺？
+        </div>
+        <div class="bubble-ai">
+          <div class="bubble-label">故事拾光者</div>
+          可以多說一點嗎？
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: DEMO CONVERSATION ===== -->
+<div class="slide" data-slide="7">
+  <h2>示範：採訪是這樣進行的</h2>
+  <div class="chat" style="margin-top:20px;">
+    <div class="bubble-ai">
+      <div class="bubble-label">故事拾光者</div>
+      今天我們來聊聊你的故事，好嗎？<br>你這一生裡，有沒有一段特別難忘的時光？
+    </div>
+    <div class="bubble-user">
+      <div class="bubble-label" style="text-align:right;">你</div>
+      我年輕時在基隆港工作，那段時間很辛苦，但也很充實。
+    </div>
+    <div class="bubble-ai">
+      <div class="bubble-label">故事拾光者</div>
+      聽起來那段時間真的很辛苦，也很充實。<br>你還記得在基隆港工作，最讓你印象深刻的一件事是什麼嗎？
+    </div>
+    <div class="bubble-user">
+      <div class="bubble-label" style="text-align:right;">你</div>
+      有一次颱風天，大家都沒有抱怨，一起撐過去。那種感覺現在想起來還是很感動。
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:20px; font-size:1.7rem; color:var(--purple); font-weight:700;">
+    就這樣聊下去，約聊 5～6 個問題就好 ✨
+  </p>
+</div>
+
+<!-- ===== SLIDE 8: PRACTICE TIME ===== -->
+<div class="slide" data-slide="8" data-timer="1200">
+  <div style="display:inline-block; background:var(--purple); color:white; padding:10px 28px; border-radius:30px; font-size:1.5rem; font-weight:700; margin-bottom:20px;">
+    🎙️ 練習時間 — 20 分鐘
+  </div>
+  <h2>現在換你！打開故事拾光者，跟它聊聊你的故事</h2>
+  <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div style="background:#F5F0FF; border-radius:16px; padding:24px;">
+      <p style="font-size:1.7rem; font-weight:700; color:var(--purple); margin-bottom:12px;">💡 聊什麼都可以</p>
+      <ul style="font-size:1.6rem;">
+        <li>年輕時的工作</li>
+        <li>某一段難忘的旅行</li>
+        <li>家人或朋友的故事</li>
+        <li>一件讓你很感動的事</li>
+      </ul>
+    </div>
+    <div style="background:#FFF5EC; border-radius:16px; padding:24px;">
+      <p style="font-size:1.7rem; font-weight:700; color:var(--accent); margin-bottom:12px;">📝 小提示</p>
+      <ul style="font-size:1.6rem;">
+        <li>回答長一點沒關係</li>
+        <li>不用想太多，自然就好</li>
+        <li>AI 不會評判你</li>
+        <li>聊完<strong>先不要關掉視窗</strong></li>
+      </ul>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:20px; font-size:1.6rem; color:#777;">計時器在右下角，時間到老師會提醒</p>
+</div>
+
+<!-- ===== SLIDE 9: SECTION - LYRICS ===== -->
+<div class="slide section-divider" data-slide="9" style="background: linear-gradient(135deg, #B5411F 0%, #E8913A 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">✍️</div>
+  <h1 style="color:white;">第二步：把故事變成歌詞</h1>
+  <p class="subtitle">複製一段話，貼進去，AI 幫你寫歌詞</p>
+</div>
+
+<!-- ===== SLIDE 10: CARD B PROMPT ===== -->
+<div class="slide" data-slide="10">
+  <h2>採訪結束後，貼這段話給 AI</h2>
+  <p style="font-size:1.6rem; color:#555; margin-bottom:12px;">在同一個對話框，繼續往下貼：</p>
+  <div class="template-card">
+    <button class="copy-btn" onclick="copyTemplate(this)">📋 複製</button>謝謝你的採訪！
+
+現在請你根據我們剛才聊的故事，幫我把它變成一首歌，輸出兩個部分：
+
+【歌詞】（貼進 Suno 的 Lyrics 欄）
+格式：[Intro]、[Verse 1]、[Chorus]、[Verse 2]、[Chorus]、[Bridge]、[Outro]
+每個標籤單獨一行，繁體中文，語言樸實，副歌要朗朗上口。
+
+【風格】（貼進 Suno 的 Style 欄，英文，一行）
+格式：曲風, 情緒, 主唱聲音, 樂器, BPM
+範例：mandopop ballad, warm and nostalgic, soft female vocals, piano and strings, 85 BPM</div>
+  <p style="font-size:1.5rem; color:#777; margin-top:8px;">📋 按上面的「複製」按鈕，再貼進對話框就好</p>
+</div>
+
+<!-- ===== SLIDE 11: LYRICS STRUCTURE ===== -->
+<div class="slide" data-slide="11">
+  <h2>歌詞標籤是什麼？</h2>
+  <p style="font-size:1.7rem; color:#555; margin-bottom:20px;">AI 會幫你自動加，你只要知道它們的意思就好：</p>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+    <div style="background:#FFF0E6; border-top:6px solid var(--accent); border-radius:12px; padding:20px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:900; color:#888; font-family:monospace; margin-bottom:8px;">[Intro]</div>
+      <div style="font-size:1.8rem; font-weight:700;">前奏</div>
+      <div style="font-size:1.4rem; color:#666; margin-top:8px;">帶出氛圍</div>
+    </div>
+    <div style="background:#E6F4FF; border-top:6px solid var(--blue); border-radius:12px; padding:20px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:900; color:#888; font-family:monospace; margin-bottom:8px;">[Verse 1]</div>
+      <div style="font-size:1.8rem; font-weight:700;">主歌</div>
+      <div style="font-size:1.4rem; color:#666; margin-top:8px;">說故事</div>
+    </div>
+    <div style="background:#FFF0E6; border-top:6px solid var(--accent); border-radius:12px; padding:20px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:900; color:#888; font-family:monospace; margin-bottom:8px;">[Chorus]</div>
+      <div style="font-size:1.8rem; font-weight:700; color:var(--accent);">副歌 ⭐</div>
+      <div style="font-size:1.4rem; color:#666; margin-top:8px;">最好記的句子</div>
+    </div>
+    <div style="background:#E6F4FF; border-top:6px solid var(--blue); border-radius:12px; padding:20px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:900; color:#888; font-family:monospace; margin-bottom:8px;">[Verse 2]</div>
+      <div style="font-size:1.8rem; font-weight:700;">主歌 2</div>
+      <div style="font-size:1.4rem; color:#666; margin-top:8px;">故事繼續</div>
+    </div>
+    <div style="background:#F5F0FF; border-top:6px solid var(--purple); border-radius:12px; padding:20px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:900; color:#888; font-family:monospace; margin-bottom:8px;">[Bridge]</div>
+      <div style="font-size:1.8rem; font-weight:700;">橋段</div>
+      <div style="font-size:1.4rem; color:#666; margin-top:8px;">情緒最高點</div>
+    </div>
+    <div style="background:#E6FFE6; border-top:6px solid var(--green); border-radius:12px; padding:20px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:900; color:#888; font-family:monospace; margin-bottom:8px;">[Outro]</div>
+      <div style="font-size:1.8rem; font-weight:700;">尾奏</div>
+      <div style="font-size:1.4rem; color:#666; margin-top:8px;">溫柔收尾</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12: LYRICS EXAMPLE ===== -->
+<div class="slide" data-slide="12">
+  <h2>AI 會輸出這樣的歌詞</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:16px;">
+    <div class="code-block" style="font-size:1.35rem;">
+<span class="tag">[Intro]</span>
+那年在基隆港，風很大，雨很急
+臉被打得發痛，我們還是往前走
+
+<span class="tag">[Verse 1]</span>
+年輕時我在基隆港上班
+颱風天，大家低著頭，手沒停過
+沒有人抱怨一句，只互相看一眼
+心裡都知道，今天要一起撐過去</div>
+    <div class="code-block" style="font-size:1.35rem;">
+<span class="tag">[Chorus]</span>
+一起撐，一起過
+再大風雨也不退縮
+有你在，有我在
+同甘共苦最難忘
+
+<span style="color:#888; font-size:1.2rem;">... (Verse 2 / Bridge / Outro)</span>
+
+<span class="style-line">【風格】
+mandopop ballad, warm, male vocals,
+piano and strings, 78 BPM</span></div>
+  </div>
+  <p style="text-align:center; margin-top:16px; font-size:1.6rem; color:var(--accent); font-weight:700;">
+    把上面兩個部分分別複製，準備貼進 Suno！
+  </p>
+</div>
+
+<!-- ===== SLIDE 13: SECTION - SUNO ===== -->
+<div class="slide section-divider" data-slide="13" style="background: linear-gradient(135deg, #3D6E3C 0%, #5D9E5C 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">🎵</div>
+  <h1 style="color:white;">第三步：放進 Suno</h1>
+  <p class="subtitle">按下去，等 30 秒，你的歌就出來了</p>
+</div>
+
+<!-- ===== SLIDE 14: SUNO STEPS ===== -->
+<div class="slide" data-slide="14">
+  <h2>Suno 操作步驟（超簡單）</h2>
+  <ol class="steps" style="margin-top:20px; max-width:740px;">
+    <li>
+      <strong>打開 suno.com</strong><br>
+      <span style="color:#555;">點右上角「Sign in」，用 Google 帳號登入</span>
+    </li>
+    <li>
+      <strong>點左側「Create」按鈕</strong><br>
+      <span style="color:#555;">進入創作頁面</span>
+    </li>
+    <li>
+      <strong>開啟「Custom」模式</strong><br>
+      <span style="color:#555;">在頁面右側找到「Custom」，點開它</span>
+    </li>
+    <li>
+      <strong>貼上【歌詞】→ 貼進「Lyrics」欄</strong><br>
+      <span style="color:#555;">把 AI 給你的整段歌詞複製貼進去</span>
+    </li>
+    <li>
+      <strong>貼上【風格】→ 貼進「Style」欄</strong><br>
+      <span style="color:#555;">那一行英文，貼進去就好</span>
+    </li>
+    <li>
+      <strong>按「Create」→ 等 30 秒！</strong><br>
+      <span style="color:#555;">Suno 會生成兩個版本，選你喜歡的</span>
+    </li>
+  </ol>
+</div>
+
+<!-- ===== SLIDE 15: SUNO STYLE GUIDE ===== -->
+<div class="slide" data-slide="15">
+  <h2>Suno 風格詞彙參考</h2>
+  <p style="font-size:1.6rem; color:#555; margin-bottom:16px;">貼進 Style 欄，換一換就有不同感覺：</p>
+  <div class="style-grid">
+    <div class="style-item">
+      <div class="style-label">🎼 懷舊國語老歌</div>
+      mandopop ballad, nostalgic, 1980s Taiwan, piano, strings, emotional, 80 BPM
+    </div>
+    <div class="style-item">
+      <div class="style-label">🌺 台語溫情</div>
+      Taiwanese folk, Hokkien, emotional, traditional, acoustic guitar, warm, 75 BPM
+    </div>
+    <div class="style-item">
+      <div class="style-label">🌸 輕鬆溫馨</div>
+      soft pop, warm, gentle, acoustic guitar, nostalgic, female vocals, 85 BPM
+    </div>
+    <div class="style-item">
+      <div class="style-label">🎻 感人抒情</div>
+      mandopop ballad, emotional, orchestral strings, piano, heartfelt delivery, 72 BPM
+    </div>
+  </div>
+  <div class="quote" style="margin-top:20px; font-size:1.6rem; text-align:center;">
+    💡 <strong>曲風 + 情緒 + 主唱 + 樂器 + BPM</strong> — 這五個填好，Suno 就知道要生什麼！
+  </div>
+</div>
+
+<!-- ===== SLIDE 16: PRACTICE - SUNO ===== -->
+<div class="slide" data-slide="16" data-timer="1200">
+  <div style="display:inline-block; background:var(--green); color:white; padding:10px 28px; border-radius:30px; font-size:1.5rem; font-weight:700; margin-bottom:20px;">
+    🎵 動手時間 — 20 分鐘
+  </div>
+  <h2>現在去 Suno，把你的歌生出來！</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:24px;">
+    <div style="background:#F0F8F0; border-radius:16px; padding:24px; text-align:center;">
+      <div style="font-size:2.5rem; margin-bottom:8px;">1️⃣</div>
+      <p style="font-size:1.6rem; font-weight:700;">複製歌詞</p>
+      <p style="font-size:1.4rem; color:#555; margin-top:8px;">回到 chat.pwlee.xyz<br>把 AI 給的歌詞複製</p>
+    </div>
+    <div style="background:#FFF5EC; border-radius:16px; padding:24px; text-align:center;">
+      <div style="font-size:2.5rem; margin-bottom:8px;">2️⃣</div>
+      <p style="font-size:1.6rem; font-weight:700;">貼進 Suno</p>
+      <p style="font-size:1.4rem; color:#555; margin-top:8px;">suno.com → Create<br>→ Custom 模式</p>
+    </div>
+    <div style="background:#F5F0FF; border-radius:16px; padding:24px; text-align:center;">
+      <div style="font-size:2.5rem; margin-bottom:8px;">3️⃣</div>
+      <p style="font-size:1.6rem; font-weight:700;">等歌出來！</p>
+      <p style="font-size:1.4rem; color:#555; margin-top:8px;">大概 30 秒<br>Suno 生兩個版本</p>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:24px; font-size:1.7rem; color:var(--accent); font-weight:700;">
+    做好了叫老師來聽 🎶
+  </p>
+</div>
+
+<!-- ===== SLIDE 17: SHARE TIME ===== -->
+<div class="slide section-divider" data-slide="17" style="background: linear-gradient(135deg, #2D6080 0%, #4A9EC4 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">🎶</div>
+  <h1 style="color:white;">來！大家一起聽</h1>
+  <p class="subtitle">誰願意第一個分享你的歌？</p>
+</div>
+
+<!-- ===== SLIDE 18: SHARE QUESTIONS ===== -->
+<div class="slide" data-slide="18">
+  <h2>分享的時候，說說看：</h2>
+  <div style="margin-top:24px; max-width:750px;">
+    <div style="background:#E6F4FF; border-left:8px solid var(--blue); border-radius:0 16px 16px 0; padding:28px 36px; margin-bottom:20px;">
+      <p style="font-size:2.1rem;">你跟 AI 聊了什麼故事？</p>
+    </div>
+    <div style="background:#F5F0FF; border-left:8px solid var(--purple); border-radius:0 16px 16px 0; padding:28px 36px; margin-bottom:20px;">
+      <p style="font-size:2.1rem;">AI 問了哪個問題，讓你印象最深？</p>
+    </div>
+    <div style="background:#FFF0E6; border-left:8px solid var(--accent); border-radius:0 16px 16px 0; padding:28px 36px;">
+      <p style="font-size:2.1rem;">聽到那首歌，你心裡是什麼感覺？</p>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:28px; font-size:1.7rem; color:#777;">記得按下載，把歌存下來！</p>
+</div>
+
+<!-- ===== SLIDE 19: WHAT WE LEARNED ===== -->
+<div class="slide" data-slide="19">
+  <h2>今天學到的</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:24px;">
+    <div style="background:#F5F0FF; border-radius:16px; padding:28px;">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🎙️</div>
+      <h3 style="color:var(--purple); font-size:1.9rem;">AI 可以採訪你</h3>
+      <p style="font-size:1.6rem; margin-top:8px; color:#444;">用對話方式，幫你說出心裡的故事</p>
+    </div>
+    <div style="background:#FFF5EC; border-radius:16px; padding:28px;">
+      <div style="font-size:2.8rem; margin-bottom:12px;">✍️</div>
+      <h3 style="color:var(--accent); font-size:1.9rem;">故事可以變成歌詞</h3>
+      <p style="font-size:1.6rem; margin-top:8px; color:#444;">複製貼上，AI 幫你寫歌詞和風格設定</p>
+    </div>
+    <div style="background:#F0F8F0; border-radius:16px; padding:28px;">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🎵</div>
+      <h3 style="color:var(--green); font-size:1.9rem;">Suno 把歌唱出來</h3>
+      <p style="font-size:1.6rem; margin-top:8px; color:#444;">貼入歌詞 + 風格，30 秒生成真正的歌</p>
+    </div>
+    <div style="background:#E6F4FF; border-radius:16px; padding:28px;">
+      <div style="font-size:2.8rem; margin-bottom:12px;">💡</div>
+      <h3 style="color:var(--blue); font-size:1.9rem;">你的故事最珍貴</h3>
+      <p style="font-size:1.6rem; margin-top:8px; color:#444;">AI 是工具，說故事的人是你</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 20: HOMEWORK ===== -->
+<div class="slide" data-slide="20">
+  <h2>回家試試看 🏠</h2>
+  <div style="max-width:720px; margin-top:20px;">
+    <ul class="big-text" style="margin-bottom:32px;">
+      <li>把今天的歌<span class="highlight">傳到 LINE 群</span>分享給家人</li>
+      <li>試試看聊<span class="highlight">另一個故事</span>，再生一首歌</li>
+      <li>換一個<span class="highlight">風格詞彙</span>，看看歌的感覺有什麼不同</li>
+    </ul>
+  </div>
+  <div style="background:var(--light); border-radius:16px; padding:24px 32px; display:inline-block; margin-top:8px;">
+    <p style="font-size:1.8rem;">📣 下堂課預告</p>
+    <p style="font-size:1.9rem; font-weight:700; color:var(--accent); margin-top:8px;">
+      整合作品！做屬於自己的「人生故事集」🎨
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 21: END ===== -->
+<div class="slide section-divider center" data-slide="21" style="background: linear-gradient(135deg, #6B4C9A 0%, #B5411F 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">🎶</div>
+  <h1 style="color:white; font-size:5rem;">謝謝大家</h1>
+  <p class="subtitle" style="font-size:2.2rem;">你的故事，變成了一首屬於你的歌 ✨</p>
+  <p style="font-size:1.6rem; margin-top:40px; opacity:0.8;">有問題隨時在 LINE 群問！</p>
+  <p style="font-size:1.4rem; margin-top:12px; opacity:0.6;">松年大學 AI 課程 ｜ 第七堂 ｜ 2026.04.10</p>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<div class="nav">
+  <button onclick="prevSlide()">◀</button>
+  <span class="page-num" id="pageNum">1 / 21</span>
+  <button onclick="nextSlide()">▶</button>
+</div>
+
+<!-- ===== TIMER ===== -->
+<div class="timer-container" id="timerContainer">
+  <button class="timer-btn" id="timerBtn">▶</button>
+  <div class="timer-display" id="timerDisplay">20:00</div>
+</div>
+
+<script>
+  // ===== SLIDE NAVIGATION =====
+  let current = 1;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function showSlide(n) {
+    current = Math.max(1, Math.min(n, total));
+    slides.forEach(s => s.classList.remove('active'));
+    document.querySelector(`[data-slide="${current}"]`).classList.add('active');
+    document.getElementById('pageNum').textContent = `${current} / ${total}`;
+
+    const slide = document.querySelector(`[data-slide="${current}"]`);
+    const timerSec = slide.getAttribute('data-timer');
+    const tc = document.getElementById('timerContainer');
+    if (timerSec) {
+      tc.classList.add('visible');
+      resetTimer(parseInt(timerSec));
+      setTimeout(function() { startTimer(); }, 100);
+    } else {
+      tc.classList.remove('visible');
+      stopTimer();
+    }
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    if (e.key === 't' || e.key === 'T') { toggleTimer(); }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+
+  showSlide(1);
+
+  // ===== TIMER =====
+  var timerInterval = null;
+  var timerSeconds = 0;
+  var timerRunning = false;
+
+  function resetTimer(sec) {
+    if (timerInterval !== null) { clearInterval(timerInterval); timerInterval = null; }
+    timerRunning = false;
+    timerSeconds = sec;
+    updateTimerDisplay();
+    document.getElementById('timerBtn').textContent = '▶';
+    document.getElementById('timerDisplay').classList.remove('warning');
+  }
+
+  function toggleTimer() { timerRunning ? stopTimer() : startTimer(); }
+
+  function startTimer() {
+    if (timerInterval !== null) { clearInterval(timerInterval); }
+    timerRunning = true;
+    document.getElementById('timerBtn').textContent = '⏸';
+    timerInterval = setInterval(function() {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 60) document.getElementById('timerDisplay').classList.add('warning');
+      if (timerSeconds <= 0) {
+        stopTimer();
+        document.getElementById('timerDisplay').textContent = '⏰ 時間到！';
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    timerRunning = false;
+    if (timerInterval !== null) { clearInterval(timerInterval); timerInterval = null; }
+    document.getElementById('timerBtn').textContent = '▶';
+  }
+
+  function updateTimerDisplay() {
+    var min = Math.floor(timerSeconds / 60);
+    var sec = timerSeconds % 60;
+    document.getElementById('timerDisplay').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+  }
+
+  document.getElementById('timerBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleTimer();
+  });
+
+  // ===== COPY TEMPLATE =====
+  function copyTemplate(btn) {
+    const card = btn.parentElement;
+    const clone = card.cloneNode(true);
+    clone.querySelector('.copy-btn')?.remove();
+    const text = clone.textContent.trim();
+
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✅ 已複製！';
+      btn.classList.add('copied');
+      showToast('已複製！可以貼到對話框了 ✨');
+      setTimeout(() => { btn.textContent = '📋 複製'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✅ 已複製！';
+      btn.classList.add('copied');
+      showToast('已複製！可以貼到對話框了 ✨');
+      setTimeout(() => { btn.textContent = '📋 複製'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+
+</body>
+</html>

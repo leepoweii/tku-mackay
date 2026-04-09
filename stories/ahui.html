@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的人生之歌 — 阿慧</title>
+  <meta property="og:title" content="我的人生之歌 — 阿慧">
+  <meta property="og:description" content="在馬偕好厝邊松年大學，用 AI 把人生故事寫成一首歌。">
+  <meta property="og:image" content="cover.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #FDFAF5;
+      --text: #1C1C1C;
+      --accent: #B85C4A;
+      --accent-light: #F5EAE7;
+      --gold: #9A7A3A;
+      --gold-light: #F5EFE0;
+      --border: #DDD0C0;
+      --muted: #6B6560;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(160deg, #2C1F3A 0%, #5C3D5A 40%, #9B6060 100%);
+      color: white;
+      text-align: center;
+      padding: 64px 24px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .course-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 4px;
+    }
+    .hero .subtitle {
+      font-size: 1rem;
+      opacity: 0.7;
+      letter-spacing: 1px;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* ===== ALBUM SECTION ===== */
+    .album-section {
+      margin-top: -24px;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .album-cover {
+      width: 200px;
+      height: 200px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      border: 4px solid white;
+      background: linear-gradient(135deg, #9B6060, #5C3D5A);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+    .song-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 20px 0 8px;
+      color: var(--text);
+    }
+    .listen-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin: 16px 0;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(184,92,74,0.3);
+    }
+    .listen-btn:hover { background: #A04A3A; transform: translateY(-2px); }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .section-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ===== LYRICS ===== */
+    .lyrics {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: var(--text);
+    }
+    .lyrics .stanza { margin-bottom: 28px; }
+    .lyrics .stanza-label {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      padding: 3px 10px;
+      background: var(--accent-light);
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* ===== PROFILE ===== */
+    .profile {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-top: 8px;
+    }
+    .profile-photo {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--border);
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--gold), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+    .profile-info .name {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .profile-info .title {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .profile-info .bio {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #3A3530;
+    }
+
+    /* ===== FOOTER ===== */
+    .page-footer {
+      text-align: center;
+      padding: 32px 20px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .page-footer a { color: var(--accent); text-decoration: none; }
+
+    /* ===== PRINT ===== */
+    @media print {
+      .hero { padding: 40px 24px 32px; }
+      .listen-btn { display: none; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="course-badge">馬偕好厝邊松年大學 · 樂齡 AI 創作課程</div>
+  <h1>我的人生之歌</h1>
+  <p class="subtitle">把故事，變成一首歌</p>
+</div>
+
+<!-- ALBUM -->
+<div class="container">
+  <div class="album-section">
+    <!-- 封面照片：換成 <img src="cover.jpg" ...> 或保留 emoji 預設 -->
+    <div class="album-cover">🎵</div>
+    <div class="song-title">我的人生之歌</div>
+    <a class="listen-btn" href="https://suno.com" target="_blank">
+      🎵 在 Suno 上聆聽
+    </a>
+  </div>
+
+  <hr class="divider">
+
+  <!-- LYRICS -->
+  <div class="section-title">歌詞</div>
+  <div class="lyrics">
+    <div class="stanza">
+      <div class="stanza-label">Intro</div>
+      那年在基隆港，風很大，雨很急<br>
+      臉被打得發痛，我們還是往前走
+    </div>
+    <div class="stanza">
+      <div class="stanza-label">Verse 1</div>
+      年輕時我在基隆港上班<br>
+      海風一來，衣服就整件濕透<br>
+      颱風天更不用說，雨打在臉上很痛<br>
+      碼頭邊大家低著頭，手卻沒停過
+    </div>
+    <div class="stanza">
+      <div class="stanza-label">Chorus</div>
+      一起撐，一起過<br>
+      再大風雨也不退縮<br>
+      有你在，有我在<br>
+      同甘共苦最難忘
+    </div>
+    <div class="stanza">
+      <div class="stanza-label">Verse 2</div>
+      下班回家，遠遠就看見燈亮著<br>
+      家人在門口等我，問我累不累<br>
+      那一刻所有疲憊都慢慢散開<br>
+      再苦的日子，好像也沒那麼難
+    </div>
+    <div class="stanza">
+      <div class="stanza-label">Chorus</div>
+      一起撐，一起過<br>
+      再大風雨也不退縮<br>
+      有你在，有我在<br>
+      同甘共苦最難忘
+    </div>
+    <div class="stanza">
+      <div class="stanza-label">Bridge</div>
+      現在回想那段日子<br>
+      最感動的不是風雨，是大家的心<br>
+      還有家裡那盞燈，一直等我回去
+    </div>
+    <div class="stanza">
+      <div class="stanza-label">Outro</div>
+      風再大，我都記得那份情<br>
+      回家的路上，永遠有人等我
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PROFILE -->
+  <div class="section-title">關於創作者</div>
+  <div class="profile">
+    <!-- 大頭照：換成 <img src="photo.jpg" ...> 或保留 emoji -->
+    <div class="profile-photo">👩</div>
+    <div class="profile-info">
+      <div class="name">金門阿慧</div>
+      <div class="title">金門藝品社經營者 / 退休</div>
+      <div class="bio">
+        我叫阿慧，在金門經營「金門藝品社」超過三十年。從年輕時一個小攤位開始，慢慢擴展成今天這間店面，專門販售貢糖、高粱酒、陶瓷、風獅爺等金門特產。<br><br>
+        這些年來，我接待過無數來自台灣和世界各地的遊客，也見證了金門從戰地轉型為觀光島嶼的歷程。每一位客人的笑容、每一次交易的溫度，都是我珍藏的回憶。<br><br>
+        現在退休了，我在馬偕好厝邊松年大學上課，學習 AI 創作、繪畫、音樂，每週的課程讓我充滿活力，也讓我有機會把這些年的故事寫成歌、畫成圖。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>© 2026 馬偕好厝邊松年大學 · 樂齡 AI 創作課程</p>
+  <p style="margin-top:6px;">課程網站：<a href="https://tku-mackay.vercel.app">tku-mackay.vercel.app</a></p>
+</div>
+
+</body>
+</html>
