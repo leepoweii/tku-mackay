@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>松年大學 AI 課程 — 第八堂</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 14px; }
+
+    :root {
+      --bg: #FFFFFF;
+      --text: #1A1A1A;
+      --accent: #B5411F;
+      --accent2: #9A5A1E;
+      --green: #3D6E3C;
+      --blue: #2D6080;
+      --purple: #6B4C9A;
+      --card: #FFFFFF;
+      --card-border: #C09A6E;
+      --light: #F0E0CC;
+      --template-bg: #FFF5E8;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .slide {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      padding: 32px 52px 88px; /* bottom: nav bar clearance */
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide.active { display: flex; }
+
+    h1 { font-size: 4rem; font-weight: 900; color: var(--accent); margin-bottom: 16px; line-height: 1.3; }
+    h2 { font-size: 2.9rem; font-weight: 700; color: var(--text); margin-bottom: 14px; line-height: 1.3; }
+    h3 { font-size: 1.85rem; font-weight: 700; color: var(--accent2); margin-bottom: 10px; }
+    p, li { font-size: 1.75rem; line-height: 1.75; font-weight: 400; }
+    ul { list-style: none; padding-left: 0; }
+    ul li::before { content: '\2022'; color: var(--accent); font-weight: 700; margin-right: 12px; }
+    ul li { margin-bottom: 8px; }
+    .subtitle { font-size: 2rem; color: var(--accent2); font-weight: 700; margin-bottom: 24px; }
+    .highlight { color: var(--accent); font-weight: 700; }
+
+    .center { text-align: center; align-items: center; }
+
+    .section-divider {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: white; text-align: center; justify-content: center; align-items: center;
+    }
+    .section-divider h1 { color: white; font-size: 4.5rem; }
+    .section-divider .subtitle { color: rgba(255,255,255,0.95); font-size: 2.2rem; }
+
+    .quote {
+      background: var(--light);
+      border-left: 8px solid var(--accent);
+      padding: 20px 32px;
+      border-radius: 0 16px 16px 0;
+      margin: 14px 0;
+      font-size: 1.7rem;
+      line-height: 1.85;
+    }
+
+    .template-card {
+      background: var(--template-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 52px 32px 24px; /* top: room for copy button */
+      font-size: 1.55rem;
+      line-height: 1.85;
+      white-space: pre-wrap;
+      position: relative;
+      margin: 8px 0;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans TC', sans-serif;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover { background: var(--accent2); }
+    .copy-btn.copied { background: var(--green); }
+
+    .steps {
+      list-style: none;
+      padding: 0;
+      counter-reset: step;
+    }
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      padding: 10px 16px 10px 60px;
+      margin-bottom: 7px;
+      background: var(--light);
+      border-radius: 12px;
+      font-size: 1.6rem;
+      line-height: 1.65;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 14px;
+      top: 50%; transform: translateY(-50%);
+      width: 32px; height: 32px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      font-weight: 900;
+      font-size: 1.25rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .steps li::after { display: none; }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: nowrap;
+    }
+    .flow-step {
+      flex: 1;
+      background: var(--light);
+      border: 2.5px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+    }
+    .flow-arrow {
+      font-size: 2.5rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .group-box {
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    .group-box h3 { margin-bottom: 8px; font-size: 1.9rem; }
+    .group-box p { font-size: 1.7rem; line-height: 1.8; }
+
+    .style-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .style-item {
+      background: var(--light);
+      border-radius: 12px;
+      padding: 18px 22px;
+      font-size: 1.5rem;
+      line-height: 1.8;
+    }
+    .style-label {
+      font-weight: 700;
+      font-size: 1.7rem;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 20px;
+      background: white; padding: 12px 28px; border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 100;
+    }
+    .nav button {
+      background: none; border: none; font-size: 1.8rem; cursor: pointer;
+      color: var(--accent); padding: 4px 12px; border-radius: 8px; transition: background 0.2s;
+    }
+    .nav button:hover { background: var(--light); }
+    .nav .page-num { font-size: 1.1rem; color: #999; min-width: 60px; text-align: center; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: var(--green); color: white; padding: 14px 30px; border-radius: 12px;
+      font-size: 1.2rem; font-weight: 500; z-index: 200; transition: transform 0.3s ease;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===== Per-slide compact overrides ===== */
+
+    /* Slide 3: three group boxes */
+    [data-slide="3"] { justify-content: flex-start; padding-top: 24px; }
+    [data-slide="3"] h2 { font-size: 2.6rem; margin-bottom: 6px; }
+    [data-slide="3"] > p { font-size: 1.5rem; margin-bottom: 12px; }
+    [data-slide="3"] .group-box { padding: 14px 20px; margin-bottom: 10px; }
+    [data-slide="3"] .group-box h3 { font-size: 1.65rem; margin-bottom: 4px; }
+    [data-slide="3"] .group-box p { font-size: 1.45rem; line-height: 1.6; }
+
+    /* Slide 5: done-group prompt */
+    [data-slide="5"] .template-card { font-size: 1.45rem; line-height: 1.75; }
+    [data-slide="5"] .quote { font-size: 1.55rem; }
+
+    /* Slide 6: quick fill */
+    [data-slide="6"] { padding-top: 24px; }
+    [data-slide="6"] h2 { margin-bottom: 6px; }
+    [data-slide="6"] .template-card { font-size: 1.4rem; line-height: 1.7; }
+
+    /* Slide 8: gemini cover */
+    [data-slide="8"] .template-card { font-size: 1.45rem; line-height: 1.75; }
+    [data-slide="8"] > div { padding: 10px 20px; font-size: 1.4rem; }
+
+    /* Slide 11: suno steps */
+    [data-slide="11"] { padding-top: 18px; }
+    [data-slide="11"] h2 { margin-bottom: 6px; }
+    [data-slide="11"] .steps li { padding: 7px 16px 7px 60px; margin-bottom: 5px; font-size: 1.5rem; }
+    [data-slide="11"] > div { margin-top: 6px; }
+
+    /* Slide 12: style guide */
+    [data-slide="12"] h2 { margin-bottom: 6px; }
+    [data-slide="12"] > p { margin-bottom: 10px; }
+    [data-slide="12"] .style-grid { gap: 10px; margin-top: 4px; }
+    [data-slide="12"] .style-item { padding: 12px 16px; font-size: 1.35rem; line-height: 1.65; }
+    [data-slide="12"] .style-label { font-size: 1.5rem; margin-bottom: 3px; }
+    [data-slide="12"] .quote { margin-top: 12px; font-size: 1.45rem; padding: 14px 24px; }
+
+    /* Slide 13: share link */
+    [data-slide="13"] h2 { margin-bottom: 8px; }
+    [data-slide="13"] > p { font-size: 1.5rem; margin-bottom: 14px; }
+
+    /* Slide 15: form QR */
+    [data-slide="15"] h2 { margin-bottom: 8px; }
+    [data-slide="15"] ul li { font-size: 1.6rem; margin-bottom: 6px; }
+
+    /* Slide 17: share questions */
+    [data-slide="17"] h2 { margin-bottom: 12px; }
+    [data-slide="17"] > div { margin-top: 12px; }
+    [data-slide="17"] > div > div { padding: 18px 28px; margin-bottom: 12px; }
+    [data-slide="17"] > div > div p { font-size: 1.85rem; }
+  </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== SLIDE 1: TITLE ===== -->
+<div class="slide center active" data-slide="1">
+  <h3 style="font-size:1.8rem; color:#555; margin-bottom:10px;">松年大學 AI 課程</h3>
+  <h1 style="font-size:4.8rem;">完成你的個人單曲</h1>
+  <p class="subtitle">歌詞 → 封面 → 主題曲 → 完成！</p>
+  <p style="font-size:1.6rem; color:#555; margin-top:40px;">第八堂課 ｜ 2026.04.17</p>
+</div>
+
+<!-- ===== SLIDE 2: TODAY'S FLOW ===== -->
+<div class="slide" data-slide="2">
+  <h2>今天做四件事</h2>
+  <div class="flow" style="margin-top:24px; margin-bottom:24px;">
+    <div class="flow-step" style="border-color:var(--accent); background:#FFF5EC;">
+      <div style="font-size:2.8rem; margin-bottom:8px;">🖊️</div>
+      <div style="font-size:1.6rem; color:var(--accent); font-weight:700;">第一步</div>
+      <div style="font-size:1.3rem; margin-top:6px; color:#555;">整理歌詞 +<br>自我介紹</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:#1A6B4A; background:#E8F5EF;">
+      <div style="font-size:2.8rem; margin-bottom:8px;">🖼️</div>
+      <div style="font-size:1.6rem; color:#1A6B4A; font-weight:700;">第二步</div>
+      <div style="font-size:1.3rem; margin-top:6px; color:#555;">Gemini<br>做封面</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--green); background:#F0F8F0;">
+      <div style="font-size:2.8rem; margin-bottom:8px;">🎵</div>
+      <div style="font-size:1.6rem; color:var(--green); font-weight:700;">第三步</div>
+      <div style="font-size:1.3rem; margin-top:6px; color:#555;">Suno<br>做主題曲</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--blue); background:#E6F4FF;">
+      <div style="font-size:2.8rem; margin-bottom:8px;">📤</div>
+      <div style="font-size:1.6rem; color:var(--blue); font-weight:700;">第四步</div>
+      <div style="font-size:1.3rem; margin-top:6px; color:#555;">上傳<br>Google Form</div>
+    </div>
+  </div>
+  <div class="quote" style="text-align:center; font-size:2rem;">
+    今天做完，你有一首<span class="highlight">屬於自己的歌</span>！🎵
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: SPLIT GROUPS ===== -->
+<div class="slide" data-slide="3" style="justify-content:flex-start; padding-top:32px;">
+  <h2>今天大家進度不同，沒關係！</h2>
+  <p style="font-size:1.8rem; color:#555; margin-bottom:20px;">各做各的，老師會來幫你</p>
+
+  <div class="group-box" style="background:#E8F5EF; border:2.5px solid var(--green);">
+    <h3 style="color:var(--green);">✅ 已完成組（上週有聊故事、有歌詞）</h3>
+    <p>→ 直接跳去做<strong>第二步（Gemini 封面）</strong>，不用等人！</p>
+  </div>
+
+  <div class="group-box" style="background:#FFF5EC; border:2.5px solid var(--accent);">
+    <h3 style="color:var(--accent);">⏳ 未完成組（還沒有故事或歌詞）</h3>
+    <p>→ 用「快速填空」補出歌詞，大約 5 分鐘就搞定</p>
+    <p style="color:#777; font-size:1.5rem; margin-top:6px;">（下一頁有模板，照著填就好）</p>
+  </div>
+
+  <div class="group-box" style="background:#F5F0FF; border:2.5px solid var(--purple);">
+    <h3 style="color:var(--purple);">🙋 不確定自己在哪組？</h3>
+    <p>→ 舉手，老師來幫你確認！</p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: SECTION - STEP 1 ===== -->
+<div class="slide section-divider" data-slide="4">
+  <div style="font-size:5rem; margin-bottom:24px;">🖊️</div>
+  <h1 style="color:white;">第一步：整理歌詞</h1>
+  <p class="subtitle">有故事的人產歌詞，沒有的用填空補</p>
+</div>
+
+<!-- ===== SLIDE 5: DONE GROUP PROMPT ===== -->
+<div class="slide" data-slide="5">
+  <h2>✅ 已完成組：請 AI 幫你整理歌詞</h2>
+  <p style="font-size:1.7rem; color:#555; margin-bottom:12px;">打開 <strong>chat.pwlee.xyz</strong>，找到上次的對話，貼這段話：</p>
+  <div class="template-card" id="tpl-done">
+    <button class="copy-btn" onclick="copyTemplate('tpl-done', this)">📋 複製</button>謝謝你上次的採訪！
+
+請根據我們聊的故事，幫我寫一首歌的歌詞：
+格式：[Intro] [Verse 1] [Chorus] [Verse 2] [Chorus] [Bridge] [Outro]
+語言：繁體中文，樸實溫暖，副歌要朗朗上口
+最後加一行：【風格】(英文，格式：曲風, 情緒, 樂器, BPM)</div>
+  <div class="quote" style="margin-top:16px; font-size:1.7rem;">
+    💡 歌詞產出後，<span class="highlight">直接往前跳去做第二步（Gemini）</span>，不用等其他人！
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: QUICK FILL TEMPLATE ===== -->
+<div class="slide" data-slide="6" style="justify-content:flex-start; padding-top:28px;">
+  <h2>⏳ 未完成組：快速填空（5 分鐘）</h2>
+  <p style="font-size:1.6rem; color:#555; margin-bottom:10px;">打開 ChatGPT，把下面複製進去，只換＿＿的部分：</p>
+  <div class="template-card" id="tpl-quick">
+    <button class="copy-btn" onclick="copyTemplate('tpl-quick', this)">📋 複製</button>幫我寫一首歌的歌詞，根據以下資料：
+
+我的名字：＿＿＿
+我年輕時做過的事：＿＿＿
+讓我最驕傲的一件事：＿＿＿
+最想對家人說的話：＿＿＿
+
+格式：[Intro] [Verse 1] [Chorus] [Verse 2] [Chorus] [Bridge] [Outro]
+風格：溫暖抒情，像寫給家人的信
+最後加一行【風格】英文風格說明</div>
+  <p style="font-size:1.3rem; color:#888; margin-top:6px; padding-bottom:4px;">✅ 填好送出，AI 直接給你歌詞，不需要長篇大論！</p>
+</div>
+
+<!-- ===== SLIDE 7: SECTION - STEP 2 GEMINI ===== -->
+<div class="slide section-divider" data-slide="7" style="background: linear-gradient(135deg, #1A6B4A 0%, #3DAA7A 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">🖼️</div>
+  <h1 style="color:white;">第二步：Gemini 做封面</h1>
+  <p class="subtitle" style="color:rgba(255,255,255,0.95);">打開 Gemini App，一段話做出你的專輯封面</p>
+</div>
+
+<!-- ===== SLIDE 8: GEMINI COVER TEMPLATE ===== -->
+<div class="slide" data-slide="8">
+  <h2>🎨 做你的專輯封面</h2>
+  <p style="font-size:1.6rem; color:#555; margin-bottom:12px;">打開 Gemini App，複製這段話貼進去，只換（）的部分：</p>
+  <div class="template-card" id="tpl-cover">
+    <button class="copy-btn" onclick="copyTemplate('tpl-cover', this)">📋 複製</button>幫我畫一張音樂專輯封面，正方形構圖。
+主角：（你的名字或暱稱）
+主題：（你的故事，例如：在海邊長大的童年、颱風天一起撐過去）
+風格：（溫馨水彩畫 / 復古油畫 / 簡單插畫）
+顏色：（你喜歡的顏色，例如：溫暖橘色、淡藍色、大地色）
+請不要在圖上加任何文字</div>
+  <div style="background:#E8F5EF; border-radius:12px; padding:14px 24px; margin-top:12px; font-size:1.5rem;">
+    不滿意的話，直接告訴 Gemini：「再試一次，讓顏色更溫暖」、「換成比較寫實的風格」
+  </div>
+  <a href="https://gemini.google.com/app" target="_blank"
+     style="display:inline-flex;align-items:center;gap:8px;background:#1A6B4A;color:white;padding:12px 28px;border-radius:30px;font-size:1.5rem;font-weight:700;text-decoration:none;margin-top:14px;">
+    🚀 打開 Gemini
+  </a>
+</div>
+
+<!-- ===== SLIDE 9: BREAK ===== -->
+<div class="slide section-divider" data-slide="9" style="background: linear-gradient(135deg, #555 0%, #888 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">☕</div>
+  <h1 style="color:white; font-size:5rem;">中場休息</h1>
+  <p class="subtitle" style="color:rgba(255,255,255,0.9); font-size:2.4rem;">10 分鐘後繼續</p>
+  <p style="color:rgba(255,255,255,0.7); font-size:1.8rem; margin-top:20px;">休息時確認一下：有歌詞了嗎？有封面了嗎？</p>
+</div>
+
+<!-- ===== SLIDE 10: SECTION - SUNO ===== -->
+<div class="slide section-divider" data-slide="10" style="background: linear-gradient(135deg, #3D6E3C 0%, #5D9E5C 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">🎵</div>
+  <h1 style="color:white;">第三步：Suno 做主題曲</h1>
+  <p class="subtitle" style="color:rgba(255,255,255,0.95);">貼入歌詞，等 30 秒，你的歌就出來了</p>
+</div>
+
+<!-- ===== SLIDE 11: SUNO STEPS ===== -->
+<div class="slide" data-slide="11" style="justify-content:flex-start; padding-top:24px;">
+  <h2>Suno 操作步驟</h2>
+  <ol class="steps" style="margin-top:16px; max-width:780px;">
+    <li>
+      <strong>打開 suno.com</strong>，用 Google 帳號登入
+    </li>
+    <li>
+      <strong>點左側「Create」</strong>，進入創作頁面
+    </li>
+    <li>
+      <strong>點「Advanced」</strong>切換到自訂模式
+    </li>
+    <li>
+      <strong>把歌詞貼進「Lyrics」欄</strong>（AI 給你的整段歌詞）
+    </li>
+    <li>
+      <strong>把風格貼進「Style」欄</strong>（那一行英文，例如 mandopop ballad, warm…）
+    </li>
+    <li>
+      <strong>按「Create」→ 等 30 秒！</strong>Suno 生兩個版本，選你喜歡的
+    </li>
+  </ol>
+  <div style="text-align:center; margin-top:10px;">
+    <a href="https://suno.com/" target="_blank"
+       style="display:inline-flex;align-items:center;gap:10px;background:var(--green);color:white;padding:10px 30px;border-radius:30px;font-size:1.5rem;font-weight:700;text-decoration:none;">
+      🎵 打開 Suno
+    </a>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12: SUNO STYLE GUIDE ===== -->
+<div class="slide" data-slide="12">
+  <h2>不知道填什麼風格？參考這裡</h2>
+  <p style="font-size:1.6rem; color:#555; margin-bottom:16px;">複製其中一行，貼進 Suno 的「Style」欄就好：</p>
+  <div class="style-grid">
+    <div class="style-item">
+      <div class="style-label">🎼 懷舊國語老歌</div>
+      mandopop ballad, nostalgic, 1980s Taiwan, piano, strings, 80 BPM
+    </div>
+    <div class="style-item">
+      <div class="style-label">🌺 台語溫情</div>
+      Taiwanese folk, Hokkien, emotional, acoustic guitar, warm, 75 BPM
+    </div>
+    <div class="style-item">
+      <div class="style-label">🌸 輕鬆溫馨</div>
+      soft pop, warm, gentle, acoustic guitar, nostalgic, 85 BPM
+    </div>
+    <div class="style-item">
+      <div class="style-label">🎻 感人抒情</div>
+      mandopop ballad, emotional, orchestral strings, piano, heartfelt, 72 BPM
+    </div>
+  </div>
+  <div class="quote" style="margin-top:20px; font-size:1.65rem; text-align:center;">
+    做出來不喜歡？改一改風格，再按 Create 試試！免費有一定額度，不怕做不好
+  </div>
+</div>
+
+<!-- ===== SLIDE 13: FIND SHARE LINK ===== -->
+<div class="slide" data-slide="13">
+  <h2>🔗 做完之後，找到分享連結</h2>
+  <p style="font-size:1.7rem; color:#555; margin-bottom:20px;">等一下填 Google Form 要用</p>
+  <ol class="steps" style="max-width:700px;">
+    <li>點選你喜歡的那首歌</li>
+    <li>點右邊的「<strong>…</strong>」或「<strong>Share</strong>」按鈕</li>
+    <li>複製連結（長得像：<span style="font-family:monospace; color:var(--green); font-size:1.5rem;">suno.com/song/xxxxx</span>）</li>
+    <li>先存在手機記事本，等等要貼進表單</li>
+  </ol>
+  <div class="quote" style="margin-top:20px; font-size:1.7rem;">
+    💡 連結是<span class="highlight">選填</span>的，找不到也沒關係，直接填表單就好！
+  </div>
+</div>
+
+<!-- ===== SLIDE 14: SECTION - GOOGLE FORM ===== -->
+<div class="slide section-divider" data-slide="14" style="background: linear-gradient(135deg, #2D6080 0%, #4A9EC4 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">📤</div>
+  <h1 style="color:white;">第四步：上傳 Google Form</h1>
+  <p class="subtitle" style="color:rgba(255,255,255,0.95);">填好之後，老師幫你做故事頁面</p>
+</div>
+
+<!-- ===== SLIDE 15: GOOGLE FORM ===== -->
+<div class="slide center" data-slide="15">
+  <h2>掃 QR Code 填表單 📝</h2>
+  <div style="display:flex; align-items:center; justify-content:center; gap:60px; margin-top:16px;">
+    <div style="text-align:center;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=https://tinyurl.com/mkf0417"
+           alt="Google Form QR Code" style="border-radius:16px; border:4px solid var(--card-border);">
+      <p style="font-size:1.5rem; color:#777; margin-top:12px;">掃這個 QR Code</p>
+    </div>
+    <div style="text-align:left;">
+      <div style="background:#1a1a2e; border-radius:16px; padding:20px 36px; margin-bottom:20px;">
+        <p style="font-size:1.9rem; font-weight:900; color:#FFB74D; letter-spacing:1px;">tinyurl.com/mkf0417</p>
+      </div>
+      <ul style="font-size:1.7rem;">
+        <li>你的名字或綽號</li>
+        <li>你的頭銜或現況（退休老師、家庭主婦…）</li>
+        <li>個人簡介</li>
+        <li>你的歌曲標題</li>
+        <li>Suno 歌曲連結（<span class="highlight">選填</span>）</li>
+        <li>你的歌詞</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 16: SHARING TIME ===== -->
+<div class="slide section-divider" data-slide="16" style="background: linear-gradient(135deg, #6B4C9A 0%, #9B6EBB 100%);">
+  <div style="font-size:5rem; margin-bottom:24px;">🎶</div>
+  <h1 style="color:white;">來！大家一起聽</h1>
+  <p class="subtitle" style="color:rgba(255,255,255,0.95);">誰願意第一個分享你的歌？</p>
+</div>
+
+<!-- ===== SLIDE 17: SHARE QUESTIONS ===== -->
+<div class="slide" data-slide="17">
+  <h2>分享的時候，說說看：</h2>
+  <div style="margin-top:24px; max-width:750px;">
+    <div style="background:#FFF5EC; border-left:8px solid var(--accent); border-radius:0 16px 16px 0; padding:28px 36px; margin-bottom:20px;">
+      <p style="font-size:2.1rem;">你的歌，叫什麼名字？</p>
+    </div>
+    <div style="background:#F5F0FF; border-left:8px solid var(--purple); border-radius:0 16px 16px 0; padding:28px 36px; margin-bottom:20px;">
+      <p style="font-size:2.1rem;">你想把這首歌傳給誰？</p>
+    </div>
+    <div style="background:#E8F5EF; border-left:8px solid var(--green); border-radius:0 16px 16px 0; padding:28px 36px;">
+      <p style="font-size:2.1rem;">聽到那首歌，你心裡是什麼感覺？</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 18: CLOSING ===== -->
+<div class="slide center" data-slide="18">
+  <div style="font-size:4rem; margin-bottom:16px;">🎵</div>
+  <h1 style="font-size:3.8rem;">謝謝大家這學期！</h1>
+  <div class="quote" style="text-align:center; margin-top:24px; font-size:1.9rem; max-width:700px;">
+    年輕人學 AI 是為了工作。<br>
+    但你們已經退休了。<br><br>
+    我希望 AI 對大家來說，<br>
+    是一個讓<span class="highlight">故事被看見</span>的工具。<br><br>
+    把作品傳給小孩、孫子，<br>
+    讓他們知道阿公阿嬤的故事。
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <button onclick="prevSlide()">◀</button>
+  <span class="page-num" id="pageNum">1 / 19</span>
+  <button onclick="nextSlide()">▶</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function showSlide(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    document.getElementById('pageNum').textContent = `${current + 1} / ${slides.length}`;
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') nextSlide();
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+  });
+
+  function copyTemplate(id, btn) {
+    const text = document.getElementById(id).innerText
+      .replace('📋 複製\n', '')
+      .replace('📋 複製', '')
+      .trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✅ 複製了！';
+      btn.classList.add('copied');
+      const toast = document.getElementById('toast');
+      toast.textContent = '✅ 複製成功！可以貼上了';
+      toast.classList.add('show');
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.classList.remove('copied');
+        toast.classList.remove('show');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
