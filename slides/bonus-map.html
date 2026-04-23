@@ -643,7 +643,10 @@ p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em
   font-family: 'Noto Serif TC', serif;
   letter-spacing: 0.3em;
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  opacity: 1;
+  transition: opacity 0.35s ease;
 }
+.nav.idle { opacity: 0; pointer-events: none; }
 .nav button {
   background: transparent; border: none; cursor: pointer;
   color: var(--paper); font-size: 18px; padding: 4px 12px;
@@ -1228,6 +1231,19 @@ p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em
   }
   window.addEventListener('resize', fit);
   fit();
+
+  // auto-hide nav after inactivity
+  const navEl = document.querySelector('.nav');
+  let navTimer;
+  function wakeNav() {
+    navEl.classList.remove('idle');
+    clearTimeout(navTimer);
+    navTimer = setTimeout(() => navEl.classList.add('idle'), 2000);
+  }
+  document.addEventListener('mousemove', wakeNav);
+  document.addEventListener('keydown', wakeNav);
+  document.addEventListener('touchstart', wakeNav);
+  wakeNav();
 </script>
 
 </body>
