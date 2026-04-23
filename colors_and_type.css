@@ -1,0 +1,206 @@
+/* ============================================================
+   Half Acre Coffee 半畝咖啡 — Core Tokens
+   Cream-dominant palette · serif display · warm + intimate
+   ============================================================ */
+
+@import url('./fonts/fonts.css');
+
+:root {
+  /* -------- Brand Colors -------- */
+  --cream:       #F0E6D3;   /* primary background */
+  --cream-soft:  #F7EFDF;   /* lighter cream, card bg */
+  --cream-deep:  #E6D9BF;   /* hairline dividers, subtle fill */
+  --espresso:    #3A2318;   /* primary ink */
+  --espresso-ink:#2A1710;   /* heaviest ink, emphasis */
+  --gold:        #C8923A;   /* highlight, rule, small accent */
+  --gold-soft:   #D8A95A;   /* hover state for gold */
+  --latte:       #A67B5B;   /* secondary text, warm neutral */
+  --latte-soft:  #C2A186;   /* tertiary, disabled */
+  --paper:       #FBF6EA;   /* lightest surface, nearly white */
+  --ink-muted:   #6B4A38;   /* body-muted tone */
+
+  /* -------- Semantic Foreground / Background -------- */
+  --bg:          var(--cream);
+  --bg-soft:     var(--cream-soft);
+  --bg-raised:   var(--paper);
+  --surface:     var(--cream-soft);
+  --fg:          var(--espresso);
+  --fg-1:        var(--espresso-ink);
+  --fg-2:        var(--ink-muted);
+  --fg-3:        var(--latte);
+  --fg-muted:    var(--latte-soft);
+  --accent:      var(--gold);
+  --accent-hover:var(--gold-soft);
+  --rule:        var(--cream-deep);
+  --rule-strong: var(--latte-soft);
+
+  /* -------- Type Families -------- */
+  --font-display: 'Playfair Display', 'Noto Serif TC', Georgia, serif;
+  --font-zh:      'Noto Serif TC', 'Playfair Display', serif;
+  --font-body:    'DM Sans', 'Noto Serif TC', system-ui, -apple-system, sans-serif;
+  --font-mono:    ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* -------- Type Scale (serif-first) -------- */
+  --fs-hero:   84px;   /* magazine cover */
+  --fs-h1:     56px;
+  --fs-h2:     40px;
+  --fs-h3:     28px;
+  --fs-h4:     22px;
+  --fs-lead:   19px;
+  --fs-body:   16px;
+  --fs-small:  14px;
+  --fs-micro:  12px;
+  --fs-caps:   11px;   /* eyebrow / label */
+
+  --lh-tight:  1.08;
+  --lh-snug:   1.25;
+  --lh-body:   1.6;
+  --lh-loose:  1.8;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.06em;
+  --tracking-caps:   0.22em;   /* eyebrow label spacing */
+
+  /* -------- Spacing (4pt base) -------- */
+  --s-0:   0;
+  --s-1:   4px;
+  --s-2:   8px;
+  --s-3:   12px;
+  --s-4:   16px;
+  --s-5:   24px;
+  --s-6:   32px;
+  --s-7:   48px;
+  --s-8:   64px;
+  --s-9:   96px;
+  --s-10: 128px;
+
+  /* -------- Radii — intentionally restrained -------- */
+  --r-none:  0;
+  --r-xs:    2px;
+  --r-sm:    4px;
+  --r-md:    8px;
+  --r-lg:   14px;
+  --r-pill: 999px;
+
+  /* -------- Borders -------- */
+  --border-hair:   1px solid var(--rule);
+  --border-thin:   1px solid var(--rule-strong);
+  --border-ink:    1px solid var(--espresso);
+  --border-gold:   1px solid var(--gold);
+
+  /* -------- Shadows — soft, paper-like -------- */
+  --shadow-1: 0 1px 0 rgba(58,35,24,0.04), 0 1px 2px rgba(58,35,24,0.05);
+  --shadow-2: 0 2px 6px rgba(58,35,24,0.07), 0 6px 14px rgba(58,35,24,0.06);
+  --shadow-3: 0 8px 24px rgba(58,35,24,0.10), 0 2px 6px rgba(58,35,24,0.06);
+  --shadow-inset-hair: inset 0 0 0 1px rgba(58,35,24,0.06);
+
+  /* -------- Motion -------- */
+  --ease-out:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:   160ms;
+  --dur-base:   260ms;
+  --dur-slow:   420ms;
+}
+
+/* ============================================================
+   Base Elements — semantic defaults
+   ============================================================ */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--fg-1);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  margin: 0;
+}
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); font-weight: 500; }
+h4 { font-size: var(--fs-h4); font-weight: 500; line-height: var(--lh-snug); }
+
+/* Chinese headings: Noto Serif TC takes precedence */
+.zh, [lang="zh"], [lang="zh-TW"] {
+  font-family: var(--font-zh);
+  letter-spacing: 0.02em;
+}
+
+p {
+  margin: 0 0 var(--s-4);
+  color: var(--fg);
+  max-width: 68ch;
+}
+
+a {
+  color: var(--fg-1);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast) var(--ease-out),
+              text-decoration-color var(--dur-fast) var(--ease-out);
+}
+a:hover { color: var(--gold); text-decoration-color: var(--espresso); }
+
+small, .small { font-size: var(--fs-small); color: var(--fg-2); }
+
+hr, .rule {
+  border: 0;
+  border-top: 1px solid var(--rule-strong);
+  margin: var(--s-6) 0;
+}
+.rule-gold { border-top-color: var(--gold); }
+
+/* ============================================================
+   Utility classes — the atelier-press voice
+   ============================================================ */
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-caps);
+  font-weight: 500;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.display-hero {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  font-weight: 500;
+  font-style: italic;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+}
+
+.serif-zh {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  color: var(--fg-1);
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-body);
+  color: var(--fg);
+}
+
+.meta {
+  font-family: var(--font-body);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
