@@ -48,6 +48,7 @@ Google 表單收回 7 筆（6 位學員，Nini 交了兩次）：
 tku-mackay.vercel.app/
 ├── index.html                     ← 改版：成果展首頁
 ├── stories/
+│   ├── stories.css                ← 7 頁共用樣式
 │   ├── teacher.html               ← 老師的歌（Opener，placeholder）
 │   ├── nini.html
 │   ├── bella.html
@@ -94,7 +95,9 @@ URL 用英文 slug（中文會 %-encode 後分享變醜）。
 
 ## 學員個人頁樣板
 
-每位學員一份獨立 HTML 檔（不抽共用 template，7 頁份量 copy-modify 比維護模板系統簡單）。以 `stories/ahui.html` 的結構為基礎，每頁結構：
+每位學員一份獨立 HTML 檔（不抽共用 template），但 **CSS 抽出到共用檔 `stories/stories.css`**（7 頁 CSS 重複度約 95%，只差 hero 漸層色；抽檔可避免改一次要改 7 處）。
+
+每頁 HTML 只保留結構 + 個人色 tokens（透過 `<body style="--hero-from:...; --hero-to:...">` 或小 `<style>` 區塊注入）。以 `stories/ahui.html` 的結構為基礎，每頁結構：
 
 ```
 ┌──────────────────────────────────┐
