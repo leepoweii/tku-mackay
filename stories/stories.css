@@ -190,6 +190,19 @@ body {
 }
 .story p { margin-bottom: 1em; }
 .story p:last-child { margin-bottom: 0; }
+.story blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 12px 20px;
+  margin: 20px 0;
+  font-family: 'Noto Serif TC', serif;
+  color: var(--accent);
+  font-weight: 600;
+  background: var(--accent-light);
+  border-radius: 0 8px 8px 0;
+  line-height: 1.9;
+}
+.story blockquote p { margin-bottom: 0.5em; }
+.story blockquote p:last-child { margin-bottom: 0; }
 
 /* ===== PROFILE ===== */
 .profile {
