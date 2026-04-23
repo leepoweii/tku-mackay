@@ -172,27 +172,28 @@ p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em
 }
 
 /* ============ SLIDE 2 · WHY LOST ============ */
-.s-why .content { flex-direction: row; gap: 72px; align-items: center; }
+.s-why .content { flex-direction: row; gap: 56px; align-items: center; }
 .s-why .left { flex: 1.05; }
 .s-why .right { flex: 1; display: flex; align-items: center; justify-content: center; }
-.s-why .kicker { margin-bottom: 32px; }
+.s-why .kicker { margin-bottom: 22px; }
 .s-why h2 {
-  font-size: 82px; color: var(--ink);
-  margin-bottom: 36px; line-height: 1.1;
+  font-size: 62px; color: var(--ink);
+  margin-bottom: 24px; line-height: 1.15;
 }
 .s-why h2 .big {
-  font-size: 150px; display: inline-block;
-  color: var(--seal); margin-right: 8px;
+  font-size: 112px; display: inline-block;
+  color: var(--seal); margin-right: 8px; line-height: 1;
 }
 .s-why .body-copy {
-  font-size: 27px; line-height: 2;
-  color: var(--ink-2); max-width: 560px;
+  font-size: 24px; line-height: 1.9;
+  color: var(--ink-2); max-width: 520px;
 }
 .s-why .body-copy strong {
   color: var(--seal); font-weight: 700;
   border-bottom: 2px solid var(--seal); padding-bottom: 2px;
 }
-.s-why svg { width: 440px; height: 440px; }
+.s-why .body-copy + .body-copy { margin-top: 18px; font-size: 20px; line-height: 1.85; }
+.s-why svg { width: 380px; height: 380px; }
 
 /* ============ SLIDE 3 · TREE HERO ============ */
 .s-tree .content { justify-content: flex-start; gap: 18px; }
@@ -210,7 +211,23 @@ p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em
   flex: 1;
   display: flex; align-items: flex-start; justify-content: center;
 }
-.tree-wrap svg { width: 100%; height: 100%; max-height: 640px; }
+.tree-wrap svg { width: 100%; height: 100%; max-height: 600px; }
+.tree-caption {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 40px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 19px;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  text-align: center;
+}
+.tree-caption .cap.left { color: var(--LINE-ink); }
+.tree-caption .cap.right { color: var(--BR); }
+.tree-caption .cap strong { font-weight: 700; margin-right: 8px; }
 
 /* ============ SLIDE 4 & 5 · WALK ============ */
 .s-walk .content { justify-content: flex-start; gap: 28px; }
@@ -688,7 +705,7 @@ p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em
   <div class="content">
     <div class="left">
       <div class="kicker">開 場</div>
-      <h2 style="margin-top:28px;">
+      <h2 style="margin-top:18px;">
         為 什 麼 老 是<br>
         覺 得 <span class="big">迷</span>？
       </h2>
@@ -697,10 +714,9 @@ p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em
         是數位世界從來沒有人，<br>
         告訴你它 <strong>長什麼樣</strong>。
       </p>
-      <p class="body-copy" style="margin-top:22px; font-size:22px; color:var(--ink-3);">
-        今天二十分鐘，<br>
-        我把整個世界畫成一棵樹。<br>
-        你會看見 —— 每個 App 是一種人生，<br>
+      <p class="body-copy" style="color:var(--ink-3);">
+        今天二十分鐘，我把整個世界畫成一棵樹 ——<br>
+        你會看見，每個 App 是一種人生，<br>
         而「瀏覽器」是最不一樣的那一個。
       </p>
     </div>
@@ -857,12 +873,11 @@ p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em
           <text x="1040" y="611" text-anchor="middle" font-family="Noto Serif TC" font-size="24" font-weight="700" fill="#1C1810">網 站 自 己 的 帳 號</text>
         </g>
 
-        <!-- side annotations -->
-        <g font-family="Noto Serif TC" font-size="14" letter-spacing="0.3em" fill="#6D5F44">
-          <text x="110" y="502" text-anchor="start">（ 打 開 就 是 內 容 ）</text>
-          <text x="1290" y="502" text-anchor="end">（ 還 要 再 進 一 個 世 界 ）</text>
-        </g>
       </svg>
+    </div>
+    <div class="tree-caption">
+      <div class="cap left"><strong>LINE 分支</strong>走 進 去 就 是 內 容</div>
+      <div class="cap right"><strong>Chrome 分支</strong>還 要 再 進 一 個 世 界</div>
     </div>
   </div>
   <div class="meta-bot">
