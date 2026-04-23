@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>數位世界族譜 · 二十分鐘</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --paper:   #F0E6D1;
+  --paper-2: #E5D8B8;
+  --paper-3: #D9C99E;
+  --ink:     #1C1810;
+  --ink-2:   #433A28;
+  --ink-3:   #6D5F44;
+  --faded:   #9A8B6E;
+  --seal:    #932B1D;
+  --seal-2:  #6E1F13;
+  --LINE:    #06C755;   /* LINE brand but toned for print */
+  --LINE-ink:#2F6B3D;
+  --LINE-bg: #E3EFDA;
+  --BR:      #B5411F;   /* 瀏覽器 terracotta */
+  --BR-bg:   #F7DFC8;
+  --site:    #6B3B5A;   /* 網站 plum */
+  --site-bg: #ECE2EC;
+  --acct:    #9A7326;   /* 帳號 ochre */
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Noto Sans TC', sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='520' height='520'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.08 0 0 0 0 0.05 0 0 0 0.32 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(52,38,18,0.22) 100%);
+}
+
+.stage-wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1; }
+.stage {
+  width: 1600px;
+  height: 900px;
+  position: relative;
+  flex-shrink: 0;
+  transform: scale(var(--scale, 1));
+  transform-origin: center center;
+  background: var(--paper);
+  box-shadow: 0 40px 80px rgba(44,32,12,0.18), 0 0 0 1px rgba(44,32,12,0.08);
+}
+
+.slide {
+  position: absolute; inset: 0;
+  padding: 80px 104px;
+  display: none;
+  flex-direction: column;
+}
+.slide.active { display: flex; }
+
+.slide::before {
+  content: ''; position: absolute; inset: 32px;
+  border: 1.5px solid var(--ink); pointer-events: none; opacity: 0.82;
+}
+.slide::after {
+  content: ''; position: absolute; inset: 44px;
+  border: 0.75px solid var(--ink); pointer-events: none; opacity: 0.5;
+}
+
+.meta-top {
+  position: absolute; top: 58px; left: 104px; right: 104px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 15px; letter-spacing: 0.38em; color: var(--ink-3);
+  z-index: 5;
+}
+.meta-top .right { color: var(--faded); }
+.meta-top .dot { color: var(--seal); margin: 0 8px; }
+
+.meta-bot {
+  position: absolute; bottom: 60px; left: 104px; right: 104px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 13px; letter-spacing: 0.4em; color: var(--faded);
+  z-index: 5;
+}
+
+.content {
+  flex: 1; display: flex; flex-direction: column;
+  position: relative; z-index: 4;
+  padding-top: 24px; padding-bottom: 24px;
+}
+
+h1, h2, h3 { font-family: 'Noto Serif TC', serif; }
+h1 { font-weight: 900; letter-spacing: 0.06em; line-height: 1.15; }
+h2 { font-weight: 700; letter-spacing: 0.04em; line-height: 1.25; }
+h3 { font-weight: 500; letter-spacing: 0.03em; }
+
+p { font-size: 28px; line-height: 1.8; color: var(--ink); letter-spacing: 0.02em; }
+.hl { color: var(--seal); font-weight: 700; }
+
+.kicker {
+  display: inline-flex; align-items: center; gap: 18px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 17px; letter-spacing: 0.5em; color: var(--ink-3);
+  font-weight: 500;
+}
+.kicker::before, .kicker::after {
+  content: ''; width: 44px; height: 1px; background: var(--ink-3); opacity: 0.6;
+}
+
+.seal {
+  display: inline-flex;
+  background: var(--seal); color: var(--paper);
+  font-family: 'Noto Serif TC', serif; font-weight: 700;
+  align-items: center; justify-content: center;
+  border: 2px solid var(--seal-2);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+}
+
+.slide.active .content > * { animation: fadeUp 0.55s ease-out both; }
+.slide.active .content > *:nth-child(1) { animation-delay: 0.05s; }
+.slide.active .content > *:nth-child(2) { animation-delay: 0.15s; }
+.slide.active .content > *:nth-child(3) { animation-delay: 0.25s; }
+.slide.active .content > *:nth-child(4) { animation-delay: 0.35s; }
+.slide.active .content > *:nth-child(5) { animation-delay: 0.45s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ SLIDE 1 · TITLE ============ */
+.s-title .content { justify-content: center; align-items: center; text-align: center; }
+.s-title .kicker { margin-bottom: 44px; }
+.s-title h1 {
+  font-size: 148px; color: var(--ink); position: relative;
+}
+.s-title h1::after {
+  content: ''; display: block;
+  width: 180px; height: 2px;
+  background: var(--ink); opacity: 0.55;
+  margin: 28px auto 0;
+}
+.s-title .title-sub {
+  margin-top: 28px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 38px; letter-spacing: 0.35em;
+  color: var(--ink-2); font-weight: 500;
+}
+.s-title .title-seal {
+  position: absolute;
+  right: 140px; bottom: 150px;
+  width: 108px; height: 108px;
+  font-size: 40px; letter-spacing: 0.05em;
+  transform: rotate(-9deg);
+  font-family: 'Noto Serif TC', serif;
+}
+
+/* ============ SLIDE 2 · WHY LOST ============ */
+.s-why .content { flex-direction: row; gap: 72px; align-items: center; }
+.s-why .left { flex: 1.05; }
+.s-why .right { flex: 1; display: flex; align-items: center; justify-content: center; }
+.s-why .kicker { margin-bottom: 32px; }
+.s-why h2 {
+  font-size: 82px; color: var(--ink);
+  margin-bottom: 36px; line-height: 1.1;
+}
+.s-why h2 .big {
+  font-size: 150px; display: inline-block;
+  color: var(--seal); margin-right: 8px;
+}
+.s-why .body-copy {
+  font-size: 27px; line-height: 2;
+  color: var(--ink-2); max-width: 560px;
+}
+.s-why .body-copy strong {
+  color: var(--seal); font-weight: 700;
+  border-bottom: 2px solid var(--seal); padding-bottom: 2px;
+}
+.s-why svg { width: 440px; height: 440px; }
+
+/* ============ SLIDE 3 · TREE HERO ============ */
+.s-tree .content { justify-content: flex-start; gap: 18px; }
+.s-tree .tree-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.s-tree h2 { font-size: 54px; color: var(--ink); }
+.s-tree .tree-note {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18px; letter-spacing: 0.3em; color: var(--ink-3);
+  padding-bottom: 8px;
+}
+.tree-wrap {
+  flex: 1;
+  display: flex; align-items: flex-start; justify-content: center;
+}
+.tree-wrap svg { width: 100%; height: 100%; max-height: 640px; }
+
+/* ============ SLIDE 4 & 5 · WALK ============ */
+.s-walk .content { justify-content: flex-start; gap: 28px; }
+.s-walk .walk-head { text-align: center; }
+.s-walk h2 { font-size: 56px; color: var(--ink); }
+.s-walk .walk-sub {
+  margin-top: 10px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 24px; letter-spacing: 0.2em;
+  color: var(--ink-3);
+}
+.walk-row {
+  display: grid;
+  grid-template-columns: 1fr 46px 1fr 46px 1fr 46px 1fr;
+  gap: 0;
+  align-items: stretch;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+.walk-card {
+  border: 2px solid var(--ink);
+  background: rgba(255,255,255,0.32);
+  padding: 24px 20px;
+  text-align: center;
+  position: relative;
+  min-height: 340px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  gap: 12px;
+}
+.walk-card::before {
+  content: ''; position: absolute; inset: 6px;
+  border: 1px solid var(--ink); opacity: 0.4; pointer-events: none;
+}
+.walk-card .w-step {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 14px; letter-spacing: 0.45em;
+  color: var(--faded);
+}
+.walk-card .w-num {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 64px; line-height: 1;
+  color: var(--ink);
+}
+.walk-card .w-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+}
+.walk-card .w-note {
+  font-size: 19px; line-height: 1.65;
+  color: var(--ink-2);
+  letter-spacing: 0.03em;
+  max-width: 220px;
+}
+.walk-card.highlight {
+  background: #F7E6D4;
+  border: 3px solid var(--seal);
+}
+.walk-card.highlight::before {
+  border: 1px dashed var(--seal); opacity: 0.7;
+}
+.walk-card.highlight .w-num { color: var(--seal); }
+.walk-card.highlight .w-title { color: var(--seal); }
+.walk-card.highlight .badge {
+  position: absolute; top: -14px; left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  background: var(--seal); color: var(--paper);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700; font-size: 15px;
+  padding: 4px 12px; letter-spacing: 0.3em;
+  border: 1.5px solid var(--seal-2);
+}
+.walk-arrow {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 34px; color: var(--ink-3);
+}
+.s-walk .walk-tail {
+  text-align: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 24px; letter-spacing: 0.1em;
+  color: var(--ink-2); line-height: 1.7;
+}
+.s-walk.line-theme h2 .tag { color: var(--LINE-ink); }
+.s-walk.chr-theme h2 .tag { color: var(--BR); }
+.walk-card.start-line { background: var(--LINE-bg); border-color: var(--LINE-ink); }
+.walk-card.start-line .w-num, .walk-card.start-line .w-title { color: var(--LINE-ink); }
+.walk-card.start-chr { background: var(--BR-bg); border-color: var(--BR); }
+.walk-card.start-chr .w-num, .walk-card.start-chr .w-title { color: var(--BR); }
+
+/* ============ SLIDE 6 · INSIGHT ============ */
+.s-insight .content { justify-content: center; gap: 30px; }
+.s-insight .i-head { text-align: center; }
+.s-insight .kicker { margin-bottom: 10px; }
+.s-insight .big-eq {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 0;
+  border: 2px solid var(--ink);
+  background: rgba(255,255,255,0.3);
+  position: relative;
+}
+.s-insight .big-eq::before {
+  content: ''; position: absolute; inset: 6px;
+  border: 1px solid var(--ink); opacity: 0.4; pointer-events: none;
+}
+.s-insight .eq-cell {
+  padding: 50px 48px;
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 14px;
+}
+.s-insight .eq-cell.left {
+  border-right: 1.5px dashed var(--ink-3);
+}
+.s-insight .eq-label {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px; letter-spacing: 0.5em;
+  color: var(--faded);
+}
+.s-insight .eq-app {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 72px;
+  letter-spacing: 0.1em;
+}
+.s-insight .eq-cell.left .eq-app { color: var(--LINE-ink); }
+.s-insight .eq-cell.right .eq-app { color: var(--BR); }
+.s-insight .eq-sym {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 50px; color: var(--ink-3);
+  letter-spacing: 0.2em;
+}
+.s-insight .eq-val {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 64px;
+  color: var(--ink);
+  letter-spacing: 0.15em;
+}
+.s-insight .eq-note {
+  font-size: 22px; color: var(--ink-3);
+  font-family: 'Noto Serif TC', serif;
+  letter-spacing: 0.15em;
+  margin-top: 4px;
+}
+.s-insight .punchline {
+  text-align: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 30px; line-height: 1.75;
+  color: var(--ink);
+  letter-spacing: 0.1em;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.s-insight .punchline .warn {
+  color: var(--seal); font-weight: 700;
+}
+
+/* ============ SLIDE 7 · TWO PATHS ============ */
+.s-two .content { justify-content: center; gap: 28px; }
+.s-two .t-head { text-align: center; }
+.s-two h2 { font-size: 52px; color: var(--ink); }
+.s-two .t-sub {
+  margin-top: 10px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 23px; letter-spacing: 0.15em;
+  color: var(--ink-3);
+}
+.paths {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  max-width: 1320px; margin: 0 auto; width: 100%;
+  align-items: stretch;
+}
+.path-col {
+  border: 2px solid var(--ink);
+  background: rgba(255,255,255,0.32);
+  padding: 28px 30px 24px;
+  position: relative;
+}
+.path-col::before {
+  content: ''; position: absolute; inset: 6px;
+  border: 1px solid var(--ink); opacity: 0.4; pointer-events: none;
+}
+.path-col .p-kick {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 14px; letter-spacing: 0.45em;
+  color: var(--faded);
+  margin-bottom: 12px; text-align: center;
+}
+.path-col .p-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 38px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--ink-3);
+}
+.path-col.A .p-title { color: var(--LINE-ink); }
+.path-col.B .p-title { color: var(--BR); }
+.p-chain {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.p-node {
+  padding: 11px 18px;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 500;
+  font-size: 21px;
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+.p-node.star {
+  background: var(--BR-bg);
+  border: 2px solid var(--BR);
+  color: var(--BR);
+  font-weight: 700;
+  position: relative;
+}
+.p-node.star::after {
+  content: '多一層';
+  position: absolute; right: -12px; top: 50%;
+  transform: translateY(-50%);
+  background: var(--seal); color: var(--paper);
+  font-size: 14px; letter-spacing: 0.25em;
+  padding: 3px 8px;
+  font-weight: 700;
+  border: 1px solid var(--seal-2);
+}
+.p-arrow {
+  text-align: center;
+  font-size: 14px; color: var(--faded);
+  font-family: 'Noto Serif TC', serif;
+  letter-spacing: 0.3em;
+  padding: 2px 0;
+}
+.path-link {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: 'Noto Serif TC', serif;
+  color: var(--seal);
+  padding: 10px 0;
+}
+.path-link .eq { font-size: 62px; line-height: 1; font-weight: 700; }
+.path-link .eq-sub { font-size: 14px; letter-spacing: 0.4em; color: var(--ink-3); margin-top: 6px; }
+.s-two .closing {
+  text-align: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 24px; color: var(--ink-2);
+  letter-spacing: 0.1em;
+  line-height: 1.65;
+}
+.s-two .closing .warn { color: var(--seal); font-weight: 700; }
+
+/* ============ SLIDE 8 · ACCOUNTS ============ */
+.s-acct .content { justify-content: center; gap: 30px; }
+.s-acct .a-head { text-align: center; }
+.s-acct h2 { font-size: 58px; color: var(--ink); }
+.s-acct .a-sub {
+  margin-top: 10px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 24px; letter-spacing: 0.15em;
+  color: var(--ink-3);
+}
+.acct-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  max-width: 1360px; margin: 0 auto; width: 100%;
+}
+.acct-card {
+  border: 2px solid var(--ink);
+  background: rgba(255,255,255,0.32);
+  padding: 30px 28px;
+  position: relative;
+  min-height: 310px;
+}
+.acct-card::before {
+  content: ''; position: absolute; inset: 6px;
+  border: 1px solid var(--ink); opacity: 0.4; pointer-events: none;
+}
+.acct-card .a-num {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 60px; line-height: 1;
+  color: var(--acct);
+  margin-bottom: 10px;
+}
+.acct-card .a-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 32px; letter-spacing: 0.1em;
+  color: var(--ink);
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--ink-3);
+  margin-bottom: 12px;
+}
+.acct-card p {
+  font-size: 20px; line-height: 1.75;
+  color: var(--ink-2);
+}
+.acct-card .eg {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--ink-3);
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18px; color: var(--ink-3);
+  letter-spacing: 0.1em;
+  line-height: 1.6;
+}
+.s-acct .a-punch {
+  text-align: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 26px; color: var(--ink);
+  letter-spacing: 0.1em;
+  line-height: 1.7;
+  max-width: 1100px; margin: 0 auto;
+}
+.s-acct .a-punch .hl { color: var(--seal); font-weight: 700; }
+
+/* ============ SLIDE 9 · QUIZ ============ */
+.s-quiz .content { justify-content: center; gap: 32px; }
+.s-quiz .q-head { text-align: center; }
+.s-quiz h2 { font-size: 56px; color: var(--ink); margin-bottom: 8px; }
+.s-quiz .q-sub {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 25px; letter-spacing: 0.15em;
+  color: var(--ink-2);
+}
+.s-quiz .q-sub .hl { color: var(--seal); }
+.quiz-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; max-width: 1360px; margin: 0 auto; width: 100%; }
+.quiz-card {
+  border: 2px solid var(--ink);
+  background: var(--paper-2);
+  padding: 30px 24px 24px;
+  position: relative;
+  text-align: center;
+  min-height: 320px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px;
+}
+.quiz-card::before { content: ''; position: absolute; inset: 6px; border: 1px solid var(--ink); opacity: 0.4; }
+.quiz-card .qnum {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 80px; font-weight: 900;
+  color: var(--ink); opacity: 0.2;
+  line-height: 0.9;
+  position: absolute; top: 14px; left: 24px;
+}
+.quiz-card .scene {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 22px; letter-spacing: 0.1em;
+  color: var(--ink-3);
+  margin-top: 20px;
+  line-height: 1.6;
+}
+.quiz-card .scene strong {
+  display: block;
+  font-weight: 700; font-size: 30px;
+  color: var(--ink); margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+.quiz-card .q-ask {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px; letter-spacing: 0.2em;
+  color: var(--ink-2);
+  padding: 10px 22px;
+  border: 1.5px dashed var(--ink-3);
+  margin-top: 10px;
+}
+
+/* ============ SLIDE 10 · OUTRO ============ */
+.s-out .content { justify-content: center; align-items: center; text-align: center; gap: 36px; }
+.s-out .kicker { margin-bottom: 0; }
+.s-out h2 { font-size: 66px; color: var(--ink); }
+.home-task {
+  max-width: 1060px;
+  padding: 42px 56px;
+  background: rgba(255,255,255,0.35);
+  border: 2px solid var(--ink);
+  position: relative;
+}
+.home-task::before { content: ''; position: absolute; inset: 8px; border: 1px solid var(--ink); opacity: 0.4; }
+.home-task .task-label {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18px; letter-spacing: 0.5em;
+  color: var(--faded);
+  margin-bottom: 14px;
+}
+.home-task .task-body {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 29px; line-height: 1.9;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+.home-task .task-body strong {
+  color: var(--seal); font-weight: 700;
+}
+.s-out .closer {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 22px; letter-spacing: 0.35em;
+  color: var(--ink-2);
+}
+.s-out .closer .bullet { color: var(--seal); margin: 0 14px; }
+.s-out .thanks {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 40px; letter-spacing: 0.3em;
+  color: var(--ink); font-weight: 500;
+}
+
+/* ============ NAV ============ */
+.nav {
+  position: fixed; bottom: 22px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 22px;
+  background: var(--ink); color: var(--paper);
+  font-family: 'Noto Serif TC', serif;
+  letter-spacing: 0.3em;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+.nav button {
+  background: transparent; border: none; cursor: pointer;
+  color: var(--paper); font-size: 18px; padding: 4px 12px;
+  font-family: 'Noto Serif TC', serif; letter-spacing: 0.3em;
+}
+.nav button:hover { color: var(--paper-2); }
+.nav .page-num { font-size: 14px; letter-spacing: 0.2em; min-width: 90px; text-align: center; color: var(--paper-2); }
+</style>
+</head>
+<body>
+
+<div class="stage-wrap">
+<div class="stage" id="stage">
+
+<!-- ============ SLIDE 1 · TITLE ============ -->
+<section class="slide s-title active" data-slide="1">
+  <div class="meta-top">
+    <span>松 年 大 學</span>
+    <span class="right">BONUS <span class="dot">·</span> 二〇二六</span>
+  </div>
+  <div class="content">
+    <div class="kicker">加 映 小 單 元</div>
+    <h1>數位世界族譜</h1>
+    <div class="title-sub">一 棵 樹 · 二 十 分 鐘</div>
+  </div>
+  <div class="seal title-seal">加映</div>
+  <div class="meta-bot">
+    <span>DIGITAL MAP</span>
+    <span>NO. 〇 一</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 · WHY LOST ============ -->
+<section class="slide s-why" data-slide="2">
+  <div class="meta-top">
+    <span>為 什 麼 迷 路</span>
+    <span class="right">PROLOGUE <span class="dot">·</span> 〇 二</span>
+  </div>
+  <div class="content">
+    <div class="left">
+      <div class="kicker">開 場</div>
+      <h2 style="margin-top:28px;">
+        為 什 麼 老 是<br>
+        覺 得 <span class="big">迷</span>？
+      </h2>
+      <p class="body-copy">
+        其實不是你不會用 ——<br>
+        是數位世界從來沒有人，<br>
+        告訴你它 <strong>長什麼樣</strong>。
+      </p>
+      <p class="body-copy" style="margin-top:22px; font-size:22px; color:var(--ink-3);">
+        今天二十分鐘，<br>
+        我把整個世界畫成一棵樹。<br>
+        你會看見 —— 每個 App 是一種人生，<br>
+        而「瀏覽器」是最不一樣的那一個。
+      </p>
+    </div>
+    <div class="right">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <g opacity="0.9">
+          <circle cx="60" cy="80" r="8" fill="#433A28"/>
+          <circle cx="140" cy="40" r="10" fill="#433A28"/>
+          <circle cx="220" cy="110" r="7" fill="#433A28"/>
+          <circle cx="320" cy="70" r="9" fill="#433A28"/>
+          <circle cx="80" cy="200" r="8" fill="#433A28"/>
+          <circle cx="260" cy="180" r="10" fill="#433A28"/>
+          <circle cx="170" cy="260" r="7" fill="#433A28"/>
+          <circle cx="340" cy="240" r="9" fill="#433A28"/>
+          <circle cx="100" cy="340" r="8" fill="#433A28"/>
+          <circle cx="230" cy="330" r="7" fill="#433A28"/>
+          <circle cx="310" cy="360" r="9" fill="#433A28"/>
+        </g>
+        <g fill="none" stroke="#932B1D" stroke-width="1.5" opacity="0.85" stroke-dasharray="5 5">
+          <path d="M60 80 L140 40 L220 110 L320 70"/>
+          <path d="M140 40 L80 200 L170 260"/>
+          <path d="M220 110 L260 180 L340 240"/>
+          <path d="M80 200 L260 180"/>
+          <path d="M170 260 L230 330 L310 360"/>
+          <path d="M100 340 L170 260"/>
+          <path d="M260 180 L230 330"/>
+        </g>
+        <g transform="translate(200 200)" opacity="0.3">
+          <circle r="58" fill="none" stroke="#1C1810" stroke-width="1"/>
+          <circle r="50" fill="none" stroke="#1C1810" stroke-width="0.5"/>
+          <path d="M0 -50 L6 0 L0 50 L-6 0 Z" fill="#932B1D"/>
+          <path d="M-50 0 L0 6 L50 0 L0 -6 Z" fill="#1C1810"/>
+          <text y="-62" text-anchor="middle" font-family="serif" font-size="14" fill="#1C1810">N</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>PROLOGUE</span>
+    <span>〇 二 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 · TREE HERO ============ -->
+<section class="slide s-tree" data-slide="3">
+  <div class="meta-top">
+    <span>全 族 譜</span>
+    <span class="right">THE TREE <span class="dot">·</span> 〇 三</span>
+  </div>
+  <div class="content">
+    <div class="tree-head">
+      <h2>數位世界的族譜。</h2>
+      <div class="tree-note">由 上 而 下 · 愈 進 愈 深</div>
+    </div>
+    <div class="tree-wrap">
+      <svg viewBox="0 0 1400 660" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <!-- ===== connection lines ===== -->
+        <g stroke="#1C1810" stroke-width="2" fill="none">
+          <!-- 裝置 → App -->
+          <line x1="700" y1="82" x2="700" y2="108"/>
+          <!-- App → branch bar -->
+          <line x1="700" y1="190" x2="700" y2="212"/>
+          <line x1="360" y1="212" x2="1040" y2="212"/>
+          <line x1="360" y1="212" x2="360" y2="236"/>
+          <line x1="1040" y1="212" x2="1040" y2="236"/>
+          <!-- LINE chain -->
+          <line x1="360" y1="318" x2="360" y2="340"/>
+          <line x1="360" y1="422" x2="360" y2="444"/>
+          <line x1="360" y1="526" x2="360" y2="548"/>
+          <!-- Chrome chain -->
+          <line x1="1040" y1="318" x2="1040" y2="340"/>
+          <line x1="1040" y1="422" x2="1040" y2="444"/>
+          <line x1="1040" y1="526" x2="1040" y2="548"/>
+        </g>
+
+        <!-- ===== 裝置 (root) ===== -->
+        <g>
+          <rect x="580" y="14" width="240" height="68" fill="#E5D8B8" stroke="#1C1810" stroke-width="2"/>
+          <rect x="586" y="20" width="228" height="56" fill="none" stroke="#1C1810" stroke-width="0.75" opacity="0.45"/>
+          <text x="700" y="46" text-anchor="middle" font-family="Noto Serif TC" font-size="28" font-weight="700" fill="#1C1810">裝　　置</text>
+          <text x="700" y="68" text-anchor="middle" font-family="Noto Serif TC" font-size="13" letter-spacing="0.4em" fill="#6D5F44">手 機 · 電 腦</text>
+        </g>
+
+        <!-- ===== 應用程式 (branch root) ===== -->
+        <g>
+          <rect x="580" y="116" width="240" height="74" fill="#E5D8B8" stroke="#1C1810" stroke-width="2"/>
+          <rect x="586" y="122" width="228" height="62" fill="none" stroke="#1C1810" stroke-width="0.75" opacity="0.45"/>
+          <text x="700" y="154" text-anchor="middle" font-family="Noto Serif TC" font-size="30" font-weight="900" fill="#1C1810">應 用 程 式</text>
+          <text x="700" y="176" text-anchor="middle" font-family="Noto Serif TC" font-size="13" letter-spacing="0.45em" fill="#6D5F44">A&#160;P&#160;P</text>
+        </g>
+
+        <!-- ===== LINE column (x=360) ===== -->
+        <!-- 3a: LINE -->
+        <g>
+          <rect x="240" y="236" width="240" height="82" fill="#E3EFDA" stroke="#2F6B3D" stroke-width="2.5"/>
+          <rect x="246" y="242" width="228" height="70" fill="none" stroke="#2F6B3D" stroke-width="0.75" opacity="0.5"/>
+          <text x="360" y="272" text-anchor="middle" font-family="Noto Serif TC" font-size="13" letter-spacing="0.4em" fill="#6D5F44">一 般 A P P</text>
+          <text x="360" y="302" text-anchor="middle" font-family="Noto Serif TC" font-size="34" font-weight="900" fill="#2F6B3D">LINE</text>
+        </g>
+        <!-- 4a: LINE 帳號 -->
+        <g>
+          <rect x="240" y="340" width="240" height="82" fill="#F0E6D1" stroke="#1C1810" stroke-width="2"/>
+          <rect x="246" y="346" width="228" height="70" fill="none" stroke="#1C1810" stroke-width="0.75" opacity="0.45"/>
+          <text x="360" y="373" text-anchor="middle" font-family="Noto Serif TC" font-size="12" letter-spacing="0.4em" fill="#6D5F44">第 二 步</text>
+          <text x="360" y="403" text-anchor="middle" font-family="Noto Serif TC" font-size="26" font-weight="700" fill="#1C1810">LINE 帳 號</text>
+        </g>
+        <!-- 5a: 好友選單 -->
+        <g>
+          <rect x="240" y="444" width="240" height="82" fill="#F0E6D1" stroke="#1C1810" stroke-width="2"/>
+          <rect x="246" y="450" width="228" height="70" fill="none" stroke="#1C1810" stroke-width="0.75" opacity="0.45"/>
+          <text x="360" y="477" text-anchor="middle" font-family="Noto Serif TC" font-size="12" letter-spacing="0.4em" fill="#6D5F44">第 三 步</text>
+          <text x="360" y="507" text-anchor="middle" font-family="Noto Serif TC" font-size="26" font-weight="700" fill="#1C1810">好 友 選 單</text>
+        </g>
+        <!-- 6a: 聊天畫面 -->
+        <g>
+          <rect x="240" y="548" width="240" height="82" fill="#F0E6D1" stroke="#1C1810" stroke-width="2"/>
+          <rect x="246" y="554" width="228" height="70" fill="none" stroke="#1C1810" stroke-width="0.75" opacity="0.45"/>
+          <text x="360" y="581" text-anchor="middle" font-family="Noto Serif TC" font-size="12" letter-spacing="0.4em" fill="#6D5F44">第 四 步</text>
+          <text x="360" y="611" text-anchor="middle" font-family="Noto Serif TC" font-size="26" font-weight="700" fill="#1C1810">聊 天 畫 面</text>
+        </g>
+
+        <!-- ===== Chrome column (x=1040) ===== -->
+        <!-- 3b: Chrome -->
+        <g>
+          <rect x="920" y="236" width="240" height="82" fill="#F7DFC8" stroke="#B5411F" stroke-width="2.5"/>
+          <rect x="926" y="242" width="228" height="70" fill="none" stroke="#B5411F" stroke-width="0.75" opacity="0.5"/>
+          <text x="1040" y="272" text-anchor="middle" font-family="Noto Serif TC" font-size="13" letter-spacing="0.4em" fill="#6D5F44">特 別 的 A P P</text>
+          <text x="1040" y="302" text-anchor="middle" font-family="Noto Serif TC" font-size="30" font-weight="900" fill="#B5411F">Chrome</text>
+        </g>
+        <!-- 4b: Google 帳號 -->
+        <g>
+          <rect x="920" y="340" width="240" height="82" fill="#F0E6D1" stroke="#1C1810" stroke-width="2"/>
+          <rect x="926" y="346" width="228" height="70" fill="none" stroke="#1C1810" stroke-width="0.75" opacity="0.45"/>
+          <text x="1040" y="373" text-anchor="middle" font-family="Noto Serif TC" font-size="12" letter-spacing="0.4em" fill="#6D5F44">第 二 步</text>
+          <text x="1040" y="403" text-anchor="middle" font-family="Noto Serif TC" font-size="26" font-weight="700" fill="#1C1810">Google 帳 號</text>
+        </g>
+        <!-- 5b: 網站 ★ -->
+        <g>
+          <rect x="912" y="444" width="256" height="82" fill="#ECE2EC" stroke="#932B1D" stroke-width="3"/>
+          <rect x="920" y="452" width="240" height="66" fill="none" stroke="#932B1D" stroke-width="1" opacity="0.65"/>
+          <text x="1040" y="476" text-anchor="middle" font-family="Noto Serif TC" font-size="12" letter-spacing="0.45em" fill="#932B1D">★ 關 鍵 一 層 ★</text>
+          <text x="1040" y="508" text-anchor="middle" font-family="Noto Serif TC" font-size="28" font-weight="900" fill="#932B1D">網　　站</text>
+          <!-- small seal mark -->
+          <g transform="translate(1144 452) rotate(10)">
+            <rect x="-22" y="-14" width="44" height="28" fill="#932B1D" stroke="#6E1F13" stroke-width="1"/>
+            <text x="0" y="5" text-anchor="middle" font-family="Noto Serif TC" font-size="12" font-weight="700" fill="#F0E6D1" letter-spacing="0.1em">另&#8202;個</text>
+          </g>
+        </g>
+        <!-- 6b: 網站的帳號 -->
+        <g>
+          <rect x="920" y="548" width="240" height="82" fill="#F0E6D1" stroke="#1C1810" stroke-width="2"/>
+          <rect x="926" y="554" width="228" height="70" fill="none" stroke="#1C1810" stroke-width="0.75" opacity="0.45"/>
+          <text x="1040" y="581" text-anchor="middle" font-family="Noto Serif TC" font-size="12" letter-spacing="0.4em" fill="#6D5F44">第 四 步</text>
+          <text x="1040" y="611" text-anchor="middle" font-family="Noto Serif TC" font-size="24" font-weight="700" fill="#1C1810">網 站 自 己 的 帳 號</text>
+        </g>
+
+        <!-- side annotations -->
+        <g font-family="Noto Serif TC" font-size="14" letter-spacing="0.3em" fill="#6D5F44">
+          <text x="110" y="502" text-anchor="start">（ 打 開 就 是 內 容 ）</text>
+          <text x="1290" y="502" text-anchor="end">（ 還 要 再 進 一 個 世 界 ）</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>THE TREE</span>
+    <span>〇 三 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 · LINE WALK ============ -->
+<section class="slide s-walk line-theme" data-slide="4">
+  <div class="meta-top">
+    <span>走 進 LINE</span>
+    <span class="right">BRANCH A <span class="dot">·</span> 〇 四</span>
+  </div>
+  <div class="content">
+    <div class="walk-head">
+      <div class="kicker">分 支 甲 · LINE</div>
+      <h2 style="margin-top:8px;">打開 <span class="tag">LINE</span> 之後，一路走到聊天。</h2>
+      <div class="walk-sub">四 步 · 就 到 了</div>
+    </div>
+    <div class="walk-row">
+      <div class="walk-card start-line">
+        <div class="w-step">第 一 步</div>
+        <div class="w-num">一</div>
+        <div class="w-title">打 開 LINE</div>
+        <div class="w-note">手機桌面點綠色圖示<br>（一種一般的 App）</div>
+      </div>
+      <div class="walk-arrow">▶</div>
+      <div class="walk-card">
+        <div class="w-step">第 二 步</div>
+        <div class="w-num">二</div>
+        <div class="w-title">LINE 帳 號</div>
+        <div class="w-note">第一次要登入<br>之後會記住你</div>
+      </div>
+      <div class="walk-arrow">▶</div>
+      <div class="walk-card">
+        <div class="w-step">第 三 步</div>
+        <div class="w-num">三</div>
+        <div class="w-title">好 友 選 單</div>
+        <div class="w-note">看到一整排朋友名字</div>
+      </div>
+      <div class="walk-arrow">▶</div>
+      <div class="walk-card">
+        <div class="w-step">第 四 步</div>
+        <div class="w-num">四</div>
+        <div class="w-title">聊 天 畫 面</div>
+        <div class="w-note">點名字進去就能打字<br>—— 你要的內容到了</div>
+      </div>
+    </div>
+    <div class="walk-tail">
+      打 開 → 登 入 → 選 朋 友 → 聊 天。<br>
+      四 步，都 在 LINE 自 己 家 裡。
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>BRANCH · LINE</span>
+    <span>〇 四 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 · CHROME WALK ============ -->
+<section class="slide s-walk chr-theme" data-slide="5">
+  <div class="meta-top">
+    <span>走 進 Chrome</span>
+    <span class="right">BRANCH B <span class="dot">·</span> 〇 五</span>
+  </div>
+  <div class="content">
+    <div class="walk-head">
+      <div class="kicker">分 支 乙 · Chrome</div>
+      <h2 style="margin-top:8px;">打開 <span class="tag">Chrome</span>，才發現裡面還有一個世界。</h2>
+      <div class="walk-sub">多 了 「 網 站 」 那 一 層</div>
+    </div>
+    <div class="walk-row">
+      <div class="walk-card start-chr">
+        <div class="w-step">第 一 步</div>
+        <div class="w-num">一</div>
+        <div class="w-title">打 開 Chrome</div>
+        <div class="w-note">一樣是 App<br>但它是「特別的 App」</div>
+      </div>
+      <div class="walk-arrow">▶</div>
+      <div class="walk-card">
+        <div class="w-step">第 二 步</div>
+        <div class="w-num">二</div>
+        <div class="w-title">Google 帳 號</div>
+        <div class="w-note">這是 Chrome 自己<br>要你登入的身份</div>
+      </div>
+      <div class="walk-arrow">▶</div>
+      <div class="walk-card highlight">
+        <div class="badge">多 這 一 層</div>
+        <div class="w-step">第 三 步</div>
+        <div class="w-num">三</div>
+        <div class="w-title">網　站</div>
+        <div class="w-note">打開 Chrome 還不是內容<br>要再輸入網址進到「網站」</div>
+      </div>
+      <div class="walk-arrow">▶</div>
+      <div class="walk-card">
+        <div class="w-step">第 四 步</div>
+        <div class="w-num">四</div>
+        <div class="w-title">網 站 的 帳 號</div>
+        <div class="w-note">每個網站有自己的會員<br>（又要登入一次）</div>
+      </div>
+    </div>
+    <div class="walk-tail">
+      所 以 Chrome 比 LINE 多 一 層 —— <span class="hl" style="color:var(--seal);">網 站</span>。<br>
+      這 就 是 「 瀏 覽 器 」 和 一 般 App 最 大 的 差 別。
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>BRANCH · BROWSER</span>
+    <span>〇 五 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 · INSIGHT ============ -->
+<section class="slide s-insight" data-slide="6">
+  <div class="meta-top">
+    <span>一 間 店 · 一 條 街</span>
+    <span class="right">INSIGHT <span class="dot">·</span> 〇 六</span>
+  </div>
+  <div class="content">
+    <div class="i-head">
+      <div class="kicker">差 別 在 這 裡</div>
+    </div>
+    <div class="big-eq">
+      <div class="eq-cell left">
+        <div class="eq-label">BRANCH A</div>
+        <div class="eq-app">LINE</div>
+        <div class="eq-sym">＝</div>
+        <div class="eq-val">一 間 店</div>
+        <div class="eq-note">走進去，就是商品</div>
+      </div>
+      <div class="eq-cell right">
+        <div class="eq-label">BRANCH B</div>
+        <div class="eq-app">Chrome</div>
+        <div class="eq-sym">＝</div>
+        <div class="eq-val">一 條 街</div>
+        <div class="eq-note">走進去，還要再選一間店</div>
+      </div>
+    </div>
+    <div class="punchline">
+      瀏覽器是唯一一種 —— <span class="warn">打開之後還不是內容</span>的 App。<br>
+      它帶你走到一條街，真正的內容在那條街上的「網站」裡。
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>INSIGHT</span>
+    <span>〇 六 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 · TWO PATHS ============ -->
+<section class="slide s-two" data-slide="7">
+  <div class="meta-top">
+    <span>同 一 家 店 · 兩 個 位 址</span>
+    <span class="right">TWO PATHS <span class="dot">·</span> 〇 七</span>
+  </div>
+  <div class="content">
+    <div class="t-head">
+      <div class="kicker">現 場 示 範</div>
+      <h2 style="margin-top:10px;">ChatGPT 這家店 —— 有兩個位址能進去。</h2>
+      <div class="t-sub">一 個 在 App 區 · 一 個 在 Chrome 那 條 街 上</div>
+    </div>
+    <div class="paths">
+      <div class="path-col A">
+        <div class="p-kick">PATH A · APP 區</div>
+        <div class="p-title">ChatGPT App</div>
+        <div class="p-chain">
+          <div class="p-node">裝　置</div>
+          <div class="p-arrow">▼</div>
+          <div class="p-node">ChatGPT（App）</div>
+          <div class="p-arrow">▼</div>
+          <div class="p-node">ChatGPT 帳號</div>
+          <div class="p-arrow">▼</div>
+          <div class="p-node">內　容</div>
+        </div>
+      </div>
+      <div class="path-link">
+        <div class="eq">＝</div>
+        <div class="eq-sub">SAME SHOP</div>
+      </div>
+      <div class="path-col B">
+        <div class="p-kick">PATH B · 瀏 覽 器 那 條 街</div>
+        <div class="p-title">chatgpt.com</div>
+        <div class="p-chain">
+          <div class="p-node">裝　置</div>
+          <div class="p-arrow">▼</div>
+          <div class="p-node">Chrome（瀏覽器）</div>
+          <div class="p-arrow">▼</div>
+          <div class="p-node star">網 站 &nbsp;chatgpt.com</div>
+          <div class="p-arrow">▼</div>
+          <div class="p-node">ChatGPT 帳號</div>
+        </div>
+      </div>
+    </div>
+    <div class="closing">
+      兩個位址，同一家店。<br>
+      <span class="warn">假 App</span> 騙人的方式 —— 長得像 Path A，背後卻是它自己的假網站。
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>TWO PATHS</span>
+    <span>〇 七 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8 · ACCOUNTS ============ -->
+<section class="slide s-acct" data-slide="8">
+  <div class="meta-top">
+    <span>為 什 麼 老 是 叫 你 登 入</span>
+    <span class="right">ACCOUNTS <span class="dot">·</span> 〇 八</span>
+  </div>
+  <div class="content">
+    <div class="a-head">
+      <div class="kicker">三 種 身 份</div>
+      <h2 style="margin-top:10px;">你其實有<span class="hl">三種</span>帳號，不是一種。</h2>
+      <div class="a-sub">一 張 門 票 · 只 能 進 一 道 門</div>
+    </div>
+    <div class="acct-grid">
+      <div class="acct-card">
+        <div class="a-num">一</div>
+        <div class="a-title">App 的帳號</div>
+        <p>住在那個 App 自己家。<br>離開這個 App，它就不認識你。</p>
+        <div class="eg">例：LINE 帳號 · WhatsApp 帳號</div>
+      </div>
+      <div class="acct-card">
+        <div class="a-num">二</div>
+        <div class="a-title">瀏覽器的帳號</div>
+        <p>Chrome 會問你「要不要登入 Google？」<br>這是讓書籤跨裝置同步用的。</p>
+        <div class="eg">例：Google 帳號（Chrome）· Apple ID（Safari）</div>
+      </div>
+      <div class="acct-card">
+        <div class="a-num">三</div>
+        <div class="a-title">網站的帳號</div>
+        <p>走進「網站」這條街之後，<br>每一間店還有自己的會員卡。</p>
+        <div class="eg">例：網銀 · 博客來 · 蝦皮 · ChatGPT</div>
+      </div>
+    </div>
+    <div class="a-punch">
+      所以你不是「一直被叫去登入」—— <br>
+      是你<span class="hl">走到了不同層</span>，每一層有自己的門神。
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>ACCOUNTS</span>
+    <span>〇 八 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9 · QUIZ ============ -->
+<section class="slide s-quiz" data-slide="9">
+  <div class="meta-top">
+    <span>換 你 們 上 場</span>
+    <span class="right">QUIZ <span class="dot">·</span> 〇 九</span>
+  </div>
+  <div class="content">
+    <div class="q-head">
+      <div class="kicker">小 小 考 一 下</div>
+      <h2 style="margin-top:10px;">這三件事，你走的是<span class="hl">哪一條路</span>？</h2>
+      <div class="q-sub">是 一 間 店 · 還 是 一 條 街 上 的 店？</div>
+    </div>
+    <div class="quiz-row">
+      <div class="quiz-card">
+        <div class="qnum">一</div>
+        <div class="scene">
+          手機桌面，點一下
+          <strong>LINE 圖示</strong>
+          開始跟朋友聊天
+        </div>
+        <div class="q-ask">A 分 支 ？ B 分 支 ？</div>
+      </div>
+      <div class="quiz-card">
+        <div class="qnum">二</div>
+        <div class="scene">
+          打開 Chrome，輸入
+          <strong>youtube.com</strong>
+          看影片
+        </div>
+        <div class="q-ask">A 分 支 ？ B 分 支 ？</div>
+      </div>
+      <div class="quiz-card">
+        <div class="qnum">三</div>
+        <div class="scene">
+          手機桌面，點
+          <strong>YouTube App</strong>
+          看影片
+        </div>
+        <div class="q-ask">陷 阱 題 —— 你 說 呢 ？</div>
+      </div>
+    </div>
+  </div>
+  <div class="meta-bot">
+    <span>QUIZ</span>
+    <span>〇 九 / 一 〇</span>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10 · OUTRO ============ -->
+<section class="slide s-out" data-slide="10">
+  <div class="meta-top">
+    <span>今 天 一 件 事</span>
+    <span class="right">FIN <span class="dot">·</span> 一 〇</span>
+  </div>
+  <div class="content">
+    <div class="kicker">收 尾</div>
+    <h2>就 問 自 己 一 個 問 題 。</h2>
+    <div class="home-task">
+      <div class="task-label">回　家　任　務</div>
+      <div class="task-body">
+        打開你的手機，<br>
+        隨便挑 <strong>一個最常用的 App</strong>，<br>
+        問自己 ——<br>
+        <span style="display:inline-block; margin-top:14px; padding:6px 22px; background:var(--paper-2); border:1px dashed var(--ink-3);">
+          「 打開之後，就是內容 ？ 還是還要再進一層？ 」
+        </span><br>
+        <span style="font-size:22px; color:var(--ink-3); margin-top:14px; display:inline-block;">
+          如果是後者 —— 那它大概就是瀏覽器家族的。
+        </span>
+      </div>
+    </div>
+    <div class="closer">
+      下 次 迷 路 的 時 候 <span class="bullet">◆</span> 想 一 下 自 己 在 哪 一 層
+    </div>
+    <div class="thanks">謝　謝　大　家</div>
+  </div>
+  <div class="meta-bot">
+    <span>THE END</span>
+    <span>一 〇 / 一 〇</span>
+  </div>
+</section>
+
+</div>
+</div>
+
+<nav class="nav">
+  <button onclick="prev()">◀ PREV</button>
+  <span class="page-num" id="pageNum">〇 一 / 一 〇</span>
+  <button onclick="next()">NEXT ▶</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const cn = ['〇','一','二','三','四','五','六','七','八','九'];
+  function num(n) { return n === 10 ? '一 〇' : '〇 ' + cn[n]; }
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    document.getElementById('pageNum').textContent = num(current + 1) + ' / 一 〇';
+  }
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+
+  function fit() {
+    const w = window.innerWidth, h = window.innerHeight;
+    const sw = 1600, sh = 900;
+    const scale = Math.min(w / sw, h / sh) * 0.96;
+    document.documentElement.style.setProperty('--scale', scale);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+</script>
+
+</body>
+</html>

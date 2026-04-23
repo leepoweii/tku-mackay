@@ -196,6 +196,12 @@
       transition: background 0.15s;
     }
     .slide-item:hover { background: var(--light); }
+    .slide-item.nolink {
+      color: #999;
+      cursor: default;
+    }
+    .slide-item.nolink:hover { background: transparent; }
+    .slide-item.nolink .num { color: #b8a080; }
     .slide-item .num {
       display: inline-block;
       font-weight: 700;
@@ -317,32 +323,48 @@
   </a>
 
   <details class="slides-section">
-    <summary>📚 本學期講義回顧（週 1–8）</summary>
+    <summary>📚 整學期課程（Week 1–9 · 加映）</summary>
     <div class="slide-list">
+      <a class="slide-item" href="slides/bonus-map.html">
+        <span class="num">加映</span><span class="title">數位世界族譜 — 二十分鐘小單元</span>
+        <span class="date">—</span>
+      </a>
+      <div class="slide-item nolink">
+        <span class="num">Week 1</span><span class="title">開學典禮</span>
+        <span class="date">2/27</span>
+      </div>
       <a class="slide-item" href="slides/week1.html">
-        <span class="num">第 1 堂</span><span class="title">認識 AI — 你的聰明新助手</span>
-        <span class="date">03.06</span>
+        <span class="num">Week 2</span><span class="title">第一堂 · 認識 AI — 你的聰明新助手</span>
+        <span class="date">3/6</span>
       </a>
       <a class="slide-item" href="slides/week2.html">
-        <span class="num">第 2 堂</span><span class="title">Prompt Template — AI 的食譜</span>
-        <span class="date">03.14</span>
+        <span class="num">Week 3</span><span class="title">第二堂 · Prompt Template — AI 的食譜</span>
+        <span class="date">3/13</span>
       </a>
       <a class="slide-item" href="slides/week3.html">
-        <span class="num">第 3 堂</span><span class="title">用 AI 畫出你的想像世界</span>
-        <span class="date">03.20</span>
+        <span class="num">Week 4</span><span class="title">第三堂 · 用 AI 畫出你的想像世界</span>
+        <span class="date">3/20</span>
       </a>
       <a class="slide-item" href="slides/week4.html">
-        <span class="num">第 4 堂</span><span class="title">AI 幫你說故事</span>
-        <span class="date">03.27</span>
+        <span class="num">Week 5</span><span class="title">第四堂 · AI 幫你說故事</span>
+        <span class="date">3/27</span>
       </a>
+      <div class="slide-item nolink">
+        <span class="num">Week 6</span><span class="title">放假</span>
+        <span class="date">4/3</span>
+      </div>
       <a class="slide-item" href="slides/week7.html">
-        <span class="num">第 7 堂</span><span class="title">用 AI 說出你的故事，變成一首歌</span>
-        <span class="date">04.10</span>
+        <span class="num">Week 7</span><span class="title">第五堂 · 用 AI 說出你的故事，變成一首歌</span>
+        <span class="date">4/10</span>
       </a>
       <a class="slide-item" href="slides/week8.html">
-        <span class="num">第 8 堂</span><span class="title">完成你的個人單曲</span>
-        <span class="date">04.17</span>
+        <span class="num">Week 8</span><span class="title">第六堂 · 完成你的個人單曲</span>
+        <span class="date">4/17</span>
       </a>
+      <div class="slide-item nolink">
+        <span class="num">Week 9</span><span class="title">班級成果展</span>
+        <span class="date">4/24</span>
+      </div>
     </div>
   </details>
 
