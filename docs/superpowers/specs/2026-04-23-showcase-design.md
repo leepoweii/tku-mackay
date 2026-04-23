@@ -110,7 +110,7 @@ URL 用英文 slug（中文會 %-encode 後分享變醜）。
 ├──────────────────────────────────┤
 │ 專輯封面（大圖，方形）            │
 ├──────────────────────────────────┤
-│ 🎵 Suno 播放器 embed              │
+│ 🎵 「在 Suno 上聆聽」按鈕         │
 ├──────────────────────────────────┤
 │ 歌詞                              │
 │   [Verse] 小標                    │
@@ -146,11 +146,10 @@ URL 用英文 slug（中文會 %-encode 後分享變醜）。
 - 找不到檔案時 fallback CSS 漸層 + 歌曲標題首字（或 emoji）
 - 尺寸建議 800×800
 
-**Suno Embed**：
-偵測 URL 格式並對應處理：
-- `suno.com/s/<ID>` → `<iframe src="https://suno.com/embed/<ID>">`
-- `suno.com/song/<UUID>?sh=...` → 同上，取出 UUID 段做 embed
-- `gemini.google.com/...`（阿勃勒的錯誤連結）→ 不 embed，顯示「歌曲製作中」狀態卡片 + 外連按鈕
+**Suno 連結按鈕**（與 `ahui.html` 一致）：
+不做 iframe embed（避免 URL 格式差異 + CSP 風險）。每頁放一個大按鈕「🎵 在 Suno 上聆聽」，`href` 直接是學員的 Suno URL。
+- 有效 Suno URL（任何格式 `suno.com/s/...` 或 `suno.com/song/...`）→ 按鈕連過去
+- 阿勃勒的 Gemini 連結 → 改成「🎵 歌曲製作中」灰階按鈕，`disabled` 狀態
 - 空連結 → 同上
 
 **Placeholder 策略**：
