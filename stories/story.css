@@ -104,8 +104,8 @@ body > * { position: relative; z-index: 2; }
 .prose p.drop::first-letter { font-family: var(--font-display); font-style: italic; font-size: 3.6em; float: left; line-height: 0.9; padding: 6px var(--s-3) 0 0; color: var(--gold); }
 
 /* ---------- profile ---------- */
-.profile { max-width: 820px; margin: var(--s-7) auto; padding: var(--s-6); background: var(--cream-soft); display: grid; grid-template-columns: 120px 1fr; gap: var(--s-6); align-items: start; }
-.profile-mono { width: 120px; height: 120px; background: var(--cream-deep); display: flex; align-items: center; justify-content: center; font-family: var(--font-zh); font-weight: 600; color: var(--espresso); font-size: 44px; letter-spacing: 0.1em; border: 1px solid var(--rule-strong); }
+.profile { max-width: 820px; margin: var(--s-7) auto; padding: var(--s-6); background: var(--cream-soft); }
+.profile-mono { display: none; }
 .profile h4 { font-family: var(--font-body); font-size: 11px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--gold); margin: 0 0 var(--s-2); font-weight: 500; }
 .profile .name { font-family: var(--font-zh); font-weight: 600; font-size: 22px; color: var(--espresso); margin: 0 0 4px; letter-spacing: 0.04em; }
 .profile .role { font-family: var(--font-display); font-style: italic; font-size: 15px; color: var(--latte); margin: 0 0 var(--s-4); padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule); }
@@ -150,8 +150,6 @@ body > * { position: relative; z-index: 2; }
   .pull p { font-size: 18px; }
   .prose p { font-size: 16px; }
   .listen-inner { flex-direction: column; align-items: flex-start; gap: var(--s-3); }
-  .profile { grid-template-columns: 1fr; }
-  .profile-mono { width: 96px; height: 96px; font-size: 36px; }
   .tracklist-nav { grid-template-columns: 1fr; }
   .nav-card.next { justify-content: flex-start; text-align: left; }
 }
